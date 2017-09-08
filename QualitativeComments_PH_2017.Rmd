@@ -1,0 +1,147 @@
+---
+title: "QualitativeComments-PH-2017"
+author: "Anirban Pal"
+date: "September 4, 2017"
+output: html_document
+---
+
+
+
+
+
+```{r, message = FALSE, echo=FALSE}
+#load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-New-Sept4-2017.RData")
+#ph2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BHP2017.csv")
+# Get a list of variable names that contain "comment".
+ph2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BHP2017.csv")
+#phadmin2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/")
+
+
+
+#for(i in 3:length(names(phadmin2017))) names(phadmin2017)[i] <- paste0(names(phadmin2017)[i], "_17", sep="")
+
+ph2017$From <- "ph2017"
+#phadmin2017$From <- "phadmin2017"
+#phadmin2017$TCode <- tolower(as.character(phadmin2017$Tenant))
+
+ph2017$TCode <- tolower(as.character(ph2017$TCode))
+ph2017$TCode.1 <- tolower(as.character(ph2017$TCode.1))
+### Now check if all the TCodes were correctly entered.
+#ph2017$TCode[i] <- as.character(as.factor(ph2017$TCode[i]))
+#ph2017$TCode.1[i] <- as.character(ph2017$TCode.1[i])
+for(i in 1:length(ph2017$TCode)){
+  if(!is.na(ph2017$TCode[i]) & tolower(as.character(ph2017$TCode[i])) == tolower(as.character(ph2017$TCode.1[i]))) ph2017$TCodeCorrect[i] <- 1 else ph2017$TCodeCorrect[i] <- 0
+}
+
+ph2017$TCodeCorrect<-as.factor(ph2017$TCodeCorrect)
+#summary(as.factor(ph2017$TCodeCorrect)) 
+incorrect <- subset(ph2017, TCodeCorrect==0)
+incorrect <- data.frame(incorrect$TCode, incorrect$TCode.1)
+#incorrect ## There is one TCode where the TCode does not match the TCode.1. We need to figure out which of the two are correct. 
+### Correct the three TCodes by replacing too14800 by t0014800. 
+for(i in 1:length(ph2017$TCode)) if(!is.na(ph2017$TCode[i])) if(as.character(ph2017$TCode[i])=="too14800") ph2017$TCode[i]<-"t0014800"
+
+#summary(as.factor(ph2017$TCode)) 
+ph2017 <- ph2017[-grep("t0000869", ph2017$TCode)[1], ]
+
+
+#setdiff(phadmin2017$TCode, intersect(phadmin2017$TCode, ph2017$TCode)) ## TCodes that are there in phadmin2017 but not in ph2017.
+#setdiff(ph2017$TCode, intersect(phadmin2017$TCode, ph2017$TCode)) ## TCodes that are there in ph2017 but not in phadmin2017. 
+
+
+##############################################
+
+for(i in 1:length(ph2017))
+  if(names(ph2017)[i] == "Program") names(ph2017)[i] <- "PH_or_S8"
+#summary(as.factor(ph2017$PH_or_S8))
+#summary((ph2017$PH_or_S8))
+
+## Change the names of the variables that start with "Q" and remove the part of the variable name that starts with "." so that they are similar to 2014 data.
+
+for(i in 1:length(ph2017)) {
+  if(substr(names(ph2017)[i], 1, 1) == 'Q') {
+    b <-as.vector(strsplit(names(ph2017)[i], ".", fixed=TRUE))
+    names(ph2017)[i]<-b[[1]][1]
+  }
+}
+
+### Missing values need to be assigned correctly.
+for(i in 1:length(ph2017))
+  for(j in 1:length(ph2017$TCode))
+    if(is.na(ph2017[j, i]) | (ph2017[j, i])=='No response' | (ph2017[j, i])=="") ph2017[j, i]<-NA
+
+## Check for duplicate TCodes.
+#summary(as.factor(ph2017$TCode))
+
+### One duplicate found "t0005287"
+#temp <- subset(ph2017, TCode=="t0005287")
+
+#### The following lines of code prints out the variable names for which the values of the duplicates do not match.
+#for(i in 1:length(names(temp))) {
+#  if(!is.na(temp[1, i]) | !is.na(temp[1, i])) if(temp[1, i] == temp[2, i]) {}
+#  else(print(c(names(temp)[i], temp[1, i], temp[2, i])))
+#}
+#### From the output of the code above, it looks like the first of the two has incomplete data with responses starting from Q4. We can therefore delete the first of the two TCode=="t0005287".
+#ph2017 <- ph2017[-64, ]
+
+## Remove "No response" as one of the factors in all responses. ### Need to correct this code.
+
+  
+
+for(i in 4:length(ph2017))
+  names(ph2017)[i]<-paste0(names(ph2017)[i], "_17", sep="")
+
+###### There are two variables in ph2017 with the name "Q35_12_17" (variable 163 and 164). The second one needs to be renamed as "Q35_12_17.1"  
+names(ph2017)[164] <- "Q35_12_17.1"
+variable <- grep("comment", names(ph2017), ignore.case = TRUE, perl = TRUE, value = TRUE)
+
+for(i in variable) {
+  print(i)
+  print("-----------------------------------------------------------")
+  s <- eval(parse(text = paste("ph2017$", as.character(i), sep="")))
+  if(length(as.character(s[!is.na(s)]))) print(as.character(s[!is.na(s)]))
+}
+
+
+```
+
+
+#### **Q3_10 Other reasons that make it difficult for you to move toward homeownership or unsubsidized market rental?**
+```{r, echo=FALSE}
+as.character(ph2017$Q3_10_17[!is.na(ph2017$Q3_10_17)])
+```
+
+#### **Q8_Other Other barriers to being employed or working more hours?**
+```{r, echo=FALSE}
+as.character(ph2017$Q8_Other_17[!is.na(ph2017$Q8_Other_17)])
+```
+
+#### **Q18_11 Other barriers to transportation?**
+```{r, echo=FALSE}
+as.character(ph2017$Q18_11_17[!is.na(ph2017$Q18_11_17)])
+```
+
+#### **Q23_6 During the last 3 months, how many times did you get help (for example, food, child care, money) from the following sources?**
+```{r, echo=FALSE}
+as.character(ph2017$Q23_6_17[!is.na(ph2017$Q23_6_17)])
+```
+
+#### **Q25_8 Are you receiving any other support?**
+```{r, echo=FALSE}
+as.character(ph2017$Q25_8_17[!is.na(ph2017$Q25_8_17)])
+```
+
+#### **Q30_2 Where do you go for primary healthcare other?**
+```{r, echo=FALSE}
+as.character(ph2017$Q30_2_17[!is.na(ph2017$Q30_2_17)])
+```
+
+#### **Q35_12 Other barriers to advancing your education and skills?**
+```{r, echo=FALSE}
+as.character(ph2017$Q35_12_17.1[!is.na(ph2017$Q35_12_17.1)])
+```
+
+#### **Q39_Other Other languages?**
+```{r, echo=FALSE}
+as.character(ph2017$Q39_Other_17[!is.na(ph2017$Q39_Other_17)])
+```

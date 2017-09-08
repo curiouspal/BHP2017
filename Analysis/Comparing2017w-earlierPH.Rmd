@@ -1,0 +1,29 @@
+---
+title: "Comparing2017w-earlierPH"
+author: "Anirban Pal"
+date: "September 8, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## N for 2014, 2015 and 2017
+
+
+Number of PH households who participated in the survey in 2017: 
+```{r, echo=FALSE}
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept8-2017.RData")
+#grep("From", names(final), value = TRUE)
+#summary(final$From_14)
+#summary(final$From_15)
+#summary(final$From_16)
+#summary(final$From_17)
+#summary(final$From)
+
+length(final$TCode[final$From_17])
+```
+
+
+

@@ -8,6 +8,7 @@ ph2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/ani
 #for(i in 3:length(names(phadmin2017))) names(phadmin2017)[i] <- paste0(names(phadmin2017)[i], "_17", sep="")
 
 ph2017$From <- "ph2017"
+ph2017$From <- as.factor(ph2017$From)
 #phadmin2017$From <- "phadmin2017"
 #phadmin2017$TCode <- tolower(as.character(phadmin2017$Tenant))
 
@@ -100,6 +101,11 @@ names(ph2017)[164] <- "Q35_12_17.1"
 
 final1 <- merge(final, ph2017, by = intersect(names(final), names(ph2017)), sort = TRUE, all = TRUE)
 final <- final1
+final$From_14 <- as.factor(final$From_14)
+final$From_15 <- as.factor(final$From_15)
+final$From_16 <- as.factor(final$From_16)
+final$From_17 <- as.factor(final$From_17)
+final$From <- as.factor(final$From)
 
 #for(i in 1:length(names(final))) 
 #  if(names(final)[i] == "PH_or_S8.y") names(final)[i] <- "PH_or_S8"
@@ -562,7 +568,7 @@ for(i in 1:length(final$TCode)) {
 }
 final$Total.Annual.Income_14[final$TCode=="t0000771"] <- 0
 
-#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/combined-New-March22-ver2-2017.RData")
+#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept8-2017.RData")
 
 
 final1 <- subset(final, From_17 == "ph2017" | From_14 == "all2014.RData")
