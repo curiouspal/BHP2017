@@ -1,4 +1,5 @@
 load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/combined-New-March22-ver2-2017.RData")
+#grep("PH_or_S8", names(final), value = TRUE)
 ph2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BHP2017.csv")
 #phadmin2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/")
 
@@ -20,14 +21,14 @@ for(i in 1:length(ph2017$TCode)){
 }
 
 ph2017$TCodeCorrect<-as.factor(ph2017$TCodeCorrect)
-summary(as.factor(ph2017$TCodeCorrect)) 
+#summary(as.factor(ph2017$TCodeCorrect)) 
 incorrect <- subset(ph2017, TCodeCorrect==0)
 incorrect <- data.frame(incorrect$TCode, incorrect$TCode.1)
-incorrect ## There is one TCode where the TCode does not match the TCode.1. We need to figure out which of the two are correct. 
-### Correct the three TCodes by replacing too14800 by t0014800. 
+#incorrect ## There are five TCodes where the TCode does not match the TCode.1.  
+### Correct the one TCode by replacing too14800 by t0014800. 
 for(i in 1:length(ph2017$TCode)) if(!is.na(ph2017$TCode[i])) if(as.character(ph2017$TCode[i])=="too14800") ph2017$TCode[i]<-"t0014800"
 
-summary(as.factor(ph2017$TCode)) 
+#summary(as.factor(ph2017$TCode)) # To identify duplicates. 
 ph2017 <- ph2017[-grep("t0000869", ph2017$TCode)[1], ]
 
 
@@ -39,8 +40,8 @@ ph2017 <- ph2017[-grep("t0000869", ph2017$TCode)[1], ]
 
 for(i in 1:length(ph2017))
   if(names(ph2017)[i] == "Program") names(ph2017)[i] <- "PH_or_S8"
-summary(as.factor(ph2017$PH_or_S8))
-summary((ph2017$PH_or_S8))
+#summary(as.factor(ph2017$PH_or_S8))
+
 
 ## Change the names of the variables that start with "Q" and remove the part of the variable name that starts with "." so that they are similar to 2014 data.
 
@@ -57,7 +58,7 @@ for(i in 1:length(ph2017))
     if(is.na(ph2017[j, i]) | (ph2017[j, i])=='No response' | (ph2017[j, i])=="") ph2017[j, i]<-NA
 
 ## Check for duplicate TCodes.
-summary(as.factor(ph2017$TCode))
+#summary(as.factor(ph2017$TCode))
 
 ### No duplicates found.
 
@@ -69,8 +70,8 @@ for(i in 1:length(names(ph2017))) {
     if("No response" %in% levels(ph2017[[i]]) ) {
       #levels(ph2017[[i]]) <- levels(ph2017[[i]])[levels(ph2017[[i]]) != "No response"]
       ph2017[[i]] = ordered(ph2017[[i]], levels=levels(ph2017[[i]])[levels(ph2017[[i]]) != "No response"])
-      print( levels(ph2017[[i]]) )
-      print(i)
+      #print( levels(ph2017[[i]]) )
+      #print(i)
       #print(levels(ph2017[[i]]))
     }
   }
@@ -81,8 +82,8 @@ for(i in 1:length(names(ph2017))) {
     if("" %in% levels(ph2017[[i]]) ) {
       #levels(ph2017[[i]]) <- levels(ph2017[[i]])[levels(ph2017[[i]]) != "No response"]
       ph2017[[i]] = ordered(ph2017[[i]], levels=levels(ph2017[[i]])[levels(ph2017[[i]]) != ""])
-      print( levels(ph2017[[i]]) )
-      print(i)
+      #print( levels(ph2017[[i]]) )
+      #print(i)
       #print(levels(ph2017[[i]]))
     }
   }
@@ -97,66 +98,42 @@ names(ph2017)[164] <- "Q35_12_17.1"
 #############################################################################
 ##################   MERGING DATA   #########################################
 
-final1 <- merge(final, ph2017, by = c("TCode", "PH_or_S8"), sort = TRUE, all = TRUE)
+final1 <- merge(final, ph2017, by = intersect(names(final), names(ph2017)), sort = TRUE, all = TRUE)
 final <- final1
 
 #for(i in 1:length(names(final))) 
 #  if(names(final)[i] == "PH_or_S8.y") names(final)[i] <- "PH_or_S8"
 
 
-summary(as.factor(final$TCode)) 
-temp <- subset(final, TCode=="t0008313")
+#summary(as.factor(final$TCode)) 
+#temp <- subset(final, TCode=="t0008313")
 ###########################################
-for(i in 1:length(names(temp))) {
-  if(!is.na(temp[1, i]) & !is.na(temp[2, i])) if(temp[1, i] != temp[2, i]) print(c(names(temp)[i], temp[1, i], temp[2, i]))
-}
+#for(i in 1:length(names(temp))) {
+#  if(!is.na(temp[1, i]) & !is.na(temp[2, i])) if(temp[1, i] != temp[2, i]) print(c(names(temp)[i], temp[1, i], temp[2, i]))
+#}
 
-nacount1 <- 0
-nacount2 <- 0
-for(i in 1:length(names(temp))) {
-  if(is.na(temp[1, i])) nacount1 <- nacount1 + 1
-  if(is.na(temp[2, i])) nacount2 <- nacount2 + 1
-}
-print(c(nacount1, nacount2))
+#nacount1 <- 0
+#nacount2 <- 0
+#for(i in 1:length(names(temp))) {
+#  if(is.na(temp[1, i])) nacount1 <- nacount1 + 1
+#  if(is.na(temp[2, i])) nacount2 <- nacount2 + 1
+#}
+#print(c(nacount1, nacount2))
 ##########################################
-for(i in 1:length(names(temp))) {
-  if(!is.na(temp[1, i])) if(!is.na(temp[2, i]) & (temp[1, i] != temp[2, i])) temp[1, i] <- temp[2, i]
-}
-for(i in 1:length(names(temp))) {
-  if(is.na(temp[1, i])) if(!is.na(temp[2, i])) temp[1, i] <- temp[2, i]
-}
-final <- subset(final, TCode !="t0008313")
-final <- merge(final, temp[1,], by = intersect(names(final), names(temp)), all = TRUE)
-summary(as.factor(final$TCode))
+#for(i in 1:length(names(temp))) {
+#  if(!is.na(temp[1, i])) if(!is.na(temp[2, i]) & (temp[1, i] != temp[2, i])) temp[1, i] <- temp[2, i]
+#}
+#for(i in 1:length(names(temp))) {
+#  if(is.na(temp[1, i])) if(!is.na(temp[2, i])) temp[1, i] <- temp[2, i]
+#}
+#final <- subset(final, TCode !="t0008313")
+#final <- merge(final, temp[1,], by = intersect(names(final), names(temp)), all = TRUE)
+#summary(as.factor(final$TCode))
 
 
-########################## Deal with the other dublicate. ##########################
+########################## Deal with the other dublicates in the same way as above. ##########################
 
-###############################################
-temp <- subset(final, TCode=="t0009557")
-###########################################
-for(i in 1:length(names(temp))) {
-  if(!is.na(temp[1, i]) & !is.na(temp[2, i])) if(temp[1, i] != temp[2, i]) print(c(names(temp)[i], temp[1, i], temp[2, i]))
-}
-
-nacount1 <- 0
-nacount2 <- 0
-for(i in 1:length(names(temp))) {
-  if(is.na(temp[1, i])) nacount1 <- nacount1 + 1
-  if(is.na(temp[2, i])) nacount2 <- nacount2 + 1
-}
-print(c(nacount1, nacount2))
-##########################################
-for(i in 1:length(names(temp))) {
-  if(!is.na(temp[1, i])) if(!is.na(temp[2, i]) & (temp[1, i] != temp[2, i])) temp[1, i] <- temp[2, i]
-}
-for(i in 1:length(names(temp))) {
-  if(is.na(temp[1, i])) if(!is.na(temp[2, i])) temp[1, i] <- temp[2, i]
-}
-final <- subset(final, TCode !="t0009557")
-final <- merge(final, temp[1,], by = intersect(names(final), names(temp)), all = TRUE)
-summary(as.factor(final$TCode))
-
+############### Merging ADMIN data ########################################################################
 final11 <- merge(final, phadmin2017, by = "TCode", all = TRUE)
 final <- final11
 
