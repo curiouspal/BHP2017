@@ -1,3 +1,5 @@
+library("stringr")
+
 load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/combined-New-March22-ver2-2017.RData")
 #grep("PH_or_S8", names(final), value = TRUE)
 ph2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BHP2017.csv")
@@ -568,7 +570,28 @@ for(i in 1:length(final$TCode)) {
 }
 final$Total.Annual.Income_14[final$TCode=="t0000771"] <- 0
 
+
+
+ques <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2015-roundData/ListOfQues&Ns.csv", stringsAsFactors=FALSE)
+names(ques)[1] <- "Q"
+ques$Q <- gsub(" ", "", ques$Q, fixed = TRUE)
+names(final) <- gsub(" ", "", names(final), fixed = TRUE)
+
+for(j in 1:length(ques$Q)) {
+  x <- grep(paste0(ques$Q[j], "_", sep = ""), names(final))
+  for(i in 1:length(x)) attr(final[ ,x[i]], "description") <- (ques$description[j])
+}
+
+temp <- data.frame(names(final), d=c(1:length(names(final))))
+temp$d <- NA
+for(i in 1:length(names(final))) {
+  if(length(attr(final[,i], "description"))!=0) temp$d[i] <- attr(final[,i], "description")
+}
+
 #save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept8-2017.RData")
+
+subset(temp, is.na(temp$d))
+
 
 
 final1 <- subset(final, From_17 == "ph2017" | From_14 == "all2014.RData")

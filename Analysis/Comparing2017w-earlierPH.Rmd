@@ -9,21 +9,2244 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## N for 2014, 2015 and 2017
+```{r, message = FALSE, echo=FALSE, message=FALSE}
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept8-2017.RData")
+final <- subset(final, From_15 == "ph2016" | From_14 == "all2014.RData" | From_17 == "ph2017")
+final <- subset(final, PH_or_S8 == "PH")
+library("ggplot2")
+library("plyr")
+#library("dplyr")
+#library("pander")
+library("reshape2")
+library("scales")
+
+#panderOptions("table.split.table", Inf)
+
+```
+#### N for 2014, 2015 and 2017
 
 
 Number of PH households who participated in the survey in 2017: 
 ```{r, echo=FALSE}
-load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept8-2017.RData")
-#grep("From", names(final), value = TRUE)
-#summary(final$From_14)
-#summary(final$From_15)
-#summary(final$From_16)
-#summary(final$From_17)
-#summary(final$From)
 
-length(final$TCode[final$From_17])
+length(final$TCode[!is.na(final$From_17)])
 ```
 
+Number of PH households who participated in the survey in 2015: 
+```{r, echo=FALSE}
+
+length(final$TCode[!is.na(final$From_15)])
+```
+
+Number of PH households who participated in the survey in 2014: 
+```{r, echo=FALSE}
+
+length(final$TCode[(final$PH_or_S8 == "PH" | final$PH_or_S8 == "PH_or_S8.x" | final$PH_or_S8 == "PH_or_S8.1") & !is.na(final$total.answered_14) & final$total.answered_14 > 0])
+
+```
+
+
+
+### **Housing**
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
+
+
+x <- c("Q1: Prior housing was in subsidized\nhousing or was homeless or lived\nwith family/friends?", 
+       "Q2: Expecting 3 years and above in\nfuture housing assistance?", 
+       "Q4: Late rent 1 or more times in\nthe past 6 months?")
+
+Q1Yes <- function() {
+  a14 <-eval(parse(text = "final$Q1_14"))
+  a15 <-eval(parse(text = "final$Q1_15"))
+  a17 <-eval(parse(text = "final$Q1_17"))
+  
+  yes_17 <- sum(as.integer(summary(as.factor(a17))[c("c. I lived in subsidized housing (for example, Section 8, Public Housing)", "d. I lived with family and friends", "e. I was homeless")]))
+  no_17 <- sum(as.integer(summary(as.factor(a17))[c("b. I lived in private market rental housing (including student housing)")]))
+  percent_y_17 <- (yes_17)* 100 / (yes_17 + no_17)
+  
+  yes_15 <- sum(as.integer(summary(as.factor(a15))[c("c. I lived in subsidized housing (for example, Section 8, Public Housing)", "d. I lived with family and friends", "e. I was homeless")]))
+  no_15 <- sum(as.integer(summary(as.factor(a15))[c("b. I lived in private market rental housing (including student housing)")]))
+  percent_y_15 <- (yes_15)* 100 / (yes_15 + no_15)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("c. I lived in subsidized housing (for example, Section 8, Public Housing)", "d. I lived with family and friends", "e. I was homeless")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Owned my home", "b. I lived in private market rental housing (including student housing)")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_15, percent_y_17))
+}
+
+Q2Yes <- function() {
+  a14 <-eval(parse(text = "final$Q2_14"))
+  a15 <-eval(parse(text = "final$Q2_15"))
+  a17 <-eval(parse(text = "final$Q2_17"))
+  
+  yes_17 <- sum(as.integer(summary(as.factor(a17))[c("d. For the next 3 – 5 years", "e. For more than 5 years")]))
+  no_17 <- sum(as.integer(summary(as.factor(a17))[c("a. For the next 6 months", "b. For the next 7 – 12 months", "c. For the next 1 – 2 years")]))
+  percent_y_17 <- (yes_17)* 100 / (yes_17 + no_17)
+  
+  yes_15 <- sum(as.integer(summary(as.factor(a15))[c("d. For the next 3 – 5 years", "e. For more than 5 years")]))
+  no_15 <- sum(as.integer(summary(as.factor(a15))[c("a. For the next 6 months", "b. For the next 7 – 12 months", "c. For the next 1 – 2 years")]))
+  percent_y_15 <- (yes_15)* 100 / (yes_15 + no_15)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("d. For the next 3 – 5 years", "e. For more than 5 years")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("a. For the next 6 months", "b. For the next 7 – 12 months", "c. For the next 1 – 2 years")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_15, percent_y_17))
+}
+
+Q4Yes <- function() {
+  a14 <-eval(parse(text = "final$Q4_14"))
+  a15 <-eval(parse(text = "final$Q4_15"))
+  a17 <-eval(parse(text = "final$Q4_17"))
+  
+  yes_17 <- sum(as.integer(summary(as.factor(a17))[c("b. Yes, 1 time", "c. Yes, 2 times", "d. Yes, 3 times", "e. Yes, 4 or more times")]))
+  no_17 <- sum(as.integer(summary(as.factor(a17))["a. No, never"]))
+  percent_y_17 <- (yes_17)* 100 / (yes_17 + no_17)
+  
+  yes_15 <- sum(as.integer(summary(as.factor(a15))[c("b. Yes, 1 time", "c. Yes, 2 times", "d. Yes, 3 times", "e. Yes, 4 or more times")]))
+  no_15 <- sum(as.integer(summary(as.factor(a15))["a. No, never"]))
+  percent_y_15 <- (yes_15)* 100 / (yes_15 + no_15)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("b. Yes, 1 time", "c. Yes, 2 times", "d. Yes, 3 times", "e. Yes, 4 or more times")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))["a. No, never"]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_15, percent_y_17))
+}
+
+
+pct_Yes_2014 <- pct_Yes_2015 <- pct_Yes_2017 <- c()
+
+pct_Yes_2014[1] <- Q1Yes()[1]
+pct_Yes_2015[1] <- Q1Yes()[2]
+pct_Yes_2017[1] <- Q1Yes()[3]
+pct_Yes_2014[2] <- Q2Yes()[1]
+pct_Yes_2015[2] <- Q2Yes()[2]
+pct_Yes_2017[2] <- Q2Yes()[3]
+pct_Yes_2014[3] <- Q4Yes()[1]
+pct_Yes_2015[3] <- Q4Yes()[2]
+pct_Yes_2017[3] <- Q4Yes()[3]
+
+######################################################################
+N_2014 <- NA
+N_2015 <- NA
+N_2017 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2015[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_15[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_15)])", sep = "")))
+  N_2017[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17)])", sep = "")))
+} 
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2015, pct_Yes_2017)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2015, N_2017)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes ") +
+  xlab("") +
+  ggtitle("Housing\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue", "navyblue"), name="")
+```
+
+
+Q3: Barriers to SS in Housing
+```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9}
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  yes_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  no_16 <- as.integer(summary(as.factor(a16))["No"])
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  no_14 <- as.integer(summary(as.factor(a14))["No"])
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q3_1: Not having a paying job", 
+       "Q3_2: Low or no income", 
+       "Q3_3: High basic expenses", 
+       "Q3_4: Health issues", 
+       "Q3_5: High childcare expenses", 
+       "Q3_6: Being a single parent", 
+       "Q3_7: Bad credit history", 
+       "Q3_8: Not having the skills", 
+       "Q3_9: High cost of housing")
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:9) {
+  pct_Yes_2014[i] <- percentYes(3, i)[1]
+  pct_Yes_2016[i] <- percentYes(3, i)[2]
+}
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes ") +
+  xlab("") +
+  ggtitle("Is this a barrier to SS in Housing?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+##################################################################################
+
+
+```
+
+
+### **Employment**
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
+
+
+
+x <- c("Q5: Employment Status\n(Unemployed including those\nnot seeking work)",
+       "Q6: Want/need more hours\n(Definitely yes or probably yes)",
+       "Q7: Skills qualify for better paying job\n(Definitely qualifies or\nsomewhat qualifies)")
+
+Q5Yes <- function() {
+  a14 <-eval(parse(text = "final$Q5_14"))
+  a16 <-eval(parse(text = "final$Q5_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("d. Unemployed, and seeking work", "e. Unemployed and not seeking work")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[levels(final$Q5_14)[1:3]]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("d. Unemployed, and seeking work", "e. Unemployed and not seeking work")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[levels(final$Q5_14)[1:3]]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q6Yes <- function() {
+  a14 <-eval(parse(text = "final$Q6_14"))
+  a16 <-eval(parse(text = "final$Q6_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("a. Definitely yes", "b. Probably yes")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("c. Not sure", "d. Probably not", "e. Definitely not")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Definitely yes", "b. Probably yes")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("c. Not sure", "d. Probably not", "e. Definitely not")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q7Yes <- function() {
+  a14 <-eval(parse(text = "final$Q7_14"))
+  a16 <-eval(parse(text = "final$Q7_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("4 My skills somehow qualify me for a better paying job.", "5 My skills definitely qualify me for a better paying job.")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("1 My skills do not qualify me for a better paying job at all.", "2 My skills somehow does not qualify me for a better paying job.", "3 Neutral.")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("4 My skills somehow qualify me for a better paying job.", "5 My skills definitely qualify me for a better paying job.")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("1 My skills do not qualify me for a better paying job at all.", "2 My skills somehow does not qualify me for a better paying job.", "3 Neutral.")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q5Yes()[1]
+pct_Yes_2016[1] <- Q5Yes()[2]
+pct_Yes_2014[2] <- Q6Yes()[1]
+pct_Yes_2016[2] <- Q6Yes()[2]
+pct_Yes_2014[3] <- Q7Yes()[1]
+pct_Yes_2016[3] <- Q7Yes()[2]
+
+
+################################################
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes ") +
+  xlab("") +
+  ggtitle("Employment\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+
+```{r, echo=FALSE}
+final$Q8_1_14 <- NA
+final$Q8_1_16 <- NA
+#summary(final$Q8_1_14)
+#summary(final$Q8_1_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_14[i]) & !is.na(final$Q8_2_1_14[i])) {
+  if(final$Q8_1_1_14[i] == "No" | final$Q8_2_1_14[i] == "No") final$Q8_1_14[i] <- "No"
+  if(final$Q8_1_1_14[i] == "Yes" | final$Q8_2_1_14[i] == "Yes") final$Q8_1_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_16[i]) & !is.na(final$Q8_2_1_16[i])){
+  if(final$Q8_1_1_16[i] == "No" | final$Q8_2_1_16[i] == "No") final$Q8_1_16[i] <- "No"
+  if(final$Q8_1_1_16[i] == "Yes" | final$Q8_2_1_16[i] == "Yes") final$Q8_1_16[i] <- "Yes"
+}
+final$Q8_1_14 <- as.factor(final$Q8_1_14)
+final$Q8_1_16 <- as.factor(final$Q8_1_16)
+
+
+
+
+
+final$Q8_2_14 <- NA
+final$Q8_2_16 <- NA
+#summary(final$Q8_2_14)
+#summary(final$Q8_2_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_14[i]) & !is.na(final$Q8_2_2_14[i])) {
+  if(final$Q8_1_2_14[i] == "No" | final$Q8_2_2_14[i] == "No") final$Q8_2_14[i] <- "No"
+  if(final$Q8_1_2_14[i] == "Yes" | final$Q8_2_2_14[i] == "Yes") final$Q8_2_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_16[i]) & !is.na(final$Q8_2_2_16[i])) {
+  if(final$Q8_1_2_16[i] == "No" | final$Q8_2_2_16[i] == "No") final$Q8_2_16[i] <- "No"
+  if(final$Q8_1_2_16[i] == "Yes" | final$Q8_2_2_16[i] == "Yes") final$Q8_2_16[i] <- "Yes"
+}
+final$Q8_2_14 <- as.factor(final$Q8_2_14)
+final$Q8_2_16 <- as.factor(final$Q8_2_16)
+
+
+final$Q8_3_14 <- NA
+final$Q8_3_16 <- NA
+#summary(final$Q8_3_14)
+#summary(final$Q8_3_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_14[i]) & !is.na(final$Q8_2_3_14[i])) {
+  if(final$Q8_1_3_14[i] == "No" | final$Q8_2_3_14[i] == "No") final$Q8_3_14[i] <- "No"
+  if(final$Q8_1_3_14[i] == "Yes" | final$Q8_2_3_14[i] == "Yes") final$Q8_3_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_16[i]) & !is.na(final$Q8_2_3_16[i])) {
+  if(final$Q8_1_3_16[i] == "No" | final$Q8_2_3_16[i] == "No") final$Q8_3_16[i] <- "No"
+  if(final$Q8_1_3_16[i] == "Yes" | final$Q8_2_3_16[i] == "Yes") final$Q8_3_16[i] <- "Yes"
+}
+final$Q8_3_14 <- as.factor(final$Q8_3_14)
+final$Q8_3_16 <- as.factor(final$Q8_3_16)
+
+final$Q8_4_14 <- NA
+final$Q8_4_16 <- NA
+#summary(final$Q8_4_14)
+#summary(final$Q8_4_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_14[i]) & !is.na(final$Q8_2_4_14[i])) {
+  if(final$Q8_1_4_14[i] == "No" | final$Q8_2_4_14[i] == "No") final$Q8_4_14[i] <- "No"
+  if(final$Q8_1_4_14[i] == "Yes" | final$Q8_2_4_14[i] == "Yes") final$Q8_4_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_16[i]) & !is.na(final$Q8_2_4_16[i])) {
+  if(final$Q8_1_4_16[i] == "No" | final$Q8_2_4_16[i] == "No") final$Q8_4_16[i] <- "No"
+  if(final$Q8_1_4_16[i] == "Yes" | final$Q8_2_4_16[i] == "Yes") final$Q8_4_16[i] <- "Yes"
+}
+final$Q8_4_14 <- as.factor(final$Q8_4_14)
+final$Q8_4_16 <- as.factor(final$Q8_4_16)
+
+
+final$Q8_5_14 <- NA
+final$Q8_5_16 <- NA
+#summary(final$Q8_5_14)
+#summary(final$Q8_5_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_14[i]) & !is.na(final$Q8_2_5_14[i])) {
+  if(final$Q8_1_5_14[i] == "No" | final$Q8_2_5_14[i] == "No") final$Q8_5_14[i] <- "No"
+  if(final$Q8_1_5_14[i] == "Yes" | final$Q8_2_5_14[i] == "Yes") final$Q8_5_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_16[i]) & !is.na(final$Q8_2_5_16[i])) {
+  if(final$Q8_1_5_16[i] == "No" | final$Q8_2_5_16[i] == "No") final$Q8_5_16[i] <- "No"
+  if(final$Q8_1_5_16[i] == "Yes" | final$Q8_2_5_16[i] == "Yes") final$Q8_5_16[i] <- "Yes"
+}
+final$Q8_5_14 <- as.factor(final$Q8_5_14)
+final$Q8_5_16 <- as.factor(final$Q8_5_16)
+
+
+final$Q8_6_14 <- NA
+final$Q8_6_16 <- NA
+#summary(final$Q8_6_14)
+#summary(final$Q8_6_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_14[i]) & !is.na(final$Q8_2_6_14[i])) {
+  if(final$Q8_1_6_14[i] == "No" | final$Q8_2_6_14[i] == "No") final$Q8_6_14[i] <- "No"
+  if(final$Q8_1_6_14[i] == "Yes" | final$Q8_2_6_14[i] == "Yes") final$Q8_6_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_16[i]) & !is.na(final$Q8_2_6_16[i])) {
+  if(final$Q8_1_6_16[i] == "No" | final$Q8_2_6_16[i] == "No") final$Q8_6_16[i] <- "No"
+  if(final$Q8_1_6_16[i] == "Yes" | final$Q8_2_6_16[i] == "Yes") final$Q8_6_16[i] <- "Yes"
+}
+final$Q8_6_14 <- as.factor(final$Q8_6_14)
+final$Q8_6_16 <- as.factor(final$Q8_6_16)
+
+
+final$Q8_7_14 <- NA
+final$Q8_7_16 <- NA
+#summary(final$Q8_7_14)
+#summary(final$Q8_7_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_14[i]) & !is.na(final$Q8_2_7_14[i])) {
+  if(final$Q8_1_7_14[i] == "No" | final$Q8_2_7_14[i] == "No") final$Q8_7_14[i] <- "No"
+  if(final$Q8_1_7_14[i] == "Yes" | final$Q8_2_7_14[i] == "Yes") final$Q8_7_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_16[i]) & !is.na(final$Q8_2_7_16[i])) {
+  if(final$Q8_1_7_16[i] == "No" | final$Q8_2_7_16[i] == "No") final$Q8_7_16[i] <- "No"
+  if(final$Q8_1_7_16[i] == "Yes" | final$Q8_2_7_16[i] == "Yes") final$Q8_7_16[i] <- "Yes"
+}
+final$Q8_7_14 <- as.factor(final$Q8_7_14)
+final$Q8_7_16 <- as.factor(final$Q8_7_16)
+
+final$Q8_8_14 <- NA
+final$Q8_8_16 <- NA
+#summary(final$Q8_8_14)
+#summary(final$Q8_8_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_14[i]) & !is.na(final$Q8_2_8_14[i])) {
+  if(final$Q8_1_8_14[i] == "No" | final$Q8_2_8_14[i] == "No") final$Q8_8_14[i] <- "No"
+  if(final$Q8_1_8_14[i] == "Yes" | final$Q8_2_8_14[i] == "Yes") final$Q8_8_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_16[i]) & !is.na(final$Q8_2_8_16[i])) {
+  if(final$Q8_1_8_16[i] == "No" | final$Q8_2_8_16[i] == "No") final$Q8_8_16[i] <- "No"
+  if(final$Q8_1_8_16[i] == "Yes" | final$Q8_2_8_16[i] == "Yes") final$Q8_8_16[i] <- "Yes"
+}
+final$Q8_8_14 <- as.factor(final$Q8_8_14)
+final$Q8_8_16 <- as.factor(final$Q8_8_16)
+
+
+final$Q8_9_14 <- NA
+final$Q8_9_16 <- NA
+#summary(final$Q8_9_14)
+#summary(final$Q8_9_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_14[i]) & !is.na(final$Q8_2_9_14[i])) {
+  if(final$Q8_1_9_14[i] == "No" | final$Q8_2_9_14[i] == "No") final$Q8_9_14[i] <- "No"
+  if(final$Q8_1_9_14[i] == "Yes" | final$Q8_2_9_14[i] == "Yes") final$Q8_9_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_16[i]) & !is.na(final$Q8_2_9_16[i])) {
+  if(final$Q8_1_9_16[i] == "No" | final$Q8_2_9_16[i] == "No") final$Q8_9_16[i] <- "No"
+  if(final$Q8_1_9_16[i] == "Yes" | final$Q8_2_9_16[i] == "Yes") final$Q8_9_16[i] <- "Yes"
+}
+final$Q8_9_14 <- as.factor(final$Q8_9_14)
+final$Q8_9_16 <- as.factor(final$Q8_9_16)
+
+
+final$Q8_10_14 <- NA
+final$Q8_10_16 <- NA
+#summary(final$Q8_10_14)
+#summary(final$Q8_10_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_14[i]) & !is.na(final$Q8_2_10_14[i])) {
+  if(final$Q8_1_10_14[i] == "No" | final$Q8_2_10_14[i] == "No") final$Q8_10_14[i] <- "No"
+  if(final$Q8_1_10_14[i] == "Yes" | final$Q8_2_10_14[i] == "Yes") final$Q8_10_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_16[i]) & !is.na(final$Q8_2_10_16[i])) {
+  if(final$Q8_1_10_16[i] == "No" | final$Q8_2_10_16[i] == "No") final$Q8_10_16[i] <- "No"
+  if(final$Q8_1_10_16[i] == "Yes" | final$Q8_2_10_16[i] == "Yes") final$Q8_10_16[i] <- "Yes"
+}
+final$Q8_10_14 <- as.factor(final$Q8_10_14)
+final$Q8_10_16 <- as.factor(final$Q8_10_16)
+
+
+final$Q8_11_14 <- NA
+final$Q8_11_16 <- NA
+#summary(final$Q8_11_14)
+#summary(final$Q8_11_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_14[i]) & !is.na(final$Q8_2_11_14[i])) {
+  if(final$Q8_1_11_14[i] == "No" | final$Q8_2_11_14[i] == "No") final$Q8_11_14[i] <- "No"
+  if(final$Q8_1_11_14[i] == "Yes" | final$Q8_2_11_14[i] == "Yes") final$Q8_11_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_16[i]) & !is.na(final$Q8_2_11_16[i])) {
+  if(final$Q8_1_11_16[i] == "No" | final$Q8_2_11_16[i] == "No") final$Q8_11_16[i] <- "No"
+  if(final$Q8_1_11_16[i] == "Yes" | final$Q8_2_11_16[i] == "Yes") final$Q8_11_16[i] <- "Yes"
+}
+final$Q8_11_14 <- as.factor(final$Q8_11_14)
+final$Q8_11_16 <- as.factor(final$Q8_11_16)
+
+
+final$Q8_12_14 <- NA
+final$Q8_12_16 <- NA
+#summary(final$Q8_12_14)
+#summary(final$Q8_12_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_14[i]) & !is.na(final$Q8_2_12_14[i])) {
+  if(final$Q8_1_12_14[i] == "No" | final$Q8_2_12_14[i] == "No") final$Q8_12_14[i] <- "No"
+  if(final$Q8_1_12_14[i] == "Yes" | final$Q8_2_12_14[i] == "Yes") final$Q8_12_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_16[i]) & !is.na(final$Q8_2_12_16[i])) {
+  if(final$Q8_1_12_16[i] == "No" | final$Q8_2_12_16[i] == "No") final$Q8_12_16[i] <- "No"
+  if(final$Q8_1_12_16[i] == "Yes" | final$Q8_2_12_16[i] == "Yes") final$Q8_12_16[i] <- "Yes"
+}
+final$Q8_12_14 <- as.factor(final$Q8_12_14)
+final$Q8_12_16 <- as.factor(final$Q8_12_16)
+
+
+final$Q8_13_14 <- NA
+final$Q8_13_16 <- NA
+#summary(final$Q8_13_14)
+#summary(final$Q8_13_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_14[i]) & !is.na(final$Q8_2_13_14[i])) {
+  if(final$Q8_1_13_14[i] == "No" | final$Q8_2_13_14[i] == "No") final$Q8_13_14[i] <- "No"
+  if(final$Q8_1_13_14[i] == "Yes" | final$Q8_2_13_14[i] == "Yes") final$Q8_13_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_16[i]) & !is.na(final$Q8_2_13_16[i])) {
+  if(final$Q8_1_13_16[i] == "No" | final$Q8_2_13_16[i] == "No") final$Q8_13_16[i] <- "No"
+  if(final$Q8_1_13_16[i] == "Yes" | final$Q8_2_13_16[i] == "Yes") final$Q8_13_16[i] <- "Yes"
+}
+final$Q8_13_14 <- as.factor(final$Q8_13_14)
+final$Q8_13_16 <- as.factor(final$Q8_13_16)
+
+
+
+final$Q8_14_14 <- NA
+final$Q8_14_16 <- NA
+#summary(final$Q8_14_14)
+#summary(final$Q8_14_16)
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_14[i]) & !is.na(final$Q8_2_14_14[i])) {
+  if(final$Q8_1_14_14[i] == "No" | final$Q8_2_14_14[i] == "No") final$Q8_14_14[i] <- "No"
+  if(final$Q8_1_14_14[i] == "Yes" | final$Q8_2_14_14[i] == "Yes") final$Q8_14_14[i] <- "Yes"
+}
+
+for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_16[i]) & !is.na(final$Q8_2_14_16[i])) {
+  if(final$Q8_1_14_16[i] == "No" | final$Q8_2_14_16[i] == "No") final$Q8_14_16[i] <- "No"
+  if(final$Q8_1_14_16[i] == "Yes" | final$Q8_2_14_16[i] == "Yes") final$Q8_14_16[i] <- "Yes"
+}
+final$Q8_14_14 <- as.factor(final$Q8_14_14)
+final$Q8_14_16 <- as.factor(final$Q8_14_16)
+
+
+
+```
+
+
+
+
+Q8: Barriers to SS in employment
+```{r, message = FALSE, echo=FALSE, fig.height=9, fig.width=11, warning=FALSE}
+
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  y_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  n_16 <- as.integer(summary(as.factor(a16))["No"])
+  percent_y_16 <- y_16 * 100 / (y_16 + n_16)
+  
+  y_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  n_14 <- as.integer(summary(as.factor(a14))["No"])
+  percent_y_14 <- y_14 * 100 / (y_14 + n_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q8_1: Being a student", 
+       "Q8_2: Health problems", 
+       "Q8_3: Lack of education or skills", 
+       "Q8_4: Lack of work history", 
+       "Q8_5: Transportation", 
+       "Q8_6: English proficiency", 
+       "Q8_7: Discrimination", 
+       "Q8_8: Child care responsibilities", 
+       "Q8_9: Experiencing domestic violence", 
+       "Q8_10: Having a criminal record", 
+       "Q8_11: Not enough time", 
+       "Q8_12: Not knowing how to find a job",
+       "Q8_13: Tight job market, bad economy", 
+       "Q8_14: Immigration status")
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:14) {
+  pct_Yes_2014[i] <- percentYes(8, i)[1]
+  pct_Yes_2016[i] <- percentYes(8, i)[2]
+}
+
+
+#############################################################################################3
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") + 
+  xlab(" ") + 
+  ggtitle("Is this a barrier to employment?\n") +
+  #scale_fill_discrete(name = "", labels = c("Y in '14, N in '16", "No change", "N in '14, Y in '16")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = .93), vjust=0.25, hjust=1, size=3, alpha=0.7) +
+  scale_y_continuous(breaks= pretty_breaks()) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+
+
+### **Income**
+Q9: Income run out last 3 months?
+
+```{r, message = FALSE, echo=FALSE, fig.height=1.5, fig.width=9}
+
+
+x <- c("Q9")
+
+Q9Yes <- function() {
+  a14 <-eval(parse(text = "final$Q9_14"))
+  a16 <-eval(parse(text = "final$Q9_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("b. Yes, 1 time", "c. Yes, 2 times", "d. Yes, 3 times", "e. Yes, 4 or more times")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("a. No, never")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("b. Yes, 1 time", "c. Yes, 2 times", "d. Yes, 3 times", "e. Yes, 4 or more times")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("a. No, never")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q9Yes()[1]
+pct_Yes_2016[1] <- Q9Yes()[2]
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes ") +
+  xlab("") +
+  ggtitle("Income run out at least once in last 3 months?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+Q10: Very hard to pay for...
+```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9}
+
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  sd_16 <- as.integer(summary(as.factor(a16))[2])
+  vd_16 <- as.integer(summary(as.factor(a16))[1])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (sd_16 + vd_16)* 100 / (tot_16)
+  
+  sd_14 <- as.integer(summary(as.factor(a14))[2])
+  vd_14 <- as.integer(summary(as.factor(a14))[1])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (sd_14 + vd_14)* 100 / (tot_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q10_1: Buying food", 
+       "Q10_2: Having reliable housing", 
+       "Q10_3: Getting health care", 
+       "Q10_4: Having reliable transport", 
+       "Q10_5: Having reliable child care", 
+       "Q10_6: Making debt payments", 
+       "Q10_7: Paying utilities", 
+       "Q10_8: Saving money")
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:8) {
+  pct_Yes_2014[i] <- percentYes(10, i)[1]
+  pct_Yes_2016[i] <- percentYes(10, i)[2]
+}
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Very Difficult\" or \"Somewhat Difficult\" ") +
+  xlab("") +
+  ggtitle("Very hard to pay for...?\n") +
+  #scale_fill_discrete(name = "", labels = c("Y in '14, N in '16", "No change", "N in '14, Y in '16")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+### **Food**
+
+
+```{r, echo=FALSE}
+levQ11_14 <- c(levels(final$Q11_14))
+levQ11_16 <- c(levels(final$Q11_16))
+
+
+final$Q11_14 <- ordered(final$Q11_14, levels=levQ11_14, labels=levQ11_14)
+final$Q11_16 <- ordered(final$Q11_16, levels=levQ11_16, labels=levQ11_16)
+
+```
+
+```{r, message = FALSE, echo=FALSE, fig.height=2.5, fig.width=9}
+
+
+x <- c("Q11: Cut/skip meal last 3 months?", 
+       "Q12: Food sources except income?", 
+       "Q14: Problems getting food?")
+
+Q11Yes <- function() {
+  a14 <-eval(parse(text = "final$Q11_14"))
+  a16 <-eval(parse(text = "final$Q11_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[levQ11_16[-1]]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("a. No, never")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[levQ11_14[-1]]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("a. No, never")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q12Yes <- function() {
+  a14 <-eval(parse(text = "final$Q12_14"))
+  a16 <-eval(parse(text = "final$Q12_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))["Yes"]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("No")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))["Yes"]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("No")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q14Yes <- function() {
+  a14 <-eval(parse(text = "final$Q14_14"))
+  a16 <-eval(parse(text = "final$Q14_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))["Yes"]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("No")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))["Yes"]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("No")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q11Yes()[1]
+pct_Yes_2016[1] <- Q11Yes()[2]
+pct_Yes_2014[2] <- Q12Yes()[1]
+pct_Yes_2016[2] <- Q12Yes()[2]
+pct_Yes_2014[3] <- Q14Yes()[1]
+pct_Yes_2016[3] <- Q14Yes()[2]
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes ") +
+  xlab("") +
+  ggtitle("Food\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+
+Q13: Food sources
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  yes_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  no_16 <- as.integer(summary(as.factor(a16))["No"])
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  no_14 <- as.integer(summary(as.factor(a14))["No"])
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q13_1: Food assistance (food stamps)", 
+       "Q13_2: Food banks", 
+       "Q13_3: Friends", 
+       "Q13_4: Neighbors", 
+       "Q13_5: Family members")
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:5) {
+  pct_Yes_2014[i] <- percentYes(13, i)[1]
+  pct_Yes_2016[i] <- percentYes(13, i)[2]
+}
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab(" ") +
+  ggtitle("Food sources") +
+  #scale_fill_discrete(name = "", labels = c("Y in '14, N in '16", "No change", "N in '14, Y in '16")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=0.9, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+Q15: Food barriers
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9, warning=FALSE}
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  yes_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  no_16 <- as.integer(summary(as.factor(a16))["No"])
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  no_14 <- as.integer(summary(as.factor(a14))["No"])
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q15_1: Lack of income", 
+       "Q15_2: Lack of easy access to the stores", 
+       "Q15_3: Lack of time to get to the stores", 
+       "Q15_4: Lack of knowledge to find nutritious food")
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:4) {
+  pct_Yes_2014[i] <- percentYes(15, i)[1]
+  pct_Yes_2016[i] <- percentYes(15, i)[2]
+}
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab(" ") +
+  ggtitle("Is this a barrier to food?\n") +
+  #scale_fill_discrete(name = "", labels = c("Y in '14, N in '16", "No change", "N in '14, Y in '16")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=.8, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+
+
+### **Transportation**
+Q16: Transportation - satisfaction
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+
+final$Q16_1_16 <- ordered(final$Q16_1_16, levels = levels(final$Q16_1_16)[-6])
+final$Q16_2_16 <- ordered(final$Q16_2_16, levels = levels(final$Q16_1_16)[-6])
+final$Q16_3_16 <- ordered(final$Q16_3_16, levels = levels(final$Q16_1_16)[-6])
+final$Q16_4_16 <- ordered(final$Q16_4_16, levels = levels(final$Q16_1_16)[-6])
+final$Q16_5_16 <- ordered(final$Q16_5_16, levels = levels(final$Q16_1_16)[-6])
+final$Q16_6_16 <- ordered(final$Q16_6_16, levels = levels(final$Q16_1_16)[-6])
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  sd_16 <- as.integer(summary(as.factor(a16))[2])
+  vd_16 <- as.integer(summary(as.factor(a16))[1])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  
+  percent_y_16 <- (sd_16 + vd_16)* 100 / (tot_16)
+  
+  sd_14 <- as.integer(summary(as.factor(a14))[2])
+  vd_14 <- as.integer(summary(as.factor(a14))[1])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (sd_14 + vd_14)* 100 / (tot_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q16_1: My own car", 
+       "Q16_2: Carpool", 
+       "Q16_3: Bus", 
+       "Q16_4: Motorcycle",
+       "Q16_5: Bicycle", 
+       "Q16_6: Walking")
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:6) {
+  pct_Yes_2014[i] <- percentYes(16, i)[1]
+  pct_Yes_2016[i] <- percentYes(16, i)[2]
+}
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Very Dissatisfied\" or \"Somewhat Dissatisfied\" ") +
+  xlab(" ") +
+  ggtitle("Transportation - dissatisfaction?\n") +
+  #scale_fill_discrete(name = "", labels = c("Y in '14, N in '16", "No change", "N in '14, Y in '16")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+Q17: Hard to get to appts./work last 2 weeks?
+```{r, message = FALSE, echo=FALSE, fig.height=1.5, fig.width=9}
+
+
+x <- c("Q17")
+
+Q17Yes <- function() {
+  a14 <-eval(parse(text = "final$Q17_14"))
+  a16 <-eval(parse(text = "final$Q17_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("b. Yes, 1 time", "c. Yes, 2 times", "d. Yes, 3 times", "e. Yes, 4 times or more")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("a. No, never")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("b. Yes, 1 time", "c. Yes, 2 times", "d. Yes, 3 times", "e. Yes, 4 or more times")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("a. No, never")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q17Yes()[1]
+pct_Yes_2016[1] <- Q17Yes()[2]
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab("") +
+  ggtitle("Hard to get to appts./work last 2 weeks?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+
+Q18: Transportation barriers
+```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9, warning=FALSE}
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+
+  
+  yes_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  no_16 <- as.integer(summary(as.factor(a16))["No"])
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  no_14 <- as.integer(summary(as.factor(a14))["No"])
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q18_1: Live far from work, grocery store, etc.", 
+       "Q18_2: Personal or family members’ health", 
+       "Q18_3: Bus stops are too far", 
+       "Q18_4: Bus schedule is not convenient",
+       "Q18_5: Bus fares", 
+       "Q18_6: Gas costs", 
+       "Q18_7: Don’t have a bike", 
+       "Q18_8: Don’t have a car",
+       "Q18_9: Don’t have a ride", 
+       "Q18_10: Don’t know how to get to places")
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:10) {
+  pct_Yes_2014[i] <- percentYes(18, i)[1]
+  pct_Yes_2016[i] <- percentYes(18, i)[2]
+}
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab(" ") +
+  ggtitle("Is this a barrier to SS in transportation?\n") +
+  #scale_fill_discrete(name = "", labels = c("Y in '14, N in '16", "No change", "N in '14, Y in '16")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_y_continuous(breaks= pretty_breaks()) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+### **Childcare**
+Q19: Children <13?
+```{r, message = FALSE, echo=FALSE, fig.height=1.5, fig.width=9}
+
+x <- c("Q19")
+
+Q19Yes <- function() {
+  a14 <-eval(parse(text = "final$Q19_14"))
+  a16 <-eval(parse(text = "final$Q19_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("Yes")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("No")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("Yes")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("No")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q19Yes()[1]
+pct_Yes_2016[1] <- Q19Yes()[2]
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab("") +
+  ggtitle("Children <13?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+Q20: Childcare sufficient?
+```{r, message = FALSE, echo=FALSE, fig.height=1.5, fig.width=9}
+
+x <- c("Q20")
+
+Q20Yes <- function() {
+  a14 <-eval(parse(text = "final$Q20_14"))
+  a16 <-eval(parse(text = "final$Q20_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("a. Yes, I currently have sufficient child care")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("b. No, I currently have some child care, but need more", "c. No, I currently have no child care, but need it", "d. N/A, I currently do not need child care")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Yes, I currently have sufficient child care")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("b. No, I currently have some child care, but need more", "c. No, I currently have no child care, but need it", "d. N/A, I currently do not need child care")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q20Yes()[1]
+pct_Yes_2016[1] <- Q20Yes()[2]
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab("") +
+  ggtitle("Childcare sufficient?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+
+Q21: Evaluate childcare
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9, warning=FALSE}
+#summary(as.factor(final$Q21_1_14))
+#summary(as.factor(final$Q21_1_16))
+
+
+
+percentSatisfied <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  vg_16 <- sum(as.integer(summary(as.factor(a16))[c("d. Poor", "e. Very poor")]))
+  g_16 <- sum(as.integer(summary(as.factor(a16))[c("a. Very good", "b. Good", "c. Neutral")]))
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (vg_16)* 100 / (vg_16 + g_16)
+  
+  vg_14 <- sum(as.integer(summary(as.factor(a14))[c("d. Poor", "e. Very poor")]))
+  g_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Very good", "b. Good", "c. Neutral")]))
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (vg_14)* 100 / (vg_14 + g_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q21_1: Accessibility", 
+       "Q21_2: Quality", 
+       "Q21_3: Affordability")
+
+pct_Satisfied_2014 <- pct_Satisfied_2016 <- c()
+for(i in 1:3) {
+  pct_Satisfied_2014[i] <- percentSatisfied(21, i)[1]
+  pct_Satisfied_2016[i] <- percentSatisfied(21, i)[2]
+}
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Satisfied_2014, pct_Satisfied_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Satisfied")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Satisfied, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+
+ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Very good\" or \"Good\" ") +
+  xlab(" ") +
+  ggtitle("Evaluate Childcare?\n") +
+  #scale_fill_discrete(name = "", labels = c("Y in '14, N in '16", "No change", "N in '14, Y in '16")) +
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+Q22: Barriers to childcare?
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9, warning=FALSE}
+#summary(as.factor(final$Q22_2_14))
+#summary(as.factor(final$Q22_2_16))
+#length(final$Q22_2_16) - length(final$Q22_2_16[is.na(final$Q22_2_16)])
+#summary(as.factor(final$Q22_1_14))
+#summary(as.factor(final$Q22_1_16))
+
+
+
+percentSatisfied <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  vg_16 <- as.integer(summary(as.factor(a16))[2])
+  g_16 <- as.integer(summary(as.factor(a16))[1])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  
+  percent_y_16 <- (vg_16 + g_16)* 100 / (tot_16)
+  
+  vg_14 <- as.integer(summary(as.factor(a14))[2])
+  g_14 <- as.integer(summary(as.factor(a14))[1])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (vg_14 + g_14)* 100 / (tot_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q22_1: Accessibility", 
+       "Q22_2: Quality", 
+       "Q22_3: Affordability")
+
+pct_Satisfied_2014 <- pct_Satisfied_2016 <- c()
+for(i in 1:3) {
+  pct_Satisfied_2014[i] <- percentSatisfied(22, i)[1]
+  pct_Satisfied_2016[i] <- percentSatisfied(22, i)[2]
+}
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Satisfied_2014, pct_Satisfied_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Satisfied")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Satisfied, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Definitely not\" or \"Probably not\" ") +
+  xlab(" ") +
+  ggtitle("Is this a Barrier to Childcare?\n") +
+  scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2016")) +
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), labels = c("pct_NO_2014", "pct_NO_2016"), name="")
+
+```
+
+
+### **Support networks**
+Q23: Help in last 3 months
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+#summary(final$Q23_5_14)
+#summary(final$Q23_5_16)
+
+
+percentNever <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  g_16 <- as.integer(summary(as.factor(a16))["a. Never"])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (g_16)* 100 / (tot_16)
+  
+  g_14 <- as.integer(summary(as.factor(a14))["a. Never"])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (g_14)* 100 / (tot_14)
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q23_1: Church", 
+       "Q23_2: Charitable organization", 
+       "Q23_3: Local support group", 
+       "Q23_4: Family", 
+       "Q23_5: Friends/Neighbors")
+
+pct_Never_2014 <- pct_Never_2016 <- c()
+for(i in 1:5) {
+  pct_Never_2014[i] <- percentNever(23, i)[1]
+  pct_Never_2016[i] <- percentNever(23, i)[2]
+}
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+d <- data.frame(Question = x, pct_Never_2014, pct_Never_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Never")
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Never, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+
+ggplot(d, aes(reorder(Question, Percent_Never), Percent_Never, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Never\" ") +
+  xlab(" ") +
+  ggtitle("Have you received help in last 3 months from ...?\n") +
+  scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2016")) +
+  geom_text(aes(y = Percent_Never, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="", labels = c("pct_NO_2014", "pct_NO_2016"))
+
+```
+
+
+```{r, echo=FALSE}
+levQ23_14 <- c("Never", "1-2 times", "3-4 times",  "5-6 times", "7 times or more")
+levQ23_16 <- c("a. Never", "b. 1-2 times", "c. 3-4 times",  "d. 5-6 times", "e. 7 times or more")
+  
+
+```
+
+Q24: Network Barriers
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+#summary(final$Q24_1_14)
+#summary(final$Q24_1_16)
+
+
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  g_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (g_16)* 100 / (tot_16)
+  
+  g_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (g_14)* 100 / (tot_14)
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q24_1: Living far from family/friends", 
+       "Q24_2: Living far from community organizations", 
+       "Q24_3: Living far from people who share my interests", 
+       "Q24_4: Cannot afford social events", 
+       "Q24_5: Not having enough time for social events",
+       "Q24_6: Don’t know how to find community organizations")
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:6) {
+  pct_Yes_2014[i] <- percentYes(24, i)[1]
+  pct_Yes_2016[i] <- percentYes(24, i)[2]
+}
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+
+
+d$N <- c(N_2014, N_2016)
+
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Yes\" ") +
+  xlab(" ") +
+  ggtitle("Is this a Barrier to Networking?\n") +
+  scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2016")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+Q25: Types of support
+
+```{r, message = FALSE, echo=FALSE, fig.width=9, fig.height=4, warning=FALSE}
+#summary(final$Q25_1_14)
+#summary(final$Q25_1_16)
+
+
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  g_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (g_16)* 100 / (tot_16)
+  
+  g_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (g_14)* 100 / (tot_14)
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q25_1: SNAP (Food Stamps)", 
+       "Q25_2: Medicaid", 
+       "Q25_3: CHP+ (Colorado Health Plan Plus)", 
+       "Q25_4: LEAP (Energy assistance)", 
+       "Q25_5: Free/reduced lunch",
+       "Q25_6: TANF (Temporary Aid to Needy Families)",
+       "Q25_6: CCAP (Child Care Assistance Program)")
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:7) {
+  pct_Yes_2014[i] <- percentYes(25, i)[1]
+  pct_Yes_2016[i] <- percentYes(25, i)[2]
+}
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+d$Percent_Yes_text[d$Percent_Yes_text=="0% (N=53)"] <- ""
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Yes\" ") +
+  xlab(" ") +
+  ggtitle("Do you receive the following support?\n") +
+  scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2016")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=.6, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+```
+
+
+### **Legal**
+Q26: Legal
+```{r, message = FALSE, echo=FALSE, fig.height=1.5, fig.width=9}
+
+
+  
+x <- c("Q26")
+
+Q26Yes <- function() {
+  a14 <-eval(parse(text = "final$Q26_14"))
+  a16 <-eval(parse(text = "final$Q26_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("c. I currently have a legal problem and do not have legal assistance")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("a. I do not currently have a legal issue.", "b. I currently have legal issues and have legal assistance.")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("c. I currently have a legal problem and do not have legal assistance")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("a. I do not currently have a legal issue.", "b. I currently have legal issues and have legal assistance.")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q26Yes()[1]
+pct_Yes_2016[1] <- Q26Yes()[2]
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab("") +
+  ggtitle("Do you currently have a legal issue\n and do not have legal assistance?") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+```
+
+Q27: Barriers to resolving legal issues
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  y_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (y_16)* 100 / (tot_16)
+  
+  y_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (y_14)* 100 / (tot_14)
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q27_1: Don’t know how to access\nappropriate legal assistance", 
+       "Q27_2: Don’t have money to pay\nfor appropriate legal assistance", 
+       "Q27_3: Don’t trust that legal\nassistance will help me", 
+       "Q27_4: Don’t know how to effectively\ncommunicate (language barrier)")
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:4) {
+  pct_Yes_2014[i] <- percentYes(27, i)[1]
+  pct_Yes_2016[i] <- percentYes(27, i)[2]
+}
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Yes\" ") +
+  xlab(" ") +
+  ggtitle("Is this a barrier to resolving legal issues?\n") +
+  scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2016")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+
+
+### **Health**
+
+
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9, warning=FALSE}
+
+x <- c("Q28: Do you have anyone in your\nhousehold who does not have Health Insurance?", 
+       "Q29: Rate your current health.\n(\"Quite poor\" or \"Poor\"?)",
+       "Q31: Did you have a medical problem and\nnot go to a doctor in last one year?")
+
+Q28Yes <- function() {
+  a14 <-eval(parse(text = "final$Q28_14"))
+  a16 <-eval(parse(text = "final$Q28_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("All the members of our household have health insurance coverage, but the coverage is not adequate.", 
+                                                     "Some of the members of our household do not have health insurance coverage.",
+                                                     "Most of the members of our household do not have health insurance coverage.", 
+                                                     "None of the members in our household has health insurance coverage.")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("All the members of our household are covered by adequate health insurance coverage.")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("All the members of our household have health insurance coverage, but the coverage is not adequate.", 
+                                                     "Some of the members of our household do not have health insurance coverage.",
+                                                     "Most of the members of our household do not have health insurance coverage.", 
+                                                     "None of the members in our household has health insurance coverage.")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("All the members of our household are covered by adequate health insurance coverage.")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q29Yes <- function() {
+  a14 <-eval(parse(text = "final$Q29_14"))
+  a16 <-eval(parse(text = "final$Q29_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("1. Quite poor", "2. Poor")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("3. Neutral", "4. Good", "5. Excellent")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("1. Quite poor", "2. Poor")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("3. Neutral", "4. Good", "5. Excellent")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q31Yes <- function() {
+  a14 <-eval(parse(text = "final$Q31_14"))
+  a16 <-eval(parse(text = "final$Q31_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("Yes")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))["No"]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("Yes")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))["No"]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q28Yes()[1]
+pct_Yes_2016[1] <- Q28Yes()[2]
+pct_Yes_2014[2] <- Q29Yes()[1]
+pct_Yes_2016[2] <- Q29Yes()[2]
+pct_Yes_2014[3] <- Q31Yes()[1]
+pct_Yes_2016[3] <- Q31Yes()[2]
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes ") +
+  xlab("") +
+  ggtitle("Health\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+
+### **Education**
+
+```{r, echo=FALSE}
+x <- c("Q32: Highest level of education -\n(High school diploma/GED or higher?)", 
+       "Q33: Do you have vocational\nqualification?", 
+       "Q34: Are you planning to advance\nyour education or skills?")
+
+levQ32_16 <- c("a. Graduate degree (Master’s/Ph.D.)", 
+               "b. Undergraduate degree (Bachelor’s/Associate’s)", 
+               "c. Some college", 
+               "d. High school diploma or GED", 
+               "e. Did not graduate from high school")
+levQ32_14 <- c("Graduate degree (Master’s/Ph.D.)", 
+               "Undergraduate degree (Bachelor’s/Associate’s)", 
+               "Some college", 
+               "High school diploma or GED", 
+               "Did not graduate from high school")
+
+
+
+
+levQ33_16 <- c("a. Yes, I got it more than a year ago",
+               "b. Yes, I got it during the last year", 
+               "c. No, but I am planning to get it", 
+               "d. No, I am not planning to get it", 
+               "e. No, I am not sure if I need it")
+levQ33_14 <- c("Yes, I got it more than a year ago",
+               "Yes, I got it during the last year", 
+               "No, but I am planning to get it", 
+               "No, I am not planning to get it", 
+               "No, I am not sure if I need it")
+
+
+```
+
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9, warning=FALSE}
+Q32Yes <- function() {
+  a14 <-eval(parse(text = "final$Q32_14"))
+  a16 <-eval(parse(text = "final$Q32_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("a. Graduate degree (Master’s/Ph.D.)", 
+                                                     "b. Undergraduate degree (Bachelor’s/Associate’s)", 
+                                                     "c. Some college", 
+                                                     "d. High school diploma or GED")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("e. Did not graduate from high school")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Graduate degree (Master’s/Ph.D.)", 
+                                                     "b. Undergraduate degree (Bachelor’s/Associate’s)", 
+                                                     "c. Some college", 
+                                                     "d. High school diploma or GED")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("e. Did not graduate from high school")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q33Yes <- function() {
+  a14 <-eval(parse(text = "final$Q33_14"))
+  a16 <-eval(parse(text = "final$Q33_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("a. Yes, I got it more than a year ago",
+                                                     "b. Yes, I got it during the last year")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))[c("c. No, but I am planning to get it", 
+                                                    "d. No, I am not planning to get it", 
+                                                    "e. No, I am not sure if I need it")]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Yes, I got it more than a year ago",
+                                                     "b. Yes, I got it during the last year")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))[c("c. No, but I am planning to get it", 
+                                                    "d. No, I am not planning to get it", 
+                                                    "e. No, I am not sure if I need it")]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+Q34Yes <- function() {
+  a14 <-eval(parse(text = "final$Q34_14"))
+  a16 <-eval(parse(text = "final$Q34_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))[c("Yes")]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))["No"]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))[c("Yes")]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))["No"]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q28Yes()[1]
+pct_Yes_2016[1] <- Q28Yes()[2]
+pct_Yes_2014[2] <- Q29Yes()[1]
+pct_Yes_2016[2] <- Q29Yes()[2]
+pct_Yes_2014[3] <- Q31Yes()[1]
+pct_Yes_2016[3] <- Q31Yes()[2]
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes ") +
+  xlab("") +
+  ggtitle("Education\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+
+```
+
+
+Q35: Barriers for you to advance your education or skills? 
+```{r, message = FALSE, echo=FALSE, fig.height=6, fig.width=9, warning=FALSE}
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  y_16 <- as.integer(summary(as.factor(a16))["Yes"])
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (y_16)* 100 / (tot_16)
+  
+  y_14 <- as.integer(summary(as.factor(a14))["Yes"])
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (y_14)* 100 / (tot_14)
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q35_1: Lack of time or energy", 
+       "Q35_2: Cost", 
+       "Q35_3: Responsibility for children", 
+       "Q35_4: Lack of interest/motivation",
+       "Q35_5: Lack of study skills", 
+       "Q35_6: No place at home to study", 
+       "Q35_7: Lack of transportation", 
+       "Q35_8: Don’t know which type of education\nwould help me get a better paying job",
+       "Q35_9: Lack of English proficiency", 
+       "Q35_10: Personal or family issues", 
+       "Q35_11: Health issues", 
+       "Q35_12: Immigration status")
+
+
+
+pct_Yes_2014 <-pct_Yes_2016 <- c()
+for(i in 1:12) {
+  pct_Yes_2014[i] <- percentYes(35, i)[1]
+  pct_Yes_2016[i] <- percentYes(35, i)[2]
+}
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Yes\" ") +
+  xlab(" ") +
+  ggtitle("Is this a barrier to advancing\nyour education or skills?\n") +
+  scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2016")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+### **Self Assessment**
+```{r, message = FALSE, echo=FALSE, fig.height=6, fig.width=9, warning=FALSE}
+
+percentYes <- function(qn, i) {
+  a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
+  a16 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_16")))
+  
+  a14_lev14 <- c("Urgent situation, currently in crisis", "Vulnerable, need support to move forward", "Safe, family is making progress towards stability", "Stable, family is stable, safe and moving towards thriving", "Thriving, family is self-sufficient and thriving")
+  a16_lev16 <- c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward", "3. Safe, family is making progress towards stability", "4. Stable, family is stable, safe and moving towards thriving", "5. Thriving, family is self-sufficient and thriving")
+
+  #a14 <- ordered(a14, levels=a14_lev14, labels=a16_lev16)
+  #a16 <- ordered(a16, levels=a16_lev16, labels=a16_lev16)
+
+  
+  one_16 <- as.integer(summary(as.factor(a16))["1. Urgent situation, currently in crisis"])
+  two_16 <- as.integer(summary(as.factor(a16))["2. Vulnerable, need support to move forward"])
+  thr_16 <- as.integer(summary(as.factor(a16))["3. Safe, family is making progress towards stability"])
+  y_16 <- one_16 + two_16 + thr_16
+  tot_16 <- length(a16) - length(a16[is.na(a16)])
+  percent_y_16 <- (y_16)* 100 / (tot_16)
+  
+  one_14 <- as.integer(summary(as.factor(a14))["1. Urgent situation, currently in crisis"])
+  two_14 <- as.integer(summary(as.factor(a14))["2. Vulnerable, need support to move forward"])
+  thr_14 <- as.integer(summary(as.factor(a14))["3. Safe, family is making progress towards stability"])
+  y_14 <- one_14 + two_14 + thr_14
+  tot_14 <- length(a14) - length(a14[is.na(a14)])
+  percent_y_14 <- (y_14)* 100 / (tot_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+x <- c("Q36_1: Housing", 
+       "Q36_2: Employment", 
+       "Q36_3: Income", 
+       "Q36_4: Food",
+       "Q36_5: Transportation", 
+       "Q36_6: Childcare", 
+       "Q36_7: Support networks", 
+       "Q36_8: Legal",
+       "Q36_9: Health", 
+       "Q36_10: Education", 
+       "Q36_11: Immigration status")
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+for(i in 1:11) {
+  pct_Yes_2014[i] <- percentYes(36, i)[1]
+  pct_Yes_2016[i] <- percentYes(36, i)[2]
+}
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered\n\"Urgent\" , \"Vulnerable\" or \"Safe\" ") +
+  xlab(" ") +
+  ggtitle("Self-assessment of Self-Sufficiency in...\n") +
+  scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2016")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+```
+
+### **Hispanic/Latino?**
+
+Q38: Hispanic/Latino?
+
+```{r, message = FALSE, echo=FALSE, fig.height=1.5, fig.width=9}
+
+  
+x <- c("Q38")
+
+Q38Yes <- function() {
+  a14 <-eval(parse(text = "final$Q38_14"))
+  a16 <-eval(parse(text = "final$Q38_16"))
+  
+  yes_16 <- sum(as.integer(summary(as.factor(a16))["Yes"]))
+  no_16 <- sum(as.integer(summary(as.factor(a16))["No"]))
+  percent_y_16 <- (yes_16)* 100 / (yes_16 + no_16)
+  
+  yes_14 <- sum(as.integer(summary(as.factor(a14))["Yes"]))
+  no_14 <- sum(as.integer(summary(as.factor(a14))["No"]))
+  percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
+  
+  return(c(percent_y_14, percent_y_16))
+}
+
+
+
+pct_Yes_2014 <- pct_Yes_2016 <- c()
+
+pct_Yes_2014[1] <- Q38Yes()[1]
+pct_Yes_2016[1] <- Q38Yes()[2]
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2016)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+N_2014 <- NA
+N_2016 <- NA
+for(i in 1:length(x)) {
+  N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
+  N_2016[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_16)])", sep = "")))
+} 
+d$N <- c(N_2014, N_2016)
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=14, face="bold", vjust=3), 
+    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=10), 
+    axis.title.x = element_text(size=10), 
+    axis.title.y = element_text(size=10, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 10)) +
+  coord_flip() +
+  ylab("\nPercentage who answered Yes") +
+  xlab("") +
+  ggtitle("Hispanic/Latino?") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue"), name="")
+
+
+
+```
 
 
