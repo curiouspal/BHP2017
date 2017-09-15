@@ -1,7 +1,7 @@
 ---
-title: "Comparing2017w-earlierPH"
+title: "Comparing 2017 survey results with earlier PH data"
 author: "Anirban Pal"
-date: "September 8, 2017"
+date: "September 15, 2017"
 output: word_document
 ---
 
@@ -30,22 +30,41 @@ Number of PH households who participated in the survey in 2017:
 ```{r, echo=FALSE}
 
 length(final$TCode[!is.na(final$From_17)])
+
+ph2017 <- final$TCode[!is.na(final$From_17)]
 ```
 
 Number of PH households who participated in the survey in 2015: 
 ```{r, echo=FALSE}
 
 length(final$TCode[!is.na(final$From_15)])
+
+ph2015 <- final$TCode[!is.na(final$From_15)]
 ```
 
 Number of PH households who participated in the survey in 2014: 
 ```{r, echo=FALSE}
 
-length(final$TCode[(final$PH_or_S8 == "PH" | final$PH_or_S8 == "PH_or_S8.x" | final$PH_or_S8 == "PH_or_S8.1") & !is.na(final$total.answered_14) & final$total.answered_14 > 0])
+length(final$TCode[(final$PH_or_S8 == "PH" | final$PH_or_S8.x == "PH" | final$PH_or_S8.1 == "PH") & !is.na(final$total.answered_14) & final$total.answered_14 > 0])
+
+ph2014 <- final$TCode[(final$PH_or_S8 == "PH" | final$PH_or_S8.x == "PH" | final$PH_or_S8.1 == "PH") & !is.na(final$total.answered_14) & final$total.answered_14 > 0]
 
 ```
 
+Number of PH households who participated in all three rounds of the survey:
+```{r, echo=FALSE}
 
+length(intersect(intersect(ph2015, ph2017), ph2014))
+
+
+```
+
+Number of PH households who participated in 2015 and 2017 rounds of the survey but not in 2014 round:
+```{r, echo=FALSE}
+
+length(intersect(ph2015, ph2017))
+
+```
 
 ### **Housing**
 ```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9}
@@ -143,26 +162,26 @@ d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
-  ggtitle("Housing\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nHousing\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 ```
 
 
 Q3: Barriers to SS in Housing
-```{r, message = FALSE, echo=FALSE, fig.height=6, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=9, fig.width=9}
 
 percentYes <- function(qn, i) {
   a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
@@ -213,21 +232,21 @@ d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
-  ggtitle("Is this a barrier to SS in Housing?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nIs this a barrier to SS in Housing?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ##################################################################################
 
@@ -334,21 +353,21 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
-  ggtitle("Employment\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nEmployment\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
@@ -693,7 +712,7 @@ final$Q8_14_17 <- as.factor(final$Q8_14_17)
 
 
 Q8: Barriers to SS in employment
-```{r, message = FALSE, echo=FALSE, fig.height=11, fig.width=11, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=12, fig.width=9, warning=FALSE}
 
 
 percentYes <- function(qn, i) {
@@ -753,23 +772,23 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") + 
   xlab(" ") + 
-  ggtitle("Is this a barrier to employment?\n") +
+  ggtitle("\nIs this a barrier to employment?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = .93), vjust=0.25, hjust=1, size=3, alpha=0.7) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = .8), hjust=0.6, size=3, alpha=1) +
   scale_y_continuous(breaks= pretty_breaks()) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
@@ -779,7 +798,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 ### **Income**
 Q9: Income run out last 3 months?
 
-```{r, message = FALSE, echo=FALSE, fig.height=2, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
 
 
 x <- c("Q9")
@@ -827,27 +846,27 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
-  ggtitle("Income run out at least once in last 3 months?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nIncome run out at least once in last 3 months?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
 
 Q10: Very hard to pay for...
-```{r, message = FALSE, echo=FALSE, fig.height=6, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=8, fig.width=9}
 
 
 percentYes <- function(qn, i) {
@@ -902,22 +921,22 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Very Difficult\" or \"Somewhat Difficult\" ") +
   xlab("") +
-  ggtitle("Very hard to pay for...?\n") +
+  ggtitle("\nVery hard to pay for...?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3.5, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
@@ -937,7 +956,7 @@ final$Q11_17 <- ordered(final$Q11_17, levels=levQ11_17, labels=levQ11_17)
 
 ```
 
-```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9}
 
 
 x <- c("Q11: Cut/skip meal last 3 months?", 
@@ -1032,32 +1051,37 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
-  ggtitle("Food\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nFood\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
 
 
 Q13: Food sources
-```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=6, fig.width=9, warning=FALSE}
 
 percentYes <- function(qn, i) {
   a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
   a15 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_15")))
+  a17 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_17")))
+  
+  yes_17 <- as.integer(summary(as.factor(a17))["Yes"])
+  no_17 <- as.integer(summary(as.factor(a17))["No"])
+  percent_y_17 <- (yes_17)* 100 / (yes_17 + no_17)
   
   yes_15 <- as.integer(summary(as.factor(a15))["Yes"])
   no_15 <- as.integer(summary(as.factor(a15))["No"])
@@ -1067,7 +1091,7 @@ percentYes <- function(qn, i) {
   no_14 <- as.integer(summary(as.factor(a14))["No"])
   percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
   
-  return(c(percent_y_14, percent_y_15))
+  return(c(percent_y_14, percent_y_15, percent_y_17))
 }
 
 x <- c("Q13_1: Food assistance (food stamps)", 
@@ -1075,44 +1099,47 @@ x <- c("Q13_1: Food assistance (food stamps)",
        "Q13_3: Friends", 
        "Q13_4: Neighbors", 
        "Q13_5: Family members")
-pct_Yes_2014 <- pct_Yes_2015 <- c()
+pct_Yes_2014 <- pct_Yes_2015 <-  pct_Yes_2017 <- c()
 for(i in 1:5) {
   pct_Yes_2014[i] <- percentYes(13, i)[1]
   pct_Yes_2015[i] <- percentYes(13, i)[2]
+  pct_Yes_2017[i] <- percentYes(13, i)[3]
 }
 N_2014 <- NA
 N_2015 <- NA
+N_2017 <- NA
 for(i in 1:length(x)) {
   N_2014[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_14)])", sep = "")))
   N_2015[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_15[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_15)])", sep = "")))
+  N_2017[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17)])", sep = "")))
 } 
 
-d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2015)
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2015, pct_Yes_2017)
 d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
-d$N <- c(N_2014, N_2015)
+d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab(" ") +
-  ggtitle("Food sources") +
+  ggtitle("\nFood sources") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=0.9, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=0.9, vjust=.5, size=3, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 Q15: Food barriers
-```{r, message = FALSE, echo=FALSE, fig.height=3.5, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=5.5, fig.width=9, warning=FALSE}
 
 percentYes <- function(qn, i) {
   a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
@@ -1157,24 +1184,24 @@ for(i in 1:length(x)) {
 d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2015, pct_Yes_2017)
 d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
 d$N <- c(N_2014, N_2015, N_2017)
-d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "%; N=", as.character(d$N), sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab(" ") +
-  ggtitle("Is this a barrier to food?\n") +
+  ggtitle("\nIs this a barrier to food?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=.8, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=.7, vjust=.1, size=3, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
@@ -1183,7 +1210,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 
 ### **Transportation**
 Q16: Transportation - satisfaction
-```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=6.5, fig.width=9, warning=FALSE}
 
 final$Q16_1_15 <- ordered(final$Q16_1_15, levels = levels(final$Q16_1_15)[-6])
 final$Q16_2_15 <- ordered(final$Q16_2_15, levels = levels(final$Q16_1_15)[-6])
@@ -1253,27 +1280,27 @@ d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Very Dissatisfied\" or \"Somewhat Dissatisfied\" ") +
   xlab(" ") +
-  ggtitle("Transportation - dissatisfaction?\n") +
+  ggtitle("\nTransportation - dissatisfaction?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 Q17: Hard to get to appts./work last 2 weeks?
-```{r, message = FALSE, echo=FALSE, fig.height=2, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
 
 
 x <- c("Q17")
@@ -1321,27 +1348,27 @@ d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab("") +
-  ggtitle("Hard to get to appts./work last 2 weeks?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nHard to get to appts./work last 2 weeks?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 
 Q18: Transportation barriers
-```{r, message = FALSE, echo=FALSE, fig.height=6, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=10, fig.width=9, warning=FALSE}
 
 percentYes <- function(qn, i) {
   a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
@@ -1393,31 +1420,31 @@ for(i in 1:length(x)) {
 d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2015, pct_Yes_2017)
 d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
 d$N <- c(N_2014, N_2015, N_2017)
-d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "%; N=", as.character(d$N), sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab(" ") +
-  ggtitle("Is this a barrier to SS in transportation?\n") +
+  ggtitle("\nIs this a barrier to SS in transportation?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=0.5, vjust=.1, size=3, alpha=1) +
   scale_y_continuous(breaks= pretty_breaks()) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 ### **Childcare**
 Q19: Children <13?
-```{r, message = FALSE, echo=FALSE, fig.height=2.5, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
 
 x <- c("Q19")
 
@@ -1463,26 +1490,26 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab("") +
-  ggtitle("Children <13?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nChildren <13?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 Q20: Childcare sufficient?
-```{r, message = FALSE, echo=FALSE, fig.height=2.5, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
 
 x <- c("Q20")
 
@@ -1529,27 +1556,27 @@ d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab("") +
-  ggtitle("Childcare sufficient?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nChildcare sufficient?\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 
 Q21: Evaluate childcare
-```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=4.5, fig.width=9, warning=FALSE}
 
 
 
@@ -1602,27 +1629,27 @@ d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Satisfied, 0)), "% (N=", as.character(d$N), ")", sep="")
 
 
-ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Very good\" or \"Good\" ") +
   xlab(" ") +
-  ggtitle("Evaluate Childcare?\n") +
+  ggtitle("\nEvaluate Childcare?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 Q22: Barriers to childcare?
-```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9, warning=FALSE}
 #summary(as.factor(final$Q22_2_14))
 #summary(as.factor(final$Q22_2_15))
 #length(final$Q22_2_15) - length(final$Q22_2_15[is.na(final$Q22_2_15)])
@@ -1681,29 +1708,29 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Sat
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Satisfied, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Definitely not\" or \"Probably not\" ") +
   xlab(" ") +
-  ggtitle("Is this a Barrier to Childcare?\n") +
+  ggtitle("\nIs this a Barrier to Childcare?\n") +
   scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2015")) +
-  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), labels = c("pct_NO_2014", "pct_NO_2015", "pct_NO_2017"), name="")
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), labels = c("pct_NO_2014", "pct_NO_2015", "pct_NO_2017"), name="")
 
 ```
 
 
 ### **Support networks**
 Q23: Help in last 3 months
-```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=7, fig.width=9, warning=FALSE}
 #summary(final$Q23_5_14)
 #summary(final$Q23_5_15)
 
@@ -1755,22 +1782,22 @@ d$N <- c(N_2014, N_2015, N_2015)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Never, 0)), "% (N=", as.character(d$N), ")", sep="")
 
 
-ggplot(d, aes(reorder(Question, Percent_Never), Percent_Never, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Never), Percent_Never, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Never\" ") +
   xlab(" ") +
-  ggtitle("Have you received help in last 3 months from ...?\n") +
+  ggtitle("\nHave you received help in last 3 months from ...?\n") +
   scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2015")) +
-  geom_text(aes(y = Percent_Never, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="", labels = c("pct_NO_2014", "pct_NO_2015", "pct_NO_2017"))
+  geom_text(aes(y = Percent_Never, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="", labels = c("pct_NO_2014", "pct_NO_2015", "pct_NO_2017"))
 
 ```
 
@@ -1783,7 +1810,7 @@ levQ23_15 <- c("a. Never", "b. 1-2 times", "c. 3-4 times",  "d. 5-6 times", "e. 
 ```
 
 Q24: Network Barriers
-```{r, message = FALSE, echo=FALSE, fig.height=5.5, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=7.5, fig.width=9, warning=FALSE}
 
 
 
@@ -1838,28 +1865,28 @@ d$N <- c(N_2014, N_2015, N_2017)
 
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Yes\" ") +
   xlab(" ") +
-  ggtitle("Is this a Barrier to Networking?\n") +
+  ggtitle("\nIs this a Barrier to Networking?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=3, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 Q25: Types of support
 
-```{r, message = FALSE, echo=FALSE, fig.width=9, fig.height=5.5, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.width=9, fig.height=8, warning=FALSE}
 
 
 
@@ -1882,13 +1909,13 @@ percentYes <- function(qn, i) {
   return(c(percent_y_14, percent_y_15, percent_y_17))
 }
 
-x <- c("Q25_1: SNAP (Food Stamps)", 
+x <- c("Q25_1: SNAP (Food\nStamps)", 
        "Q25_2: Medicaid", 
-       "Q25_3: CHP+ (Colorado Health Plan Plus)", 
-       "Q25_4: LEAP (Energy assistance)", 
-       "Q25_5: Free/reduced lunch",
-       "Q25_6: TANF (Temporary Aid to Needy Families)",
-       "Q25_6: CCAP (Child Care Assistance Program)")
+       "Q25_3: CHP+ (Colorado\nHealth Plan Plus)", 
+       "Q25_4: LEAP (Energy\nassistance)", 
+       "Q25_5: Free/reduced\nlunch",
+       "Q25_6: TANF (Temporary\nAid to Needy Families)",
+       "Q25_6: CCAP (Child Care\nAssistance Program)")
 
 pct_Yes_2014 <- pct_Yes_2015 <- pct_Yes_2017 <- c()
 for(i in 1:7) {
@@ -1908,31 +1935,31 @@ for(i in 1:length(x)) {
   N_2017[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17)])", sep = "")))
 } 
 d$N <- c(N_2014, N_2015, N_2017)
-d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "%; N=", as.character(d$N), sep="")
 d$Percent_Yes_text[d$Percent_Yes_text=="0% (N=53)"] <- ""
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Yes\" ") +
   xlab(" ") +
-  ggtitle("Do you receive the following support?\n") +
+  ggtitle("\nDo you receive the following support?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015", "pct_Yes_2017")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=.6, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=.4, vjust=.1, size=3, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 ```
 
 
 ### **Legal**
 Q26: Legal
-```{r, message = FALSE, echo=FALSE, fig.height=2, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9}
 
 
   
@@ -1979,26 +2006,26 @@ for(i in 1:length(x)) {
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab("") +
-  ggtitle("Do you currently have a legal issue\n and do not have legal assistance?") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nDo you currently have a legal issue\n and do not have legal assistance?") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
 
 Q27: Barriers to resolving legal issues
-```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=5, fig.width=9, warning=FALSE}
 
 percentYes <- function(qn, i) {
   a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
@@ -2043,22 +2070,22 @@ for(i in 1:length(x)) {
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Yes\" ") +
   xlab(" ") +
-  ggtitle("Is this a barrier to resolving legal issues?\n") +
+  ggtitle("\nIs this a barrier to resolving legal issues?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015", "pct_Yes_2017")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
@@ -2068,7 +2095,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 ### **Health**
 
 
-```{r, message = FALSE, echo=FALSE, fig.height=3, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
 
 x <- c("Q28: Do you have anyone in your\nhousehold who does not have Health Insurance?", 
        "Q29: Rate your current health.\n(\"Quite poor\" or \"Poor\"?)",
@@ -2167,23 +2194,23 @@ for(i in 1:length(x)) {
   N_2017[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17)])", sep = "")))
 } 
 d$N <- c(N_2014, N_2015, N_2017)
-d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "%; N=", as.character(d$N), sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
-  ggtitle("Health\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nHealth\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
@@ -2191,7 +2218,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 
 ### **Education**
 
-```{r, echo=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=4, fig.width=9, warning=FALSE}
 x <- c("Q32: Highest level of education -\n(High school diploma/GED or higher?)", 
        "Q33: Do you have vocational\nqualification?", 
        "Q34: Are you planning to advance\nyour education or skills?")
@@ -2224,7 +2251,7 @@ levQ33_14 <- c("Yes, I got it more than a year ago",
 
 ```
 
-```{r, message = FALSE, echo=FALSE, fig.height=3.5, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=4.5, fig.width=9, warning=FALSE}
 Q32Yes <- function() {
   a14 <-eval(parse(text = "final$Q32_14"))
   a15 <-eval(parse(text = "final$Q32_15"))
@@ -2327,23 +2354,23 @@ for(i in 1:length(x)) {
   N_2017[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17)])", sep = "")))
 } 
 d$N <- c(N_2014, N_2015, N_2017)
-d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "%  N=", as.character(d$N), sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
-  ggtitle("Education\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nEducation\n") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 
@@ -2351,7 +2378,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 
 
 Q35: Barriers for you to advance your education or skills? 
-```{r, message = FALSE, echo=FALSE, fig.height=8, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=11, fig.width=9, warning=FALSE}
 
 percentYes <- function(qn, i) {
   a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
@@ -2404,30 +2431,30 @@ for(i in 1:length(x)) {
   N_2017[i] <- eval(parse(text = paste0("length(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17[!is.na(final$", strsplit(x[i], ":", fixed = FALSE)[[1]][1], "_17)])", sep = "")))
 } 
 d$N <- c(N_2014, N_2015, N_2017)
-d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
+d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "%; N=", as.character(d$N), sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Yes\" ") +
   xlab(" ") +
-  ggtitle("Is this a barrier to advancing\nyour education or skills?\n") +
+  ggtitle("\nIs this a barrier to advancing\nyour education or skills?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=1, vjust=.5, size=3, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
 
 ### **Self Assessment**
-```{r, message = FALSE, echo=FALSE, fig.height=8, fig.width=9, warning=FALSE}
+```{r, message = FALSE, echo=FALSE, fig.height=9.5, fig.width=9, warning=FALSE}
 
 percentYes <- function(qn, i) {
   a14 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_14")))
@@ -2498,22 +2525,22 @@ for(i in 1:length(x)) {
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered\n\"Urgent\" , \"Vulnerable\" or \"Safe\" ") +
   xlab(" ") +
-  ggtitle("Self-assessment of Self-Sufficiency in...\n") +
+  ggtitle("\nSelf-assessment of Self-Sufficiency in...\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=1, vjust=.5, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 ```
@@ -2522,7 +2549,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 
 Q38: Hispanic/Latino?
 
-```{r, message = FALSE, echo=FALSE, fig.height=2, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=2.5, fig.width=9}
 
   
 x <- c("Q38")
@@ -2568,21 +2595,21 @@ for(i in 1:length(x)) {
 d$N <- c(N_2014, N_2015, N_2017)
 d$Percent_Yes_text <- paste0(as.character(round(d$Percent_Yes, 0)), "% (N=", as.character(d$N), ")", sep="")
 
-ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=1) +
   theme(
-    plot.title = element_text(size=14, face="bold", vjust=3), 
-    axis.text.x = element_text(size=10, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=10), 
-    axis.title.x = element_text(size=10), 
-    axis.title.y = element_text(size=10, vjust=2),
+    plot.title = element_text(size=16, face="bold", vjust=3, color = "dodgerblue4"), 
+    axis.text.x = element_text(size=11, face="bold", angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=11, face="bold", color = "black"), 
+    axis.title.x = element_text(size=12, face = "bold"), 
+    axis.title.y = element_text(size=12, vjust=2, face = "bold"),
     legend.title=element_blank(),
-    legend.text = element_text(size = 10)) +
+    legend.text = element_text(size = 12)) +
   coord_flip() +
   ylab("\nPercentage who answered Yes") +
   xlab("") +
-  ggtitle("Hispanic/Latino?") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=0.7) +
-  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="")
+  ggtitle("\nHispanic/Latino?") +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
 
