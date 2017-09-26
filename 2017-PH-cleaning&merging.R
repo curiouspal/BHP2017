@@ -588,7 +588,8 @@ for(i in 1:length(names(final))) {
   if(length(attr(final[,i], "description"))!=0) temp$d[i] <- attr(final[,i], "description")
 }
 
-#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept8-2017.RData")
+final$TCode[final$TCode=="t00004214"] <- "t0004214" # This TCode has one extra zero. I am assuming that this is an error.
+#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept26-2017.RData")
 
 subset(temp, is.na(temp$d))
 

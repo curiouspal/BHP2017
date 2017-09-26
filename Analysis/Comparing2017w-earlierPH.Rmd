@@ -19,6 +19,7 @@ library("plyr")
 #library("pander")
 library("reshape2")
 library("scales")
+library(readr)
 
 #panderOptions("table.split.table", Inf)
 
@@ -32,6 +33,10 @@ Number of PH households who participated in the survey in 2017:
 length(final$TCode[!is.na(final$From_17)])
 
 ph2017 <- final$TCode[!is.na(final$From_17)]
+
+#BSH_list <- read_csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BSH-list.csv", col_names = FALSE)
+#temp1<-data.frame(as.table(summary(as.factor(BSH_list$X1))))
+#temp <- intersect(as.character(ph2017), as.character(temp1$Var1))
 ```
 
 Number of PH households who participated in the survey in 2015: 
