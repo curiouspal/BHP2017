@@ -589,7 +589,13 @@ for(i in 1:length(names(final))) {
 }
 
 final$TCode[final$TCode=="t00004214"] <- "t0004214" # This TCode has one extra zero. I am assuming that this is an error.
-#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept26-2017.RData")
+# After changing this TCode, it matches with one of the existing TCodes.
+temp <- final[final$TCode=="t0004214", ]  # The two TCodes are 142 and 901. 
+for(i in 1:length(names(final))) {
+  if(!is.na(final[142, i]) & is.na(final[901, i]) ) final[901, i] <- final[142, i]
+}
+final <- final[-142, ]
+#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept30-2017.RData")
 
 subset(temp, is.na(temp$d))
 

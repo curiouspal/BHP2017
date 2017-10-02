@@ -1,7 +1,6 @@
 ---
-title: "Comparing Core group of 49 PH households across time"
-author: "Anirban Pal"
-date: "September 18, 2017"
+title: "Comparing Core group of 50 PH households across time"
+date: "September 26, 2017"
 output: word_document
 ---
 
@@ -11,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, message = FALSE, echo=FALSE, message=FALSE}
-load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept26-2017.RData")
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept30-2017.RData")
 final <- subset(final, From_15 == "ph2015" | From_14 == "all2014.RData" | From_17 == "ph2017")
 final <- subset(final, PH_or_S8 == "PH")
 library("ggplot2")
