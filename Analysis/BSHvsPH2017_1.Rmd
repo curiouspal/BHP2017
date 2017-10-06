@@ -377,8 +377,10 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nHousing\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
+
+
 ```
 
 
@@ -440,7 +442,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nIs this a barrier to SS in Housing?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ##################################################################################
@@ -541,7 +543,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nEmployment\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -619,7 +621,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") + 
   ggtitle("\nIs this a barrier to employment?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = .8), hjust=0.6, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = .8), hjust="inward", size=3, alpha=1) +
   scale_y_continuous(breaks= pretty_breaks()) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
@@ -684,7 +686,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nIncome run out at least once in last 3 months?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -752,7 +754,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab("") +
   ggtitle("\nVery hard to pay for...?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3.5, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=3.5, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -860,7 +862,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nFood\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -922,7 +924,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nFood sources") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=0.9, vjust=.5, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.5, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -982,7 +984,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nIs this a barrier to food?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=.7, vjust=.1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.1, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -1052,7 +1054,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nTransportation - dissatisfaction?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1112,7 +1114,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nHard to get to appts./work last 2 weeks?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1180,7 +1182,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nIs this a barrier to SS in transportation?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=0.5, vjust=.1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.1, size=3, alpha=1) +
   scale_y_continuous(breaks= pretty_breaks()) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
@@ -1240,7 +1242,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nChildren <13?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1299,7 +1301,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nChildcare sufficient?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1365,7 +1367,7 @@ ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=BSH
   xlab(" ") +
   ggtitle("\nEvaluate Childcare?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1434,7 +1436,7 @@ ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=BSH
   xlab(" ") +
   ggtitle("\nIs this a Barrier to Childcare?\n") +
   scale_fill_discrete(name = "", labels = c("pct_NO_bsh", "pct_NO_2015")) +
-  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), labels = c("pct_NO_bsh", "pct_NO_2015", "pct_NO_nonbsh"), name="")
 
 ```
@@ -1501,7 +1503,7 @@ ggplot(d, aes(reorder(Question, Percent_Never), Percent_Never, group=BSH_NonBSH)
   xlab(" ") +
   ggtitle("\nHave you received help in last 3 months from ...?\n") +
   scale_fill_discrete(name = "", labels = c("pct_NO_bsh", "pct_NO_2015")) +
-  geom_text(aes(y = Percent_Never, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Never, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="", labels = c("pct_NO_bsh", "pct_NO_2015", "pct_NO_nonbsh"))
 
 ```
@@ -1575,7 +1577,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nIs this a Barrier to Networking?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_bsh", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.5, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1641,7 +1643,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nDo you receive the following support?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_bsh", "pct_Yes_2015", "pct_Yes_nonbsh")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=.4, vjust=.1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.1, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 ```
 
@@ -1701,7 +1703,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nDo you currently have a legal issue\n and do not have legal assistance?") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1759,7 +1761,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nIs this a barrier to resolving legal issues?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_bsh", "pct_Yes_2015", "pct_Yes_nonbsh")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -1862,7 +1864,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nHealth\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -1974,7 +1976,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nEducation\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -2045,7 +2047,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nIs this a barrier to advancing\nyour education or skills?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_bsh", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=1, vjust=.5, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.5, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -2123,7 +2125,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   xlab(" ") +
   ggtitle("\nSelf-assessment of Self-Sufficiency in...\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_bsh", "pct_Yes_2015", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
@@ -2185,7 +2187,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=BSH_NonBSH)) + 
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nHispanic/Latino?") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), name="")
 
 
