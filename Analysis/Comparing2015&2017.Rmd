@@ -334,341 +334,6 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 ```
 
 
-```{r, echo=FALSE}
-final$Q8_1_14 <- NA
-final$Q8_1_15 <- NA
-final$Q8_1_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_14[i]) & !is.na(final$Q8_2_1_14[i])) {
-  if(final$Q8_1_1_14[i] == "No" | final$Q8_2_1_14[i] == "No") final$Q8_1_14[i] <- "No"
-  if(final$Q8_1_1_14[i] == "Yes" | final$Q8_2_1_14[i] == "Yes") final$Q8_1_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_15[i]) & !is.na(final$Q8_2_1_15[i])){
-  if(final$Q8_1_1_15[i] == "No" | final$Q8_2_1_15[i] == "No") final$Q8_1_15[i] <- "No"
-  if(final$Q8_1_1_15[i] == "Yes" | final$Q8_2_1_15[i] == "Yes") final$Q8_1_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_17[i]) & !is.na(final$Q8_2_1_17[i])){
-  if(final$Q8_1_1_17[i] == "No" | final$Q8_2_1_17[i] == "No") final$Q8_1_17[i] <- "No"
-  if(final$Q8_1_1_17[i] == "Yes" | final$Q8_2_1_17[i] == "Yes") final$Q8_1_17[i] <- "Yes"
-}
-final$Q8_1_14 <- as.factor(final$Q8_1_14)
-final$Q8_1_15 <- as.factor(final$Q8_1_15)
-final$Q8_1_17 <- as.factor(final$Q8_1_17)
-
-
-
-
-
-final$Q8_2_14 <- NA
-final$Q8_2_15 <- NA
-final$Q8_2_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_14[i]) & !is.na(final$Q8_2_2_14[i])) {
-  if(final$Q8_1_2_14[i] == "No" | final$Q8_2_2_14[i] == "No") final$Q8_2_14[i] <- "No"
-  if(final$Q8_1_2_14[i] == "Yes" | final$Q8_2_2_14[i] == "Yes") final$Q8_2_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_15[i]) & !is.na(final$Q8_2_2_15[i])) {
-  if(final$Q8_1_2_15[i] == "No" | final$Q8_2_2_15[i] == "No") final$Q8_2_15[i] <- "No"
-  if(final$Q8_1_2_15[i] == "Yes" | final$Q8_2_2_15[i] == "Yes") final$Q8_2_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_17[i]) & !is.na(final$Q8_2_2_17[i])) {
-  if(final$Q8_1_2_17[i] == "No" | final$Q8_2_2_17[i] == "No") final$Q8_2_17[i] <- "No"
-  if(final$Q8_1_2_17[i] == "Yes" | final$Q8_2_2_17[i] == "Yes") final$Q8_2_17[i] <- "Yes"
-}
-final$Q8_2_14 <- as.factor(final$Q8_2_14)
-final$Q8_2_15 <- as.factor(final$Q8_2_15)
-final$Q8_2_17 <- as.factor(final$Q8_2_17)
-
-
-final$Q8_3_14 <- NA
-final$Q8_3_15 <- NA
-final$Q8_3_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_14[i]) & !is.na(final$Q8_2_3_14[i])) {
-  if(final$Q8_1_3_14[i] == "No" | final$Q8_2_3_14[i] == "No") final$Q8_3_14[i] <- "No"
-  if(final$Q8_1_3_14[i] == "Yes" | final$Q8_2_3_14[i] == "Yes") final$Q8_3_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_15[i]) & !is.na(final$Q8_2_3_15[i])) {
-  if(final$Q8_1_3_15[i] == "No" | final$Q8_2_3_15[i] == "No") final$Q8_3_15[i] <- "No"
-  if(final$Q8_1_3_15[i] == "Yes" | final$Q8_2_3_15[i] == "Yes") final$Q8_3_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_17[i]) & !is.na(final$Q8_2_3_17[i])) {
-  if(final$Q8_1_3_17[i] == "No" | final$Q8_2_3_17[i] == "No") final$Q8_3_17[i] <- "No"
-  if(final$Q8_1_3_17[i] == "Yes" | final$Q8_2_3_17[i] == "Yes") final$Q8_3_17[i] <- "Yes"
-}
-final$Q8_3_14 <- as.factor(final$Q8_3_14)
-final$Q8_3_15 <- as.factor(final$Q8_3_15)
-final$Q8_3_17 <- as.factor(final$Q8_3_17)
-
-final$Q8_4_14 <- NA
-final$Q8_4_15 <- NA
-final$Q8_4_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_14[i]) & !is.na(final$Q8_2_4_14[i])) {
-  if(final$Q8_1_4_14[i] == "No" | final$Q8_2_4_14[i] == "No") final$Q8_4_14[i] <- "No"
-  if(final$Q8_1_4_14[i] == "Yes" | final$Q8_2_4_14[i] == "Yes") final$Q8_4_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_15[i]) & !is.na(final$Q8_2_4_15[i])) {
-  if(final$Q8_1_4_15[i] == "No" | final$Q8_2_4_15[i] == "No") final$Q8_4_15[i] <- "No"
-  if(final$Q8_1_4_15[i] == "Yes" | final$Q8_2_4_15[i] == "Yes") final$Q8_4_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_17[i]) & !is.na(final$Q8_2_4_17[i])) {
-  if(final$Q8_1_4_17[i] == "No" | final$Q8_2_4_17[i] == "No") final$Q8_4_17[i] <- "No"
-  if(final$Q8_1_4_17[i] == "Yes" | final$Q8_2_4_17[i] == "Yes") final$Q8_4_17[i] <- "Yes"
-}
-
-final$Q8_4_14 <- as.factor(final$Q8_4_14)
-final$Q8_4_15 <- as.factor(final$Q8_4_15)
-final$Q8_4_17 <- as.factor(final$Q8_4_17)
-
-
-final$Q8_5_14 <- NA
-final$Q8_5_15 <- NA
-final$Q8_5_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_14[i]) & !is.na(final$Q8_2_5_14[i])) {
-  if(final$Q8_1_5_14[i] == "No" | final$Q8_2_5_14[i] == "No") final$Q8_5_14[i] <- "No"
-  if(final$Q8_1_5_14[i] == "Yes" | final$Q8_2_5_14[i] == "Yes") final$Q8_5_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_15[i]) & !is.na(final$Q8_2_5_15[i])) {
-  if(final$Q8_1_5_15[i] == "No" | final$Q8_2_5_15[i] == "No") final$Q8_5_15[i] <- "No"
-  if(final$Q8_1_5_15[i] == "Yes" | final$Q8_2_5_15[i] == "Yes") final$Q8_5_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_17[i]) & !is.na(final$Q8_2_5_17[i])) {
-  if(final$Q8_1_5_17[i] == "No" | final$Q8_2_5_17[i] == "No") final$Q8_5_17[i] <- "No"
-  if(final$Q8_1_5_17[i] == "Yes" | final$Q8_2_5_17[i] == "Yes") final$Q8_5_17[i] <- "Yes"
-}
-final$Q8_5_14 <- as.factor(final$Q8_5_14)
-final$Q8_5_15 <- as.factor(final$Q8_5_15)
-final$Q8_5_17 <- as.factor(final$Q8_5_17)
-
-
-final$Q8_6_14 <- NA
-final$Q8_6_15 <- NA
-final$Q8_6_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_14[i]) & !is.na(final$Q8_2_6_14[i])) {
-  if(final$Q8_1_6_14[i] == "No" | final$Q8_2_6_14[i] == "No") final$Q8_6_14[i] <- "No"
-  if(final$Q8_1_6_14[i] == "Yes" | final$Q8_2_6_14[i] == "Yes") final$Q8_6_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_15[i]) & !is.na(final$Q8_2_6_15[i])) {
-  if(final$Q8_1_6_15[i] == "No" | final$Q8_2_6_15[i] == "No") final$Q8_6_15[i] <- "No"
-  if(final$Q8_1_6_15[i] == "Yes" | final$Q8_2_6_15[i] == "Yes") final$Q8_6_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_17[i]) & !is.na(final$Q8_2_6_17[i])) {
-  if(final$Q8_1_6_17[i] == "No" | final$Q8_2_6_17[i] == "No") final$Q8_6_17[i] <- "No"
-  if(final$Q8_1_6_17[i] == "Yes" | final$Q8_2_6_17[i] == "Yes") final$Q8_6_17[i] <- "Yes"
-}
-
-final$Q8_6_14 <- as.factor(final$Q8_6_14)
-final$Q8_6_15 <- as.factor(final$Q8_6_15)
-final$Q8_6_17 <- as.factor(final$Q8_6_17)
-
-
-final$Q8_7_14 <- NA
-final$Q8_7_15 <- NA
-final$Q8_7_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_14[i]) & !is.na(final$Q8_2_7_14[i])) {
-  if(final$Q8_1_7_14[i] == "No" | final$Q8_2_7_14[i] == "No") final$Q8_7_14[i] <- "No"
-  if(final$Q8_1_7_14[i] == "Yes" | final$Q8_2_7_14[i] == "Yes") final$Q8_7_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_15[i]) & !is.na(final$Q8_2_7_15[i])) {
-  if(final$Q8_1_7_15[i] == "No" | final$Q8_2_7_15[i] == "No") final$Q8_7_15[i] <- "No"
-  if(final$Q8_1_7_15[i] == "Yes" | final$Q8_2_7_15[i] == "Yes") final$Q8_7_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_17[i]) & !is.na(final$Q8_2_7_17[i])) {
-  if(final$Q8_1_7_17[i] == "No" | final$Q8_2_7_17[i] == "No") final$Q8_7_17[i] <- "No"
-  if(final$Q8_1_7_17[i] == "Yes" | final$Q8_2_7_17[i] == "Yes") final$Q8_7_17[i] <- "Yes"
-}
-
-final$Q8_7_14 <- as.factor(final$Q8_7_14)
-final$Q8_7_15 <- as.factor(final$Q8_7_15)
-final$Q8_7_17 <- as.factor(final$Q8_7_17)
-
-final$Q8_8_14 <- NA
-final$Q8_8_15 <- NA
-final$Q8_8_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_14[i]) & !is.na(final$Q8_2_8_14[i])) {
-  if(final$Q8_1_8_14[i] == "No" | final$Q8_2_8_14[i] == "No") final$Q8_8_14[i] <- "No"
-  if(final$Q8_1_8_14[i] == "Yes" | final$Q8_2_8_14[i] == "Yes") final$Q8_8_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_15[i]) & !is.na(final$Q8_2_8_15[i])) {
-  if(final$Q8_1_8_15[i] == "No" | final$Q8_2_8_15[i] == "No") final$Q8_8_15[i] <- "No"
-  if(final$Q8_1_8_15[i] == "Yes" | final$Q8_2_8_15[i] == "Yes") final$Q8_8_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_17[i]) & !is.na(final$Q8_2_8_17[i])) {
-  if(final$Q8_1_8_17[i] == "No" | final$Q8_2_8_17[i] == "No") final$Q8_8_17[i] <- "No"
-  if(final$Q8_1_8_17[i] == "Yes" | final$Q8_2_8_17[i] == "Yes") final$Q8_8_17[i] <- "Yes"
-}
-
-final$Q8_8_14 <- as.factor(final$Q8_8_14)
-final$Q8_8_15 <- as.factor(final$Q8_8_15)
-final$Q8_8_17 <- as.factor(final$Q8_8_17)
-
-
-final$Q8_9_14 <- NA
-final$Q8_9_15 <- NA
-final$Q8_9_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_14[i]) & !is.na(final$Q8_2_9_14[i])) {
-  if(final$Q8_1_9_14[i] == "No" | final$Q8_2_9_14[i] == "No") final$Q8_9_14[i] <- "No"
-  if(final$Q8_1_9_14[i] == "Yes" | final$Q8_2_9_14[i] == "Yes") final$Q8_9_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_15[i]) & !is.na(final$Q8_2_9_15[i])) {
-  if(final$Q8_1_9_15[i] == "No" | final$Q8_2_9_15[i] == "No") final$Q8_9_15[i] <- "No"
-  if(final$Q8_1_9_15[i] == "Yes" | final$Q8_2_9_15[i] == "Yes") final$Q8_9_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_17[i]) & !is.na(final$Q8_2_9_17[i])) {
-  if(final$Q8_1_9_17[i] == "No" | final$Q8_2_9_17[i] == "No") final$Q8_9_17[i] <- "No"
-  if(final$Q8_1_9_17[i] == "Yes" | final$Q8_2_9_17[i] == "Yes") final$Q8_9_17[i] <- "Yes"
-}
-
-final$Q8_9_14 <- as.factor(final$Q8_9_14)
-final$Q8_9_15 <- as.factor(final$Q8_9_15)
-final$Q8_9_17 <- as.factor(final$Q8_9_17)
-
-
-final$Q8_10_14 <- NA
-final$Q8_10_15 <- NA
-final$Q8_10_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_14[i]) & !is.na(final$Q8_2_10_14[i])) {
-  if(final$Q8_1_10_14[i] == "No" | final$Q8_2_10_14[i] == "No") final$Q8_10_14[i] <- "No"
-  if(final$Q8_1_10_14[i] == "Yes" | final$Q8_2_10_14[i] == "Yes") final$Q8_10_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_15[i]) & !is.na(final$Q8_2_10_15[i])) {
-  if(final$Q8_1_10_15[i] == "No" | final$Q8_2_10_15[i] == "No") final$Q8_10_15[i] <- "No"
-  if(final$Q8_1_10_15[i] == "Yes" | final$Q8_2_10_15[i] == "Yes") final$Q8_10_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_17[i]) & !is.na(final$Q8_2_10_17[i])) {
-  if(final$Q8_1_10_17[i] == "No" | final$Q8_2_10_17[i] == "No") final$Q8_10_17[i] <- "No"
-  if(final$Q8_1_10_17[i] == "Yes" | final$Q8_2_10_17[i] == "Yes") final$Q8_10_17[i] <- "Yes"
-}
-
-final$Q8_10_14 <- as.factor(final$Q8_10_14)
-final$Q8_10_15 <- as.factor(final$Q8_10_15)
-final$Q8_10_17 <- as.factor(final$Q8_10_17)
-
-
-final$Q8_11_14 <- NA
-final$Q8_11_15 <- NA
-final$Q8_11_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_14[i]) & !is.na(final$Q8_2_11_14[i])) {
-  if(final$Q8_1_11_14[i] == "No" | final$Q8_2_11_14[i] == "No") final$Q8_11_14[i] <- "No"
-  if(final$Q8_1_11_14[i] == "Yes" | final$Q8_2_11_14[i] == "Yes") final$Q8_11_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_15[i]) & !is.na(final$Q8_2_11_15[i])) {
-  if(final$Q8_1_11_15[i] == "No" | final$Q8_2_11_15[i] == "No") final$Q8_11_15[i] <- "No"
-  if(final$Q8_1_11_15[i] == "Yes" | final$Q8_2_11_15[i] == "Yes") final$Q8_11_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_17[i]) & !is.na(final$Q8_2_11_17[i])) {
-  if(final$Q8_1_11_17[i] == "No" | final$Q8_2_11_17[i] == "No") final$Q8_11_17[i] <- "No"
-  if(final$Q8_1_11_17[i] == "Yes" | final$Q8_2_11_17[i] == "Yes") final$Q8_11_17[i] <- "Yes"
-}
-
-final$Q8_11_14 <- as.factor(final$Q8_11_14)
-final$Q8_11_15 <- as.factor(final$Q8_11_15)
-final$Q8_11_17 <- as.factor(final$Q8_11_17)
-
-
-final$Q8_12_14 <- NA
-final$Q8_12_15 <- NA
-final$Q8_12_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_14[i]) & !is.na(final$Q8_2_12_14[i])) {
-  if(final$Q8_1_12_14[i] == "No" | final$Q8_2_12_14[i] == "No") final$Q8_12_14[i] <- "No"
-  if(final$Q8_1_12_14[i] == "Yes" | final$Q8_2_12_14[i] == "Yes") final$Q8_12_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_15[i]) & !is.na(final$Q8_2_12_15[i])) {
-  if(final$Q8_1_12_15[i] == "No" | final$Q8_2_12_15[i] == "No") final$Q8_12_15[i] <- "No"
-  if(final$Q8_1_12_15[i] == "Yes" | final$Q8_2_12_15[i] == "Yes") final$Q8_12_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_17[i]) & !is.na(final$Q8_2_12_17[i])) {
-  if(final$Q8_1_12_17[i] == "No" | final$Q8_2_12_17[i] == "No") final$Q8_12_17[i] <- "No"
-  if(final$Q8_1_12_17[i] == "Yes" | final$Q8_2_12_17[i] == "Yes") final$Q8_12_17[i] <- "Yes"
-}
-
-final$Q8_12_14 <- as.factor(final$Q8_12_14)
-final$Q8_12_15 <- as.factor(final$Q8_12_15)
-final$Q8_12_17 <- as.factor(final$Q8_12_17)
-
-
-final$Q8_13_14 <- NA
-final$Q8_13_15 <- NA
-final$Q8_13_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_14[i]) & !is.na(final$Q8_2_13_14[i])) {
-  if(final$Q8_1_13_14[i] == "No" | final$Q8_2_13_14[i] == "No") final$Q8_13_14[i] <- "No"
-  if(final$Q8_1_13_14[i] == "Yes" | final$Q8_2_13_14[i] == "Yes") final$Q8_13_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_15[i]) & !is.na(final$Q8_2_13_15[i])) {
-  if(final$Q8_1_13_15[i] == "No" | final$Q8_2_13_15[i] == "No") final$Q8_13_15[i] <- "No"
-  if(final$Q8_1_13_15[i] == "Yes" | final$Q8_2_13_15[i] == "Yes") final$Q8_13_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_17[i]) & !is.na(final$Q8_2_13_17[i])) {
-  if(final$Q8_1_13_17[i] == "No" | final$Q8_2_13_17[i] == "No") final$Q8_13_17[i] <- "No"
-  if(final$Q8_1_13_17[i] == "Yes" | final$Q8_2_13_17[i] == "Yes") final$Q8_13_17[i] <- "Yes"
-}
-
-final$Q8_13_14 <- as.factor(final$Q8_13_14)
-final$Q8_13_15 <- as.factor(final$Q8_13_15)
-final$Q8_13_17 <- as.factor(final$Q8_13_17)
-
-
-final$Q8_14_14 <- NA
-final$Q8_14_15 <- NA
-final$Q8_14_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_14[i]) & !is.na(final$Q8_2_14_14[i])) {
-  if(final$Q8_1_14_14[i] == "No" | final$Q8_2_14_14[i] == "No") final$Q8_14_14[i] <- "No"
-  if(final$Q8_1_14_14[i] == "Yes" | final$Q8_2_14_14[i] == "Yes") final$Q8_14_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_15[i]) & !is.na(final$Q8_2_14_15[i])) {
-  if(final$Q8_1_14_15[i] == "No" | final$Q8_2_14_15[i] == "No") final$Q8_14_15[i] <- "No"
-  if(final$Q8_1_14_15[i] == "Yes" | final$Q8_2_14_15[i] == "Yes") final$Q8_14_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_17[i]) & !is.na(final$Q8_2_14_17[i])) {
-  if(final$Q8_1_14_17[i] == "No" | final$Q8_2_14_17[i] == "No") final$Q8_14_17[i] <- "No"
-  if(final$Q8_1_14_17[i] == "Yes" | final$Q8_2_14_17[i] == "Yes") final$Q8_14_17[i] <- "Yes"
-}
-
-final$Q8_14_14 <- as.factor(final$Q8_14_14)
-final$Q8_14_15 <- as.factor(final$Q8_14_15)
-final$Q8_14_17 <- as.factor(final$Q8_14_17)
-
-
-```
 
 
 
@@ -1062,7 +727,7 @@ percentYes <- function(qn, i) {
   no_15 <- as.integer(summary(as.factor(a15))["No"])
   percent_y_15 <- (yes_15)* 100 / (yes_15 + no_15)
   
-  return(c(percent_y_15, percent_y_15))
+  return(c(percent_y_15, percent_y_17))
 }
 
 x <- c("Q15_1: Lack of income", 
@@ -1441,17 +1106,17 @@ percentSatisfied <- function(qn, i) {
   a15 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_15")))
   a17 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_17")))
   
-  vg_17 <- sum(as.integer(summary(as.factor(a17))[c("d. Poor", "e. Very poor")]))
-  g_17 <- sum(as.integer(summary(as.factor(a17))[c("a. Very good", "b. Good", "c. Neutral")]))
+  vg_17 <- sum(as.integer(summary(as.factor(a17))[c("c. Neutral", "d. Poor", "e. Very poor")]))
+  g_17 <- sum(as.integer(summary(as.factor(a17))[c("a. Very good", "b. Good")]))
   tot_17 <- length(a17) - length(a17[is.na(a17)])
-  percent_y_17 <- (vg_17)* 100 / (vg_17 + g_17)
+  percent_y_17 <- (g_17)* 100 / (vg_17 + g_17)
   
-  vg_15 <- sum(as.integer(summary(as.factor(a15))[c("d. Poor", "e. Very poor")]))
-  g_15 <- sum(as.integer(summary(as.factor(a15))[c("a. Very good", "b. Good", "c. Neutral")]))
+  vg_15 <- sum(as.integer(summary(as.factor(a15))[c("c. Neutral", "d. Poor", "e. Very poor")]))
+  g_15 <- sum(as.integer(summary(as.factor(a15))[c("a. Very good", "b. Good")]))
   tot_15 <- length(a15) - length(a15[is.na(a15)])
-  percent_y_15 <- (vg_15)* 100 / (vg_15 + g_15)
+  percent_y_15 <- (g_15)* 100 / (vg_15 + g_15)
   
-  return(c(percent_y_15, percent_y_15))
+  return(c(percent_y_15, percent_y_17))
 }
 
 x <- c("Q21_1: Accessibility", 
@@ -1561,7 +1226,7 @@ ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Yea
   ylab("\nPercentage who answered\n\"Definitely not\" or \"Probably not\" ") +
   xlab(" ") +
   ggtitle("\nIs this a Barrier to Childcare?\n") +
-  scale_fill_discrete(name = "", labels = c("pct_NO_2015")) +
+  #scale_fill_discrete(name = "", labels = c("pct_NO_2015")) +
   geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine3", "aquamarine4"), labels = c("pct_NO_2015", "pct_NO_2017"), name="")
 

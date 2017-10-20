@@ -71,8 +71,8 @@ Number of PH households who participated in 2015 and 2017 rounds of the survey b
 length(intersect(ph2015, ph2017))
 
 
-core49 <- (intersect(intersect(ph2015, ph2017), ph2014))
-final <- final[final$TCode %in% core49, ]
+core50 <- (intersect(intersect(ph2015, ph2017), ph2014))
+final <- final[final$TCode %in% core50, ]
 ```
 
 ### **Housing**
@@ -184,7 +184,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nHousing\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 ```
 
@@ -254,7 +254,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nIs this a barrier to SS in Housing?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ##################################################################################
@@ -375,348 +375,10 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nEmployment\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
-
-
-```{r, echo=FALSE}
-final$Q8_1_14 <- NA
-final$Q8_1_15 <- NA
-final$Q8_1_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_14[i]) & !is.na(final$Q8_2_1_14[i])) {
-  if(final$Q8_1_1_14[i] == "No" | final$Q8_2_1_14[i] == "No") final$Q8_1_14[i] <- "No"
-  if(final$Q8_1_1_14[i] == "Yes" | final$Q8_2_1_14[i] == "Yes") final$Q8_1_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_15[i]) & !is.na(final$Q8_2_1_15[i])){
-  if(final$Q8_1_1_15[i] == "No" | final$Q8_2_1_15[i] == "No") final$Q8_1_15[i] <- "No"
-  if(final$Q8_1_1_15[i] == "Yes" | final$Q8_2_1_15[i] == "Yes") final$Q8_1_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_1_17[i]) & !is.na(final$Q8_2_1_17[i])){
-  if(final$Q8_1_1_17[i] == "No" | final$Q8_2_1_17[i] == "No") final$Q8_1_17[i] <- "No"
-  if(final$Q8_1_1_17[i] == "Yes" | final$Q8_2_1_17[i] == "Yes") final$Q8_1_17[i] <- "Yes"
-}
-final$Q8_1_14 <- as.factor(final$Q8_1_14)
-final$Q8_1_15 <- as.factor(final$Q8_1_15)
-final$Q8_1_17 <- as.factor(final$Q8_1_17)
-
-
-
-
-
-final$Q8_2_14 <- NA
-final$Q8_2_15 <- NA
-final$Q8_2_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_14[i]) & !is.na(final$Q8_2_2_14[i])) {
-  if(final$Q8_1_2_14[i] == "No" | final$Q8_2_2_14[i] == "No") final$Q8_2_14[i] <- "No"
-  if(final$Q8_1_2_14[i] == "Yes" | final$Q8_2_2_14[i] == "Yes") final$Q8_2_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_15[i]) & !is.na(final$Q8_2_2_15[i])) {
-  if(final$Q8_1_2_15[i] == "No" | final$Q8_2_2_15[i] == "No") final$Q8_2_15[i] <- "No"
-  if(final$Q8_1_2_15[i] == "Yes" | final$Q8_2_2_15[i] == "Yes") final$Q8_2_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_2_17[i]) & !is.na(final$Q8_2_2_17[i])) {
-  if(final$Q8_1_2_17[i] == "No" | final$Q8_2_2_17[i] == "No") final$Q8_2_17[i] <- "No"
-  if(final$Q8_1_2_17[i] == "Yes" | final$Q8_2_2_17[i] == "Yes") final$Q8_2_17[i] <- "Yes"
-}
-final$Q8_2_14 <- as.factor(final$Q8_2_14)
-final$Q8_2_15 <- as.factor(final$Q8_2_15)
-final$Q8_2_17 <- as.factor(final$Q8_2_17)
-
-
-final$Q8_3_14 <- NA
-final$Q8_3_15 <- NA
-final$Q8_3_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_14[i]) & !is.na(final$Q8_2_3_14[i])) {
-  if(final$Q8_1_3_14[i] == "No" | final$Q8_2_3_14[i] == "No") final$Q8_3_14[i] <- "No"
-  if(final$Q8_1_3_14[i] == "Yes" | final$Q8_2_3_14[i] == "Yes") final$Q8_3_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_15[i]) & !is.na(final$Q8_2_3_15[i])) {
-  if(final$Q8_1_3_15[i] == "No" | final$Q8_2_3_15[i] == "No") final$Q8_3_15[i] <- "No"
-  if(final$Q8_1_3_15[i] == "Yes" | final$Q8_2_3_15[i] == "Yes") final$Q8_3_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_3_17[i]) & !is.na(final$Q8_2_3_17[i])) {
-  if(final$Q8_1_3_17[i] == "No" | final$Q8_2_3_17[i] == "No") final$Q8_3_17[i] <- "No"
-  if(final$Q8_1_3_17[i] == "Yes" | final$Q8_2_3_17[i] == "Yes") final$Q8_3_17[i] <- "Yes"
-}
-final$Q8_3_14 <- as.factor(final$Q8_3_14)
-final$Q8_3_15 <- as.factor(final$Q8_3_15)
-final$Q8_3_17 <- as.factor(final$Q8_3_17)
-
-final$Q8_4_14 <- NA
-final$Q8_4_15 <- NA
-final$Q8_4_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_14[i]) & !is.na(final$Q8_2_4_14[i])) {
-  if(final$Q8_1_4_14[i] == "No" | final$Q8_2_4_14[i] == "No") final$Q8_4_14[i] <- "No"
-  if(final$Q8_1_4_14[i] == "Yes" | final$Q8_2_4_14[i] == "Yes") final$Q8_4_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_15[i]) & !is.na(final$Q8_2_4_15[i])) {
-  if(final$Q8_1_4_15[i] == "No" | final$Q8_2_4_15[i] == "No") final$Q8_4_15[i] <- "No"
-  if(final$Q8_1_4_15[i] == "Yes" | final$Q8_2_4_15[i] == "Yes") final$Q8_4_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_4_17[i]) & !is.na(final$Q8_2_4_17[i])) {
-  if(final$Q8_1_4_17[i] == "No" | final$Q8_2_4_17[i] == "No") final$Q8_4_17[i] <- "No"
-  if(final$Q8_1_4_17[i] == "Yes" | final$Q8_2_4_17[i] == "Yes") final$Q8_4_17[i] <- "Yes"
-}
-
-final$Q8_4_14 <- as.factor(final$Q8_4_14)
-final$Q8_4_15 <- as.factor(final$Q8_4_15)
-final$Q8_4_17 <- as.factor(final$Q8_4_17)
-
-
-final$Q8_5_14 <- NA
-final$Q8_5_15 <- NA
-final$Q8_5_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_14[i]) & !is.na(final$Q8_2_5_14[i])) {
-  if(final$Q8_1_5_14[i] == "No" | final$Q8_2_5_14[i] == "No") final$Q8_5_14[i] <- "No"
-  if(final$Q8_1_5_14[i] == "Yes" | final$Q8_2_5_14[i] == "Yes") final$Q8_5_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_15[i]) & !is.na(final$Q8_2_5_15[i])) {
-  if(final$Q8_1_5_15[i] == "No" | final$Q8_2_5_15[i] == "No") final$Q8_5_15[i] <- "No"
-  if(final$Q8_1_5_15[i] == "Yes" | final$Q8_2_5_15[i] == "Yes") final$Q8_5_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_5_17[i]) & !is.na(final$Q8_2_5_17[i])) {
-  if(final$Q8_1_5_17[i] == "No" | final$Q8_2_5_17[i] == "No") final$Q8_5_17[i] <- "No"
-  if(final$Q8_1_5_17[i] == "Yes" | final$Q8_2_5_17[i] == "Yes") final$Q8_5_17[i] <- "Yes"
-}
-final$Q8_5_14 <- as.factor(final$Q8_5_14)
-final$Q8_5_15 <- as.factor(final$Q8_5_15)
-final$Q8_5_17 <- as.factor(final$Q8_5_17)
-
-
-final$Q8_6_14 <- NA
-final$Q8_6_15 <- NA
-final$Q8_6_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_14[i]) & !is.na(final$Q8_2_6_14[i])) {
-  if(final$Q8_1_6_14[i] == "No" | final$Q8_2_6_14[i] == "No") final$Q8_6_14[i] <- "No"
-  if(final$Q8_1_6_14[i] == "Yes" | final$Q8_2_6_14[i] == "Yes") final$Q8_6_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_15[i]) & !is.na(final$Q8_2_6_15[i])) {
-  if(final$Q8_1_6_15[i] == "No" | final$Q8_2_6_15[i] == "No") final$Q8_6_15[i] <- "No"
-  if(final$Q8_1_6_15[i] == "Yes" | final$Q8_2_6_15[i] == "Yes") final$Q8_6_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_6_17[i]) & !is.na(final$Q8_2_6_17[i])) {
-  if(final$Q8_1_6_17[i] == "No" | final$Q8_2_6_17[i] == "No") final$Q8_6_17[i] <- "No"
-  if(final$Q8_1_6_17[i] == "Yes" | final$Q8_2_6_17[i] == "Yes") final$Q8_6_17[i] <- "Yes"
-}
-
-final$Q8_6_14 <- as.factor(final$Q8_6_14)
-final$Q8_6_15 <- as.factor(final$Q8_6_15)
-final$Q8_6_17 <- as.factor(final$Q8_6_17)
-
-
-final$Q8_7_14 <- NA
-final$Q8_7_15 <- NA
-final$Q8_7_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_14[i]) & !is.na(final$Q8_2_7_14[i])) {
-  if(final$Q8_1_7_14[i] == "No" | final$Q8_2_7_14[i] == "No") final$Q8_7_14[i] <- "No"
-  if(final$Q8_1_7_14[i] == "Yes" | final$Q8_2_7_14[i] == "Yes") final$Q8_7_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_15[i]) & !is.na(final$Q8_2_7_15[i])) {
-  if(final$Q8_1_7_15[i] == "No" | final$Q8_2_7_15[i] == "No") final$Q8_7_15[i] <- "No"
-  if(final$Q8_1_7_15[i] == "Yes" | final$Q8_2_7_15[i] == "Yes") final$Q8_7_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_7_17[i]) & !is.na(final$Q8_2_7_17[i])) {
-  if(final$Q8_1_7_17[i] == "No" | final$Q8_2_7_17[i] == "No") final$Q8_7_17[i] <- "No"
-  if(final$Q8_1_7_17[i] == "Yes" | final$Q8_2_7_17[i] == "Yes") final$Q8_7_17[i] <- "Yes"
-}
-
-final$Q8_7_14 <- as.factor(final$Q8_7_14)
-final$Q8_7_15 <- as.factor(final$Q8_7_15)
-final$Q8_7_17 <- as.factor(final$Q8_7_17)
-
-final$Q8_8_14 <- NA
-final$Q8_8_15 <- NA
-final$Q8_8_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_14[i]) & !is.na(final$Q8_2_8_14[i])) {
-  if(final$Q8_1_8_14[i] == "No" | final$Q8_2_8_14[i] == "No") final$Q8_8_14[i] <- "No"
-  if(final$Q8_1_8_14[i] == "Yes" | final$Q8_2_8_14[i] == "Yes") final$Q8_8_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_15[i]) & !is.na(final$Q8_2_8_15[i])) {
-  if(final$Q8_1_8_15[i] == "No" | final$Q8_2_8_15[i] == "No") final$Q8_8_15[i] <- "No"
-  if(final$Q8_1_8_15[i] == "Yes" | final$Q8_2_8_15[i] == "Yes") final$Q8_8_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_8_17[i]) & !is.na(final$Q8_2_8_17[i])) {
-  if(final$Q8_1_8_17[i] == "No" | final$Q8_2_8_17[i] == "No") final$Q8_8_17[i] <- "No"
-  if(final$Q8_1_8_17[i] == "Yes" | final$Q8_2_8_17[i] == "Yes") final$Q8_8_17[i] <- "Yes"
-}
-
-final$Q8_8_14 <- as.factor(final$Q8_8_14)
-final$Q8_8_15 <- as.factor(final$Q8_8_15)
-final$Q8_8_17 <- as.factor(final$Q8_8_17)
-
-
-final$Q8_9_14 <- NA
-final$Q8_9_15 <- NA
-final$Q8_9_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_14[i]) & !is.na(final$Q8_2_9_14[i])) {
-  if(final$Q8_1_9_14[i] == "No" | final$Q8_2_9_14[i] == "No") final$Q8_9_14[i] <- "No"
-  if(final$Q8_1_9_14[i] == "Yes" | final$Q8_2_9_14[i] == "Yes") final$Q8_9_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_15[i]) & !is.na(final$Q8_2_9_15[i])) {
-  if(final$Q8_1_9_15[i] == "No" | final$Q8_2_9_15[i] == "No") final$Q8_9_15[i] <- "No"
-  if(final$Q8_1_9_15[i] == "Yes" | final$Q8_2_9_15[i] == "Yes") final$Q8_9_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_9_17[i]) & !is.na(final$Q8_2_9_17[i])) {
-  if(final$Q8_1_9_17[i] == "No" | final$Q8_2_9_17[i] == "No") final$Q8_9_17[i] <- "No"
-  if(final$Q8_1_9_17[i] == "Yes" | final$Q8_2_9_17[i] == "Yes") final$Q8_9_17[i] <- "Yes"
-}
-
-final$Q8_9_14 <- as.factor(final$Q8_9_14)
-final$Q8_9_15 <- as.factor(final$Q8_9_15)
-final$Q8_9_17 <- as.factor(final$Q8_9_17)
-
-
-final$Q8_10_14 <- NA
-final$Q8_10_15 <- NA
-final$Q8_10_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_14[i]) & !is.na(final$Q8_2_10_14[i])) {
-  if(final$Q8_1_10_14[i] == "No" | final$Q8_2_10_14[i] == "No") final$Q8_10_14[i] <- "No"
-  if(final$Q8_1_10_14[i] == "Yes" | final$Q8_2_10_14[i] == "Yes") final$Q8_10_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_15[i]) & !is.na(final$Q8_2_10_15[i])) {
-  if(final$Q8_1_10_15[i] == "No" | final$Q8_2_10_15[i] == "No") final$Q8_10_15[i] <- "No"
-  if(final$Q8_1_10_15[i] == "Yes" | final$Q8_2_10_15[i] == "Yes") final$Q8_10_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_10_17[i]) & !is.na(final$Q8_2_10_17[i])) {
-  if(final$Q8_1_10_17[i] == "No" | final$Q8_2_10_17[i] == "No") final$Q8_10_17[i] <- "No"
-  if(final$Q8_1_10_17[i] == "Yes" | final$Q8_2_10_17[i] == "Yes") final$Q8_10_17[i] <- "Yes"
-}
-
-final$Q8_10_14 <- as.factor(final$Q8_10_14)
-final$Q8_10_15 <- as.factor(final$Q8_10_15)
-final$Q8_10_17 <- as.factor(final$Q8_10_17)
-
-
-final$Q8_11_14 <- NA
-final$Q8_11_15 <- NA
-final$Q8_11_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_14[i]) & !is.na(final$Q8_2_11_14[i])) {
-  if(final$Q8_1_11_14[i] == "No" | final$Q8_2_11_14[i] == "No") final$Q8_11_14[i] <- "No"
-  if(final$Q8_1_11_14[i] == "Yes" | final$Q8_2_11_14[i] == "Yes") final$Q8_11_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_15[i]) & !is.na(final$Q8_2_11_15[i])) {
-  if(final$Q8_1_11_15[i] == "No" | final$Q8_2_11_15[i] == "No") final$Q8_11_15[i] <- "No"
-  if(final$Q8_1_11_15[i] == "Yes" | final$Q8_2_11_15[i] == "Yes") final$Q8_11_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_11_17[i]) & !is.na(final$Q8_2_11_17[i])) {
-  if(final$Q8_1_11_17[i] == "No" | final$Q8_2_11_17[i] == "No") final$Q8_11_17[i] <- "No"
-  if(final$Q8_1_11_17[i] == "Yes" | final$Q8_2_11_17[i] == "Yes") final$Q8_11_17[i] <- "Yes"
-}
-
-final$Q8_11_14 <- as.factor(final$Q8_11_14)
-final$Q8_11_15 <- as.factor(final$Q8_11_15)
-final$Q8_11_17 <- as.factor(final$Q8_11_17)
-
-
-final$Q8_12_14 <- NA
-final$Q8_12_15 <- NA
-final$Q8_12_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_14[i]) & !is.na(final$Q8_2_12_14[i])) {
-  if(final$Q8_1_12_14[i] == "No" | final$Q8_2_12_14[i] == "No") final$Q8_12_14[i] <- "No"
-  if(final$Q8_1_12_14[i] == "Yes" | final$Q8_2_12_14[i] == "Yes") final$Q8_12_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_15[i]) & !is.na(final$Q8_2_12_15[i])) {
-  if(final$Q8_1_12_15[i] == "No" | final$Q8_2_12_15[i] == "No") final$Q8_12_15[i] <- "No"
-  if(final$Q8_1_12_15[i] == "Yes" | final$Q8_2_12_15[i] == "Yes") final$Q8_12_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_12_17[i]) & !is.na(final$Q8_2_12_17[i])) {
-  if(final$Q8_1_12_17[i] == "No" | final$Q8_2_12_17[i] == "No") final$Q8_12_17[i] <- "No"
-  if(final$Q8_1_12_17[i] == "Yes" | final$Q8_2_12_17[i] == "Yes") final$Q8_12_17[i] <- "Yes"
-}
-
-final$Q8_12_14 <- as.factor(final$Q8_12_14)
-final$Q8_12_15 <- as.factor(final$Q8_12_15)
-final$Q8_12_17 <- as.factor(final$Q8_12_17)
-
-
-final$Q8_13_14 <- NA
-final$Q8_13_15 <- NA
-final$Q8_13_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_14[i]) & !is.na(final$Q8_2_13_14[i])) {
-  if(final$Q8_1_13_14[i] == "No" | final$Q8_2_13_14[i] == "No") final$Q8_13_14[i] <- "No"
-  if(final$Q8_1_13_14[i] == "Yes" | final$Q8_2_13_14[i] == "Yes") final$Q8_13_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_15[i]) & !is.na(final$Q8_2_13_15[i])) {
-  if(final$Q8_1_13_15[i] == "No" | final$Q8_2_13_15[i] == "No") final$Q8_13_15[i] <- "No"
-  if(final$Q8_1_13_15[i] == "Yes" | final$Q8_2_13_15[i] == "Yes") final$Q8_13_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_13_17[i]) & !is.na(final$Q8_2_13_17[i])) {
-  if(final$Q8_1_13_17[i] == "No" | final$Q8_2_13_17[i] == "No") final$Q8_13_17[i] <- "No"
-  if(final$Q8_1_13_17[i] == "Yes" | final$Q8_2_13_17[i] == "Yes") final$Q8_13_17[i] <- "Yes"
-}
-
-final$Q8_13_14 <- as.factor(final$Q8_13_14)
-final$Q8_13_15 <- as.factor(final$Q8_13_15)
-final$Q8_13_17 <- as.factor(final$Q8_13_17)
-
-
-final$Q8_14_14 <- NA
-final$Q8_14_15 <- NA
-final$Q8_14_17 <- NA
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_14[i]) & !is.na(final$Q8_2_14_14[i])) {
-  if(final$Q8_1_14_14[i] == "No" | final$Q8_2_14_14[i] == "No") final$Q8_14_14[i] <- "No"
-  if(final$Q8_1_14_14[i] == "Yes" | final$Q8_2_14_14[i] == "Yes") final$Q8_14_14[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_15[i]) & !is.na(final$Q8_2_14_15[i])) {
-  if(final$Q8_1_14_15[i] == "No" | final$Q8_2_14_15[i] == "No") final$Q8_14_15[i] <- "No"
-  if(final$Q8_1_14_15[i] == "Yes" | final$Q8_2_14_15[i] == "Yes") final$Q8_14_15[i] <- "Yes"
-}
-
-for(i in 1:length(final$TCode)) if(!is.na(final$Q8_1_14_17[i]) & !is.na(final$Q8_2_14_17[i])) {
-  if(final$Q8_1_14_17[i] == "No" | final$Q8_2_14_17[i] == "No") final$Q8_14_17[i] <- "No"
-  if(final$Q8_1_14_17[i] == "Yes" | final$Q8_2_14_17[i] == "Yes") final$Q8_14_17[i] <- "Yes"
-}
-
-final$Q8_14_14 <- as.factor(final$Q8_14_14)
-final$Q8_14_15 <- as.factor(final$Q8_14_15)
-final$Q8_14_17 <- as.factor(final$Q8_14_17)
-
-
-```
-
 
 
 
@@ -730,16 +392,17 @@ percentYes <- function(qn, i) {
   a17 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_17")))
   
   y_17 <- as.integer(summary(as.factor(a17))["Yes"])
-  n_17 <- as.integer(summary(as.factor(a17))["No"])
-  percent_y_17 <- y_17 * 100 / (y_17 + n_17)
+  tot_17 <- length(a17[!is.na(a17)])
+  percent_y_17 <- y_17 * 100 / tot_17
   
   y_15 <- as.integer(summary(as.factor(a15))["Yes"])
-  n_15 <- as.integer(summary(as.factor(a15))["No"])
-  percent_y_15 <- y_15 * 100 / (y_15 + n_15)
+  tot_15 <- length(a15[!is.na(a15)])
+  if(is.na(y_15)) y_15 <- 0
+  percent_y_15 <- y_15 * 100 / tot_15
   
   y_14 <- as.integer(summary(as.factor(a14))["Yes"])
-  n_14 <- as.integer(summary(as.factor(a14))["No"])
-  percent_y_14 <- y_14 * 100 / (y_14 + n_14)
+  tot_14 <- length(a14[!is.na(a14)])
+  percent_y_14 <- y_14 * 100 / tot_14
   
   return(c(percent_y_14, percent_y_15, percent_y_17))
 }
@@ -795,7 +458,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") + 
   ggtitle("\nIs this a barrier to employment?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = .8), hjust=0.6, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = .8), hjust="inward", size=3, alpha=1) +
   scale_y_continuous(breaks= pretty_breaks()) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
@@ -868,7 +531,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nIncome run out at least once in last 3 months?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -944,7 +607,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab("") +
   ggtitle("\nVery hard to pay for...?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3.5, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=3.5, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -1073,7 +736,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nFood\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -1142,7 +805,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nFood sources") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=0.9, vjust=.5, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.5, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1167,7 +830,7 @@ percentYes <- function(qn, i) {
   no_14 <- as.integer(summary(as.factor(a14))["No"])
   percent_y_14 <- (yes_14)* 100 / (yes_14 + no_14)
   
-  return(c(percent_y_14, percent_y_15, percent_y_15))
+  return(c(percent_y_14, percent_y_15, percent_y_17))
 }
 
 x <- c("Q15_1: Lack of income", 
@@ -1209,7 +872,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nIs this a barrier to food?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=.7, vjust=.1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.1, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -1303,7 +966,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nTransportation - dissatisfaction?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1370,7 +1033,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nHard to get to appts./work last 2 weeks?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1445,7 +1108,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nIs this a barrier to SS in transportation?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=0.5, vjust=.1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.1, size=3, alpha=1) +
   scale_y_continuous(breaks= pretty_breaks()) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
@@ -1512,7 +1175,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nChildren <13?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1578,7 +1241,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nChildcare sufficient?\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1594,22 +1257,22 @@ percentSatisfied <- function(qn, i) {
   a15 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_15")))
   a17 <-eval(parse(text = paste0("final$Q", as.character(qn), "_", as.character(i), "_17")))
   
-  vg_17 <- sum(as.integer(summary(as.factor(a17))[c("d. Poor", "e. Very poor")]))
-  g_17 <- sum(as.integer(summary(as.factor(a17))[c("a. Very good", "b. Good", "c. Neutral")]))
+  vg_17 <- sum(as.integer(summary(as.factor(a17))[c("c. Neutral", "d. Poor", "e. Very poor")]))
+  g_17 <- sum(as.integer(summary(as.factor(a17))[c("a. Very good", "b. Good")]))
   tot_17 <- length(a17) - length(a17[is.na(a17)])
-  percent_y_17 <- (vg_17)* 100 / (vg_17 + g_17)
+  percent_y_17 <- (g_17)* 100 / (vg_17 + g_17)
   
-  vg_15 <- sum(as.integer(summary(as.factor(a15))[c("d. Poor", "e. Very poor")]))
-  g_15 <- sum(as.integer(summary(as.factor(a15))[c("a. Very good", "b. Good", "c. Neutral")]))
+  vg_15 <- sum(as.integer(summary(as.factor(a15))[c("c. Neutral", "d. Poor", "e. Very poor")]))
+  g_15 <- sum(as.integer(summary(as.factor(a15))[c("a. Very good", "b. Good")]))
   tot_15 <- length(a15) - length(a15[is.na(a15)])
-  percent_y_15 <- (vg_15)* 100 / (vg_15 + g_15)
+  percent_y_15 <- (g_15)* 100 / (vg_15 + g_15)
   
-  vg_14 <- sum(as.integer(summary(as.factor(a14))[c("d. Poor", "e. Very poor")]))
-  g_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Very good", "b. Good", "c. Neutral")]))
+  vg_14 <- sum(as.integer(summary(as.factor(a14))[c("c. Neutral", "d. Poor", "e. Very poor")]))
+  g_14 <- sum(as.integer(summary(as.factor(a14))[c("a. Very good", "b. Good")]))
   tot_14 <- length(a14) - length(a14[is.na(a14)])
-  percent_y_14 <- (vg_14)* 100 / (vg_14 + g_14)
+  percent_y_14 <- (g_14)* 100 / (vg_14 + g_14)
   
-  return(c(percent_y_14, percent_y_15, percent_y_15))
+  return(c(percent_y_14, percent_y_15, percent_y_17))
 }
 
 x <- c("Q21_1: Accessibility", 
@@ -1652,7 +1315,7 @@ ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Yea
   xlab(" ") +
   ggtitle("\nEvaluate Childcare?\n") +
   #scale_fill_discrete(name = "", labels = c("Y in '14, N in '15", "No change", "N in '14, Y in '15")) +
-  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust="inward", vjust=0.3, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1730,8 +1393,8 @@ ggplot(d, aes(reorder(Question, Percent_Satisfied), Percent_Satisfied, group=Yea
   ylab("\nPercentage who answered\n\"Definitely not\" or \"Probably not\" ") +
   xlab(" ") +
   ggtitle("\nIs this a Barrier to Childcare?\n") +
-  scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2015")) +
-  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  #scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2015")) +
+  geom_text(aes(y = Percent_Satisfied, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), labels = c("pct_NO_2014", "pct_NO_2015", "pct_NO_2017"), name="")
 
 ```
@@ -1804,8 +1467,8 @@ ggplot(d, aes(reorder(Question, Percent_Never), Percent_Never, group=Year)) + ge
   ylab("\nPercentage who answered\n\"Never\" ") +
   xlab(" ") +
   ggtitle("\nHave you received help in last 3 months from ...?\n") +
-  scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2015")) +
-  geom_text(aes(y = Percent_Never, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust=1, vjust=.5, size=4, alpha=1) +
+  #scale_fill_discrete(name = "", labels = c("pct_NO_2014", "pct_NO_2015")) +
+  geom_text(aes(y = Percent_Never, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.9), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="", labels = c("pct_NO_2014", "pct_NO_2015", "pct_NO_2017"))
 
 ```
@@ -1887,8 +1550,8 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered\n\"Yes\" ") +
   xlab(" ") +
   ggtitle("\nIs this a Barrier to Networking?\n") +
-  scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=3, alpha=1) +
+  #scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015")) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.5, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -1961,7 +1624,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nDo you receive the following support?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015", "pct_Yes_2017")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=.4, vjust=.1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.1, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 ```
 
@@ -2028,7 +1691,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nDo you currently have a legal issue\n and do not have legal assistance?") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 ```
@@ -2093,7 +1756,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nIs this a barrier to resolving legal issues?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015", "pct_Yes_2017")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -2218,7 +1881,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nHealth\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -2378,7 +2041,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes ") +
   xlab("") +
   ggtitle("\nEducation\n") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -2456,7 +2119,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nIs this a barrier to advancing\nyour education or skills?\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=1, vjust=.5, size=3, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.5, size=3, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -2548,7 +2211,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   xlab(" ") +
   ggtitle("\nSelf-assessment of Self-Sufficiency in...\n") +
   scale_fill_discrete(name = "", labels = c("pct_Yes_2014", "pct_Yes_2015", "pct_Yes_2015")) +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust=1, vjust=.5, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.8), hjust="inward", vjust=.5, size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
@@ -2617,7 +2280,7 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
   ylab("\nPercentage who answered Yes") +
   xlab("") +
   ggtitle("\nHispanic/Latino?") +
-  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust=1, size=4, alpha=1) +
+  geom_text(aes(y = Percent_Yes, label=Percent_Yes_text), stat="identity", position=position_dodge(width = 0.7), hjust="inward", size=4, alpha=1) +
   scale_fill_manual(values = c("aquamarine2", "aquamarine3", "aquamarine4"), name="")
 
 
