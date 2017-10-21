@@ -1,7 +1,6 @@
 ---
 title: "Comparing 2017 survey results with earlier PH data"
-author: "Anirban Pal"
-date: "September 15, 2017"
+date: "October 19, 2017"
 output: word_document
 ---
 

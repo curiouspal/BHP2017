@@ -1,5 +1,6 @@
 ---
 title: "Comparing 2017 with 2015 surveys"
+date: "October 19, 2017"
 output: word_document
 ---
 
@@ -352,6 +353,7 @@ percentYes <- function(qn, i) {
   
   y_15 <- as.integer(summary(as.factor(a15))["Yes"])
   n_15 <- as.integer(summary(as.factor(a15))["No"])
+  if(is.na(y_15)) y_15 <- 0
   percent_y_15 <- y_15 * 100 / (y_15 + n_15)
   
   return(c(percent_y_15, percent_y_17))

@@ -1,0 +1,43 @@
+---
+title: "Comparison between outmovers, new comers and the core groups"
+date: October 20, 2017
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message = FALSE, echo=FALSE, message=FALSE}
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct20-2017.RData")
+final <- subset(final, From_15 == "ph2015" | From_14 == "all2014.RData" | From_17 == "ph2017")
+final <- subset(final, PH_or_S8 == "PH")
+library("ggplot2")
+library("plyr")
+#library("dplyr")
+#library("pander")
+library("reshape2")
+library("scales")
+
+#panderOptions("table.split.table", Inf)
+
+```
+
+Core group:
+```{r, echo=FALSE}
+summary(as.factor(final$From.y))
+s2017 <- final$TCode[final$From.y=="phadmin2017" & !is.na(final$From.y)]
+s2015 <- 
+core <- intersect(s2017, s2015)
+
+```
+
+New move-in group:
+```{r, echo=FALSE}
+
+```
+
+Out-movers group:
+```{r, echo=FALSE}
+
+```

@@ -1,18 +1,18 @@
 library("stringr")
+library(readr)
+library(ggplot2)
 
 load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/combined-New-March22-ver2-2017.RData")
 #grep("PH_or_S8", names(final), value = TRUE)
 ph2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BHP2017.csv")
-#phadmin2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/")
-
-
-
-#for(i in 3:length(names(phadmin2017))) names(phadmin2017)[i] <- paste0(names(phadmin2017)[i], "_17", sep="")
+phadmin2017 <- read_csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin2017.csv")
+for(i in 3:length(names(phadmin2017))) names(phadmin2017)[i] <- paste0(names(phadmin2017)[i], "_17", sep="")
+phadmin2017 <- phadmin2017[!is.na(phadmin2017$Tenant), ]
 
 ph2017$From <- "ph2017"
 ph2017$From <- as.factor(ph2017$From)
-#phadmin2017$From <- "phadmin2017"
-#phadmin2017$TCode <- tolower(as.character(phadmin2017$Tenant))
+phadmin2017$From <- "phadmin2017"
+phadmin2017$TCode <- tolower(as.character(phadmin2017$Tenant))
 
 ph2017$TCode <- tolower(as.character(ph2017$TCode))
 ph2017$TCode.1 <- tolower(as.character(ph2017$TCode.1))
@@ -31,12 +31,19 @@ incorrect <- data.frame(incorrect$TCode, incorrect$TCode.1)
 ### Correct the one TCode by replacing too14800 by t0014800. 
 for(i in 1:length(ph2017$TCode)) if(!is.na(ph2017$TCode[i])) if(as.character(ph2017$TCode[i])=="too14800") ph2017$TCode[i]<-"t0014800"
 
-#summary(as.factor(ph2017$TCode)) # To identify duplicates. 
+ph2017$TCode[ph2017$TCode=="t00004214"] <- "t0004214" # This TCode has one extra zero. I am assuming that this is an error.
+
+
+
+summary(as.factor(ph2017$TCode)) # To identify duplicates. 
 ph2017 <- ph2017[-grep("t0000869", ph2017$TCode)[1], ]
 
 
-#setdiff(phadmin2017$TCode, intersect(phadmin2017$TCode, ph2017$TCode)) ## TCodes that are there in phadmin2017 but not in ph2017.
-#setdiff(ph2017$TCode, intersect(phadmin2017$TCode, ph2017$TCode)) ## TCodes that are there in ph2017 but not in phadmin2017. 
+setdiff(phadmin2017$TCode, intersect(phadmin2017$TCode, ph2017$TCode)) ## 11 TCodes that are there in phadmin2017 but not in ph2017. These TCodes did not return their surveys.
+### The 11 TCodes are "t0011659" "t0011473" "t0000875" "t0000909" "t0000905" "t0000858" "t0000903" "t0000906" "t0000888" "t0000990" "a0000360".
+
+setdiff(ph2017$TCode, intersect(phadmin2017$TCode, ph2017$TCode)) ## TCodes that are there in ph2017 but not in phadmin2017. 
+
 
 
 ##############################################
@@ -147,9 +154,9 @@ final <- final11
 
 #### This section below was added on March 22, 2017 version 2.
 summary(as.factor(final$PH_or_S8))
-revisedAdmin16 <- read_csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/BHP-Admin_records/2017_HC_Admin_revisedMarch06_2017.csv", skip = 1)
+revisedAdmin16 <- read_csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/BHP-Admin_records/outMovers2014IncomeRevised.csv", skip = 0)
 for(i in 1:length(final$TCode)) {
-  if(final$TCode[i] %in% revisedAdmin16$Resident) final$PH_or_S8[i] <- "PH"
+  if(final$TCode[i] %in% revisedAdmin16$X1) final$PH_or_S8[i] <- "PH"
 }
 final$PH_or_S8 <- as.factor(final$PH_or_S8)
 summary(final$PH_or_S8)
@@ -434,11 +441,11 @@ summary(final$Q8_2_2_17)
 #### Make sure the admin data for income and Rent do not have commas within the digits.
 #################################################################################################
 
-final$Total.Annual.Income_17 <- gsub(",", "", final$Total.Annual.Income_17)
-final$Total.Annual.Income_17 <- as.numeric(final$Total.Annual.Income_17)
+final$'Total Annual Income_17' <- gsub(",", "", final$'Total Annual Income_17')
+final$'Total Annual Income_17' <- as.numeric(final$'Total Annual Income_17')
 
-final$Tenant.Rent_17 <- gsub(",", "", final$Tenant.Rent_17)
-final$Tenant.Rent_17 <- as.numeric(final$Tenant.Rent_17)
+final$'Tenant Rent_17' <- gsub(",", "", final$'Tenant Rent_17')
+final$'Tenant Rent_17' <- as.numeric(final$'Tenant Rent_17')
 
 
 
@@ -500,6 +507,9 @@ temp1 <- subset(temp1, !is.na(temp1$PH_or_S8))
 
 toRemove <- temp1$TCode
 
+###############################################################################################################################
+###############################################################################################################################
+
 ## Lets assign final$PH_or_S8 to NA for those that do not have any data for survey questions. This section commented out on march 21, 2017.
 
 #for(i in 1:length(final$TCode)) {
@@ -544,7 +554,7 @@ xtabs(formula = ~ final$Surveyed_17 + final$PH_or_S8)
 xtabs(formula = ~ final$Surveyed_17 + final$From_17)
 xtabs(formula = ~ final$Surveyed_17 + final$From_17, drop.unused.levels = FALSE)
 
-final$PH_or_S8[final$TCode=="t0009249"] <- "PH"
+#final$PH_or_S8[final$TCode=="t0009249"] <- "PH"
 
 ##### For those TCodes who had zero annual income in 2014 based on original admin data but had non-zero income in the revised data, correct the income.
 
@@ -588,14 +598,8 @@ for(i in 1:length(names(final))) {
   if(length(attr(final[,i], "description"))!=0) temp$d[i] <- attr(final[,i], "description")
 }
 
-final$TCode[final$TCode=="t00004214"] <- "t0004214" # This TCode has one extra zero. I am assuming that this is an error.
-# After changing this TCode, it matches with one of the existing TCodes.
-temp <- final[final$TCode=="t0004214", ]  # The two TCodes are 142 and 901. 
-for(i in 1:length(names(final))) {
-  if(!is.na(final[142, i]) & is.na(final[901, i]) ) final[901, i] <- final[142, i]
-}
-final <- final[-142, ]
-#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Sept30-2017.RData")
+
+#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct20-2017.RData")
 
 subset(temp, is.na(temp$d))
 
