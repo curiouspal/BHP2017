@@ -25,19 +25,23 @@ library("scales")
 
 Core group:
 ```{r, echo=FALSE}
-summary(as.factor(final$From.y))
+#summary(as.factor(final$From.y))
+admin2015 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/BHP-Admin_records/2015-additionalDataSurveyRespondents-revised2.csv", header=TRUE)
 s2017 <- final$TCode[final$From.y=="phadmin2017" & !is.na(final$From.y)]
-s2015 <- 
+s2015 <- admin2015$T.code
 core <- intersect(s2017, s2015)
 
 ```
 
 New move-in group:
 ```{r, echo=FALSE}
-
+new <- setdiff(s2017, s2015)
 ```
 
 Out-movers group:
 ```{r, echo=FALSE}
+outmovers2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin_outmovers2017.csv")
+out <- setdiff(s2015, s2017)
+intersect(outmovers2017$Tenant, out)
 
 ```
