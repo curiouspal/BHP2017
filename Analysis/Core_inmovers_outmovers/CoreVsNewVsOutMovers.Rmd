@@ -9,9 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, message = FALSE, echo=FALSE, message=FALSE}
-load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct20-2017.RData")
-final <- subset(final, From_15 == "ph2015" | From_14 == "all2014.RData" | From_17 == "ph2017")
-final <- subset(final, PH_or_S8 == "PH")
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct23-2017.RData")
+final <- subset(final, !is.na(From.y))
 library("ggplot2")
 library("plyr")
 #library("dplyr")
@@ -31,6 +30,9 @@ s2017 <- final$TCode[final$From.y=="phadmin2017" & !is.na(final$From.y)]
 s2015 <- admin2015$T.code
 core <- intersect(s2017, s2015)
 
+
+
+
 ```
 
 New move-in group:
@@ -42,6 +44,10 @@ Out-movers group:
 ```{r, echo=FALSE}
 outmovers2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin_outmovers2017.csv")
 out <- setdiff(s2015, s2017)
-intersect(outmovers2017$Tenant, out)
+out_2 <- as.character(outmovers2017$Tenant)
+
+setdiff(out, out_2)
+setdiff(out_2, out)
+intersect(out_2, out)
 
 ```

@@ -7,7 +7,7 @@ load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents
 ph2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BHP2017.csv")
 phadmin2017 <- read_csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin2017.csv")
 for(i in 3:length(names(phadmin2017))) names(phadmin2017)[i] <- paste0(names(phadmin2017)[i], "_17", sep="")
-phadmin2017 <- phadmin2017[!is.na(phadmin2017$Tenant), ]
+phadmin2017 <- phadmin2017[!is.na(phadmin2017$Tenant) & phadmin2017$Tenant!="", ]
 
 ph2017$From <- "ph2017"
 ph2017$From <- as.factor(ph2017$From)
@@ -153,13 +153,13 @@ final11 <- merge(final, phadmin2017, by = "TCode", all = TRUE)
 final <- final11
 
 #### This section below was added on March 22, 2017 version 2.
-summary(as.factor(final$PH_or_S8))
-revisedAdmin16 <- read_csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/BHP-Admin_records/outMovers2014IncomeRevised.csv", skip = 0)
-for(i in 1:length(final$TCode)) {
-  if(final$TCode[i] %in% revisedAdmin16$X1) final$PH_or_S8[i] <- "PH"
-}
-final$PH_or_S8 <- as.factor(final$PH_or_S8)
-summary(final$PH_or_S8)
+# summary(as.factor(final$PH_or_S8))
+# revisedAdmin16 <- read_csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/BHP-Admin_records/outMovers2014IncomeRevised.csv", skip = 0)
+# for(i in 1:length(final$TCode)) {
+#   if(final$TCode[i] %in% revisedAdmin16$X1) print(final$PH_or_S8[i]) # <- "PH"
+# }
+# final$PH_or_S8 <- as.factor(final$PH_or_S8)
+# summary(final$PH_or_S8)
 ##### Section below was commented out on March 22, 2017 version 2.
 #for(i in 1:length(final$TCode)) {
 #  if(!is.na(final$From[i]) & final$From[i]=="phadmin2017") final$PH_or_S8[i] <- NA
@@ -599,7 +599,7 @@ for(i in 1:length(names(final))) {
 }
 
 
-#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct20-2017.RData")
+#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct23-2017.RData")
 
 subset(temp, is.na(temp$d))
 

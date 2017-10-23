@@ -1,0 +1,37 @@
+---
+title: "BSH Mandatory vs BSH Voluntary vs Rest of the PH households."
+date: "October 23, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r pressure, echo=FALSE}
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct23-2017.RData")
+admin2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin2017.csv")
+admin2017 <- admin2017[!is.na(admin2017$Tenant) & admin2017$Tenant!="", ]
+BSH <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BSH_mandatoryVsVoluntary.csv", header=FALSE)
+BSH_1 <- read.table("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/BSH-list.csv", quote="\"", comment.char="")
+BSH <- BSH[-grep("t0011523", as.character(BSH$V1))[1], ]
+BSH_1 <- BSH_1[-grep("t0011523", as.character(BSH_1$V1))[1], ]
+
+final <- subset(final, !is.na(From.y))
+library("ggplot2")
+library("plyr")
+#library("dplyr")
+#library("pander")
+library("reshape2")
+library("scales")
+
+mandatory <- final[final$TCode %in% BSH$V1[BSH$V2=="Mandatory"] , ]
+
+voluntary <- final[final$TCode %in% BSH$V1[BSH$V2=="Voluntary"] , ]
+
+restPH <- final[!(final$TCode %in% BSH$V1) , ]
+
+```
+
