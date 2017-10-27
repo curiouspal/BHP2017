@@ -598,6 +598,13 @@ for(i in 1:length(names(final))) {
   if(length(attr(final[,i], "description"))!=0) temp$d[i] <- attr(final[,i], "description")
 }
 
+### Check if all the TCodes are correct and that there are are no mistakes in TCodes.
+
+grep("code", names(final), ignore.case = TRUE, value = TRUE)
+temp <- data.frame(a=as.character(final$TCode), b=as.character(final$TCode.1_15), c=as.character(final$TCode.1_16), d=as.character(final$TCode.1_17))
+temp[(as.character(temp$a)!=as.character(temp$b) & !is.na(temp$a) & !is.na(temp$b)) |
+       (as.character(temp$a)!=as.character(temp$c) & !is.na(temp$a) & !is.na(temp$c)) |
+       (as.character(temp$a)!=as.character(temp$d) & !is.na(temp$a) & !is.na(temp$d)) , ]
 
 #save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct23-2017.RData")
 
