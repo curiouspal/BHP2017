@@ -1,6 +1,6 @@
 ---
-title: "Comparison between outmovers, new comers and the core groups"
-date: October 20, 2017
+title: "Comparison between Out-movers, New-comers and the Core group"
+date: October 27, 2017
 output: word_document
 ---
 
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct23-2017.RData")
 admin2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin2017.csv")
 admin2015 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/BHP-Admin_records/2015-additionalDataSurveyRespondents-revised2.csv", header=TRUE)
-grep(" ", admin2015$T.code, value = TRUE)
+#grep(" ", admin2015$T.code, value = TRUE)
 admin2015$T.code <- gsub(" ", "", admin2015$T.code, ignore.case = FALSE, perl = FALSE, useBytes = FALSE)
 admin2017$T.code <- gsub(" ", "", admin2017$Tenant, ignore.case = FALSE, perl = FALSE, useBytes = FALSE)
 #grep(" ", final$TCode, value = TRUE)
@@ -35,7 +35,7 @@ library("scales")
 
 ```
 
-Core group:
+Core group N:
 ```{r, echo=FALSE}
 #summary(as.factor(final$From.y))
 
@@ -51,41 +51,44 @@ s2017 <- levels(as.factor(admin2017$Tenant))
 s2015 <- levels(as.factor(admin2015$TCode))
 
 rest1 <- intersect(s2017, s2015)
-rest1
+#rest1
 
 rest <- subset(final, TCode %in% rest1)
 
+length(rest$TCode)
+
 ```
 
-New move-in group:
+New move-in group N:
 ```{r, echo=FALSE}
 new1 <- setdiff(s2017, s2015)
-new1
+#new1
 
 new <- subset(final, TCode %in% new1)
+length(new$TCode)
 ```
 
-Out-movers group:
+Out-movers group N:
 ```{r, echo=FALSE}
 outmovers2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin_outmovers2017.csv")
 attrition1 <- setdiff(s2015, s2017)
-attrition1
+#attrition1
 out_2 <- as.character(outmovers2017$Tenant)
 
 attrition <- subset(final, TCode %in% attrition1)
 
 #intersect(final$TCode, attrition1)
-
+length(attrition$TCode)
 ```
 
 
 ```{r, echo=FALSE}
-rest$F <- "Rest"
+rest$F <- "Core"
 new$F <- "New"
-attrition$F <- "Attr"
+attrition$F <- "Out"
 all <- rbind(rest, attrition, new)
 all$F <- as.factor(all$F)
-summary(all$F)
+#summary(all$F)
 
 
 Q <- c("Q1","Q2","Q3_1","Q3_2","Q3_3","Q3_4","Q3_5","Q3_6","Q3_7","Q3_8","Q3_9","Q4","Q5","Q6","Q7","Q8_1_1","Q8_1_2","Q8_1_3","Q8_1_4","Q8_1_5","Q8_1_6","Q8_1_7","Q8_1_8","Q8_1_9","Q8_1_10","Q8_1_11","Q8_1_12","Q8_1_13","Q8_1_14","Q9","Q10_1","Q10_2","Q10_3","Q10_4","Q10_5","Q10_6","Q10_7","Q10_8","Q11","Q12","Q13_1","Q13_2","Q13_3","Q13_4","Q13_5","Q14","Q15_1","Q15_2","Q15_3","Q15_4","Q16_1","Q16_2","Q16_3","Q16_4","Q16_5","Q16_6","Q17","Q18_1","Q18_2","Q18_3","Q18_4","Q18_5","Q18_6","Q18_7","Q18_8","Q18_9","Q18_10","Q19","Q20","Q21_1","Q21_2","Q21_3","Q22_1","Q22_2","Q22_3","Q23_1","Q23_2","Q23_3","Q23_4","Q23_5","Q24_1","Q24_2","Q24_3","Q24_4","Q24_5","Q24_6","Q25_1","Q25_2","Q25_3","Q25_4","Q25_5","Q25_6","Q25_7","Q26","Q27_1","Q27_2","Q27_3","Q27_4","Q28","Q29","Q30_1","Q31","Q32","Q33","Q34","Q35_1","Q35_2","Q35_3","Q35_4","Q35_5","Q35_6","Q35_7","Q35_8","Q35_9","Q35_10","Q35_11","Q35_12","Q36_1","Q36_2","Q36_3","Q36_4","Q36_5","Q36_6","Q36_7","Q36_8","Q36_9","Q36_10","Q36_11","Q37","Q38","Q39")
@@ -103,29 +106,29 @@ Member.Age...as.of.date
 
 all1 <- subset(all, F!="New") #!is.na(Member.Age...as.of.date_15))
 all1$Member.Age...as.of.date15[is.na(all1$Member.Age...as.of.date15)] <- all1$Member.Age...as.of.date_15[is.na(all1$Member.Age...as.of.date15)]
-Attr_15Median <- median(all1$Member.Age...as.of.date15[all1$F=="Attr"], na.rm = TRUE)
-Rest_15Median <- median(all1$Member.Age...as.of.date15[all1$F=="Rest"], na.rm = TRUE)
-med <- data.frame(F=c("Attr", "Rest"), m=c(Attr_15Median, Rest_15Median))
-all1$med_15[all1$F=="Attr"] <- Attr_15Median
-all1$med_15[all1$F=="Rest"] <- Rest_15Median
+Attr_15Median <- median(all1$Member.Age...as.of.date15[all1$F=="Out"], na.rm = TRUE)
+Rest_15Median <- median(all1$Member.Age...as.of.date15[all1$F=="Core"], na.rm = TRUE)
+med <- data.frame(F=c("Out", "Core"), m=c(Attr_15Median, Rest_15Median))
+all1$med_15[all1$F=="Out"] <- Attr_15Median
+all1$med_15[all1$F=="Core"] <- Rest_15Median
 ggplot(all1, aes(x = all1$F, y = all1$Member.Age...as.of.date15)) + 
   geom_boxplot() +
   xlab("2015") + ylab("Member Age in 2015") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle("Comparison of Age as of 2015 \nfor attrition group (N=30) and the rest (N=87)\n")
-all1 <- subset(all, F!="Attr")
+  ggtitle("Comparison of Age as of 2015 \nfor \"out\" group (N=29) and the rest (N=88)\n")
+all1 <- subset(all, F!="Out")
 New17Median <- median(all1$'MemberAge-asofdate_17'[all1$F=="New"], na.rm = TRUE)
-Rest17Median <- median(all1$'MemberAge-asofdate_17'[all1$F=="Rest"], na.rm = TRUE)
+Rest17Median <- median(all1$'MemberAge-asofdate_17'[all1$F=="Core"], na.rm = TRUE)
 all1$med17[all1$F=="New"] <- New17Median
-all1$med17[all1$F=="Rest"] <- Rest17Median
-med <- data.frame(F=c("New", "Rest"), m=c(New17Median, Rest17Median))
+all1$med17[all1$F=="Core"] <- Rest17Median
+med <- data.frame(F=c("New", "Core"), m=c(New17Median, Rest17Median))
 ggplot(all1, aes(x = all1$F, y = all1$'MemberAge-asofdate_17')) + 
   geom_boxplot() +
   xlab("2017") + ylab("Member Age in 2017") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle("Comparison of Age as of 2017 \nfor \"new\" group (N=71) and the rest (N=184)\n")
+  ggtitle("Comparison of Age as of 2017 \nfor \"new\" group (N=27) and the \"core\" (N=88)\n")
   
-#all1$'MemberAge-asofdate_17'[all1$F=="Rest"]
+#all1$'MemberAge-asofdate_17'[all1$F=="Core"]
 #all1$'MemberAge-asofdate_17'[all1$F=="New"]
 ```
 
@@ -146,7 +149,7 @@ for(i in c("Q3_4")) {
   x <- paste0("new$", i, "_17", sep="")
   #print(c(x, length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
   #print(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+  temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
   x <- paste0("rest$", i, "_15", sep="")
   temp$N[1] <- length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])
   temp$PercentYes[1] <- 100*(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
@@ -175,7 +178,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q8_2:	Health problems - a barrier to employment?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q8_2"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -209,7 +212,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q10_3: Very hard to pay for... health care for myself and my family?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q10_3"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -243,7 +246,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q18_2: Personal or family members’ health - a barrier to transportation?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q18_2"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -277,7 +280,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q29: How would you rate your current health?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q29"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -310,7 +313,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q35_11:	Health issues - a barrier to education?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q35_11"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -342,7 +345,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q36_9: Health Self Assessment
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q36_9"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -376,7 +379,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 ### Employment
 Q3_1: Not having a paying job - barrier to SS in housing
 ```{r, echo=FALSE}
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q3_1"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -408,7 +411,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 
 Q8_3: Lack of education or skills - a barrier to employment?
 ```{r, echo=FALSE}
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q8_3"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -441,7 +444,7 @@ Q5	Employment Status
 ```{r, echo=FALSE}
 
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q5"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -474,7 +477,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q36_2	Employment Self Assessment
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q36_2"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -500,7 +503,7 @@ temp$PercentYes[4] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
   xlab("") + ylab("Percent who reported\nsituation is Urgent or Vulnerable") +
-  ggtitle("Q5	Employment Self Assessment\n")
+  ggtitle("Q36_2	Employment Self Assessment\n")
 ```
 
 ### Immigration questions
@@ -508,7 +511,7 @@ Q8_15: Immigration status - a barrier to SS in employment
 ```{r, echo=FALSE}
 
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q8_14"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -540,7 +543,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 
 Q35_12: Immigration Status - a barrier to advance your education/skills?
 ```{r, echo=FALSE}
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q35_12"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -572,7 +575,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q36_11: Self Assessment of SS in immigration status
 ```{r, echo=FALSE, fig.height=5}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q36_11"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -605,7 +608,7 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Member.Citizen
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Member.Citizen"
 
 x <- paste0("rest$", i, "_15", sep="")
@@ -641,57 +644,43 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 ```{r, echo=FALSE}
 
 all1 <- subset(all, F!="New" & !is.na(Total.Annual.Income15))
-att_2015_N <- length(all1$Total.Annual.Income15[all1$F=="Attr"])
-rest_2015_N <- length(all1$Total.Annual.Income15[all1$F=="Rest"])
-Attr15Median <- median(all1$Total.Annual.Income15[all1$F=="Attr"])
-Rest15Median <- median(all1$Total.Annual.Income15[all1$F=="Rest"])
-med <- data.frame(F=c("Attr", "Rest"), m=c(Attr15Median, Rest15Median))
-all1$med15[all1$F=="Attr"] <- Attr15Median
-all1$med15[all1$F=="Rest"] <- Rest15Median
+att_2015_N <- length(all1$Total.Annual.Income15[all1$F=="Out"])
+rest_2015_N <- length(all1$Total.Annual.Income15[all1$F=="Core"])
+Attr15Median <- median(all1$Total.Annual.Income15[all1$F=="Out"])
+Rest15Median <- median(all1$Total.Annual.Income15[all1$F=="Core"])
+med <- data.frame(F=c("Out", "Core"), m=c(Attr15Median, Rest15Median))
+all1$med15[all1$F=="Out"] <- Attr15Median
+all1$med15[all1$F=="Core"] <- Rest15Median
 ggplot(all1, aes(x = all1$F, y = all1$Total.Annual.Income15)) + 
   geom_boxplot() +
   xlab("2015") + ylab("Total annual income in 2015") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle(paste0("Comparison of Income as of 2015 \nfor attrition group (N=", att_2015_N, ") and the rest (N=", rest_2015_N, ")\n", sep = ""))
+  ggtitle(paste0("Comparison of Income as of 2015 \nfor \"out\" group (N=", att_2015_N, ") and the \"core\" (N=", rest_2015_N, ")\n", sep = ""))
 
-all1 <- subset(all, F!="Attr")
+all1 <- subset(all, F!="Out")
 att_2017_N <- length(all1$TotalAnnualIncome_17[all1$F=="New"])
-rest_2017_N <- length(all1$TotalAnnualIncome_17[all1$F=="Rest"])
+rest_2017_N <- length(all1$TotalAnnualIncome_17[all1$F=="Core"])
 #all1$TotalAnnualIncome_17 <- gsub(",", "", all1$TotalAnnualIncome_17)
 #all1$TotalAnnualIncome_17 <- as.numeric(all1$TotalAnnualIncome_17)
 New17Median <- median(all1$TotalAnnualIncome_17[all1$F=="New"])
-Rest17Median <- median(all1$TotalAnnualIncome_17[all1$F=="Rest"])
+Rest17Median <- median(all1$TotalAnnualIncome_17[all1$F=="Core"])
 all1$med17[all1$F=="New"] <- New17Median
-all1$med17[all1$F=="Rest"] <- Rest17Median
-med <- data.frame(F=c("New", "Rest"), m=c(New17Median, Rest17Median))
+all1$med17[all1$F=="Core"] <- Rest17Median
+med <- data.frame(F=c("New", "Core"), m=c(New17Median, Rest17Median))
 ggplot(all1, aes(x = all1$F, y = all1$TotalAnnualIncome_17)) + 
   geom_boxplot() +
   xlab("2017") + ylab("Total annual income in 2017") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle(paste0("Comparison of Income as of 2017 \nfor attrition group (N=", att_2017_N, ") and the rest (N=", rest_2017_N, ")\n", sep = ""))
+  ggtitle(paste0("Comparison of Income as of 2017 \nfor \"out\" group (N=", att_2017_N, ") and the \"core\" (N=", rest_2017_N, ")\n", sep = ""))
   
 
 ```
 
-There is an outlier here with an income of more than 250,000 dollars. Zooming into the graph, (by limiting the graph upto 100,000 dollars of income):
-
-```{r, echo=FALSE}
-
-
-ggplot(all1, aes(x = all1$F, y = all1$TotalAnnualIncome_17)) + 
-  geom_boxplot() +
-  xlab("2017") + ylab("Total annual income in 2017") +
-  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle(paste0("Comparison of Income as of 2017 \nfor attrition group (N=", att_2017_N, ") and the rest (N=", rest_2017_N, ")\n", sep = "")) +
-  coord_cartesian(ylim = c(0, 100000))
-  
-
-```
 
 Q9: Income ran out last three months?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Rest_15", "Rest_17", "Attr_15", "New_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
 i <- "Q9"
 
 x <- paste0("rest$", i, "_15", sep="")
