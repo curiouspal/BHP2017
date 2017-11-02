@@ -36,8 +36,6 @@ restPH <- final[!(final$TCode %in% BSH$V1) , ]
 ```
 
 
-
-
 Non-BSH group N:
 ```{r, echo=FALSE}
 length(restPH$TCode)
@@ -79,32 +77,19 @@ Member.Age...as.of.date
 
 
 
-all1 <- subset(all, F!="Voluntary BSH") #!is.na(Member.Age...as.of.date_15))
-all1$Member.Age...as.of.date15[is.na(all1$Member.Age...as.of.date15)] <- all1$Member.Age...as.of.date_15[is.na(all1$Member.Age...as.of.date15)]
-Attr_15Median <- median(all1$Member.Age...as.of.date15[all1$F=="Mandatory BSH"], na.rm = TRUE)
-restPH_15Median <- median(all1$Member.Age...as.of.date15[all1$F=="Non-BSH"], na.rm = TRUE)
-med <- data.frame(F=c("Mandatory BSH", "Non-BSH"), m=c(Attr_15Median, restPH_15Median))
-all1$med_15[all1$F=="Mandatory BSH"] <- Attr_15Median
-all1$med_15[all1$F=="Non-BSH"] <- restPH_15Median
-ggplot(all1, aes(x = all1$F, y = all1$Member.Age...as.of.date15)) + 
+
+all$`MemberAge-asofdate_17`[is.na(all$`MemberAge-asofdate_17`)] <- all$Member.Age...as.of.date_15[is.na(all$`MemberAge-asofdate_17`)]
+Mandatory_17Median <- median(all$`MemberAge-asofdate_17`[all$F=="Mandatory BSH"], na.rm = TRUE)
+Voluntary_17Median <- median(all$`MemberAge-asofdate_17`[all$F=="Voluntary BSH"], na.rm = TRUE)
+rest_17Median <- median(all$`MemberAge-asofdate_17`[all$F=="Non-BSH"], na.rm = TRUE)
+med <- data.frame(F=c("Mandatory BSH", "Voluntary BSH", "Non-BSH"), m=c(Mandatory_17Median, Voluntary_17Median, rest_17Median))
+
+ggplot(all, aes(x = all$F, y = all$`MemberAge-asofdate_17`)) + 
   geom_boxplot() +
-  xlab("2015") + ylab("Member Age in 2015") +
+  xlab("") + ylab("Member Age in 2017") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle("Comparison of Age as of 2015 \nfor \"out\" group (N=29) and the restPH (N=88)\n")
-all1 <- subset(all, F!="Mandatory BSH")
-New17Median <- median(all1$'MemberAge-asofdate_17'[all1$F=="Voluntary BSH"], na.rm = TRUE)
-restPH17Median <- median(all1$'MemberAge-asofdate_17'[all1$F=="Non-BSH"], na.rm = TRUE)
-all1$med17[all1$F=="Voluntary BSH"] <- New17Median
-all1$med17[all1$F=="Non-BSH"] <- restPH17Median
-med <- data.frame(F=c("Voluntary BSH", "Non-BSH"), m=c(New17Median, restPH17Median))
-ggplot(all1, aes(x = all1$F, y = all1$'MemberAge-asofdate_17')) + 
-  geom_boxplot() +
-  xlab("2017") + ylab("Member Age in 2017") +
-  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle("Comparison of Age as of 2017 \nfor \"new\" group (N=27) and the \"core\" (N=88)\n")
-  
-#all1$'MemberAge-asofdate_17'[all1$F=="Non-BSH"]
-#all1$'MemberAge-asofdate_17'[all1$F=="Voluntary BSH"]
+  ggtitle("Comparison of Age as of 2017")
+
 ```
 
 
@@ -112,31 +97,25 @@ ggplot(all1, aes(x = all1$F, y = all1$'MemberAge-asofdate_17')) +
 Q3_4: Health issues - a barrier to SS in housing?
 ```{r, echo=FALSE}
 for(i in c("Q3_4")) {
-  x <- paste0("restPH$", i, "_15", sep="")
+  x <- paste0("mandatory$", i, "_17", sep="")
   #print(c(x, length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
   #print(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  x <- paste0("restPH$", i, "_17", sep="")
+  x <- paste0("mandatory$", i, "_17", sep="")
   #print(c(x, length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
   #print(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  x <- paste0("attrition$", i, "_15", sep="")
+  x <- paste0("voluntary$", i, "_17", sep="")
   #print(c(x, length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
   #print(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  x <- paste0("new$", i, "_17", sep="")
-  #print(c(x, length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  #print(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
-  x <- paste0("restPH$", i, "_15", sep="")
+  temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
+  x <- paste0("mandatory$", i, "_17", sep="")
   temp$N[1] <- length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])
   temp$PercentYes[1] <- 100*(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
   x <- paste0("restPH$", i, "_17", sep="")
   temp$N[2] <- length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])
   temp$PercentYes[2] <- 100*(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  x <- paste0("attrition$", i, "_15", sep="")
+  x <- paste0("voluntary$", i, "_17", sep="")
   temp$N[3] <- length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])
   temp$PercentYes[3] <- 100*(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
-  x <- paste0("new$", i, "_17", sep="")
-  temp$N[4] <- length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])
-  temp$PercentYes[4] <- 100*(summary(eval(parse(text = x)))[2]/(length(eval(parse(text = x))[!is.na(eval(parse(text = x)))])))
   
 }
 
@@ -153,10 +132,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q8_2:	Health problems - a barrier to employment?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q8_2"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -166,15 +145,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -187,10 +161,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q10_3: Very hard to pay for... health care for myself and my family?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q10_3"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -200,15 +174,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -221,10 +190,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q18_2: Personal or family members’ health - a barrier to transportation?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q18_2"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -234,15 +203,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -255,10 +219,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q29: How would you rate your current health?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q29"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
@@ -268,15 +232,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -288,10 +247,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q35_11:	Health issues - a barrier to education?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q35_11"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -301,15 +260,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -320,10 +274,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q36_9: Health Self Assessment
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q36_9"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
@@ -333,15 +287,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -354,10 +303,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 ### Employment
 Q3_1: Not having a paying job - barrier to SS in housing
 ```{r, echo=FALSE}
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q3_1"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -367,15 +316,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -386,10 +330,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 
 Q8_3: Lack of education or skills - a barrier to employment?
 ```{r, echo=FALSE}
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q8_3"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -399,15 +343,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -419,10 +358,10 @@ Q5	Employment Status
 ```{r, echo=FALSE}
 
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q5"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
@@ -432,15 +371,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -452,10 +386,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q36_2	Employment Self Assessment
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q36_2"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
@@ -465,15 +399,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -486,10 +415,10 @@ Q8_15: Immigration status - a barrier to SS in employment
 ```{r, echo=FALSE}
 
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q8_14"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -499,15 +428,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -518,10 +442,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 
 Q35_12: Immigration Status - a barrier to advance your education/skills?
 ```{r, echo=FALSE}
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q35_12"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
@@ -531,15 +455,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[2]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -550,10 +469,10 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Q36_11: Self Assessment of SS in immigration status
 ```{r, echo=FALSE, fig.height=5}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q36_11"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
@@ -563,15 +482,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -583,28 +497,23 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 Member.Citizen
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Member.Citizen"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
-temp$PercentYes[1] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
+temp$PercentYes[1] <- 100*((summary(as.factor(x))[1] + summary(as.factor(x))[2])/(length(as.factor(x)[!is.na(as.factor(x))])))
 
 x <- paste0("as.factor(restPH$", i, "_17)", sep="")
 x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("as.factor(voluntary$", i, "_17)", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
-
-x <- paste0("as.factor(new$", i, "_17)", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -618,31 +527,31 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 
 ```{r, echo=FALSE}
 
-all1 <- subset(all, F!="Voluntary BSH" & !is.na(Total.Annual.Income15))
-att_2015_N <- length(all1$Total.Annual.Income15[all1$F=="Mandatory BSH"])
-restPH_2015_N <- length(all1$Total.Annual.Income15[all1$F=="Non-BSH"])
-Attr15Median <- median(all1$Total.Annual.Income15[all1$F=="Mandatory BSH"])
-restPH15Median <- median(all1$Total.Annual.Income15[all1$F=="Non-BSH"])
-med <- data.frame(F=c("Mandatory BSH", "Non-BSH"), m=c(Attr15Median, restPH15Median))
-all1$med15[all1$F=="Mandatory BSH"] <- Attr15Median
-all1$med15[all1$F=="Non-BSH"] <- restPH15Median
-ggplot(all1, aes(x = all1$F, y = all1$Total.Annual.Income15)) + 
+all <- subset(all, F!="Voluntary BSH" & !is.na(Total.Annual.Income17))
+att_2017_N <- length(all$Total.Annual.Income17[all$F=="Mandatory BSH"])
+restPH_2017_N <- length(all$Total.Annual.Income17[all$F=="Non-BSH"])
+Attr17Median <- median(all$Total.Annual.Income17[all$F=="Mandatory BSH"])
+restPH17Median <- median(all$Total.Annual.Income17[all$F=="Non-BSH"])
+med <- data.frame(F=c("Mandatory BSH", "Non-BSH"), m=c(Attr17Median, restPH17Median))
+all$med17[all$F=="Mandatory BSH"] <- Attr17Median
+all$med17[all$F=="Non-BSH"] <- restPH17Median
+ggplot(all, aes(x = all$F, y = all$Total.Annual.Income17)) + 
   geom_boxplot() +
-  xlab("2015") + ylab("Total annual income in 2015") +
+  xlab("2017") + ylab("Total annual income in 2017") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle(paste0("Comparison of Income as of 2015 \nfor \"out\" group (N=", att_2015_N, ") and the \"core\" (N=", restPH_2015_N, ")\n", sep = ""))
+  ggtitle(paste0("Comparison of Income as of 2017 \nfor \"out\" group (N=", att_2017_N, ") and the \"core\" (N=", restPH_2017_N, ")\n", sep = ""))
 
-all1 <- subset(all, F!="Mandatory BSH")
-att_2017_N <- length(all1$TotalAnnualIncome_17[all1$F=="Voluntary BSH"])
-restPH_2017_N <- length(all1$TotalAnnualIncome_17[all1$F=="Non-BSH"])
-#all1$TotalAnnualIncome_17 <- gsub(",", "", all1$TotalAnnualIncome_17)
-#all1$TotalAnnualIncome_17 <- as.numeric(all1$TotalAnnualIncome_17)
-New17Median <- median(all1$TotalAnnualIncome_17[all1$F=="Voluntary BSH"])
-restPH17Median <- median(all1$TotalAnnualIncome_17[all1$F=="Non-BSH"])
-all1$med17[all1$F=="Voluntary BSH"] <- New17Median
-all1$med17[all1$F=="Non-BSH"] <- restPH17Median
-med <- data.frame(F=c("Voluntary BSH", "Non-BSH"), m=c(New17Median, restPH17Median))
-ggplot(all1, aes(x = all1$F, y = all1$TotalAnnualIncome_17)) + 
+all <- subset(all, F!="Mandatory BSH")
+att_2017_N <- length(all$TotalAnnualIncome_17[all$F=="Voluntary BSH"])
+restPH_2017_N <- length(all$TotalAnnualIncome_17[all$F=="Non-BSH"])
+#all$TotalAnnualIncome_17 <- gsub(",", "", all$TotalAnnualIncome_17)
+#all$TotalAnnualIncome_17 <- as.numeric(all$TotalAnnualIncome_17)
+voluntary17Median <- median(all$TotalAnnualIncome_17[all$F=="Voluntary BSH"])
+restPH17Median <- median(all$TotalAnnualIncome_17[all$F=="Non-BSH"])
+all$med17[all$F=="Voluntary BSH"] <- voluntary17Median
+all$med17[all$F=="Non-BSH"] <- restPH17Median
+med <- data.frame(F=c("Voluntary BSH", "Non-BSH"), m=c(voluntary17Median, restPH17Median))
+ggplot(all, aes(x = all$F, y = all$TotalAnnualIncome_17)) + 
   geom_boxplot() +
   xlab("2017") + ylab("Total annual income in 2017") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
@@ -655,10 +564,10 @@ ggplot(all1, aes(x = all1$F, y = all1$TotalAnnualIncome_17)) +
 Q9: Income ran out last three months?
 ```{r, echo=FALSE}
 
-temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), PercentYes=c(NA, NA, NA, NA))
+temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
 i <- "Q9"
 
-x <- paste0("restPH$", i, "_15", sep="")
+x <- paste0("mandatory$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[1] <- length(x[!is.na(x)])
 temp$PercentYes[1] <- 100*(summary(x)[1]/(length(x[!is.na(x)])))
@@ -668,15 +577,10 @@ x <- eval(parse(text = x))
 temp$N[2] <- length(x[!is.na(x)])
 temp$PercentYes[2] <- 100*(summary(x)[1]/(length(x[!is.na(x)])))
 
-x <- paste0("attrition$", i, "_15", sep="")
+x <- paste0("voluntary$", i, "_17", sep="")
 x <- eval(parse(text = x))
 temp$N[3] <- length(x[!is.na(x)])
 temp$PercentYes[3] <- 100*(summary(x)[1]/(length(x[!is.na(x)])))
-
-x <- paste0("new$", i, "_17", sep="")
-x <- eval(parse(text = x))
-temp$N[4] <- length(x[!is.na(x)])
-temp$PercentYes[4] <- 100*(summary(x)[1]/(length(x[!is.na(x)])))
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -686,16 +590,4 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 
 ```
 
-```{r, echo=FALSE}
-#pander(data.frame(attrition$TCode, attrition$Total.Annual.Income14, attrition$Tenant.Rent14))
-
-#pander(data.frame(new$TCode, new$Total.Annual.Income17, new$Tenant.Rent17))
-#diff<-restPH$Total.Annual.Income17-restPH$Total.Annual.Income14
-#temp <- data.frame(restPH$TCode, restPH$Total.Annual.Income14, restPH$Total.Annual.Income17, diff)
-#pander(temp)
-#summary(temp$diff)
-#temp <- subset(temp, restPH.Total.Annual.Income14!=0)
-#summary(temp$diff)
-
-```
 
