@@ -67,7 +67,7 @@ all$F <- as.factor(all$F)
 Q <- c("Q1","Q2","Q3_1","Q3_2","Q3_3","Q3_4","Q3_5","Q3_6","Q3_7","Q3_8","Q3_9","Q4","Q5","Q6","Q7","Q8_1_1","Q8_1_2","Q8_1_3","Q8_1_4","Q8_1_5","Q8_1_6","Q8_1_7","Q8_1_8","Q8_1_9","Q8_1_10","Q8_1_11","Q8_1_12","Q8_1_13","Q8_1_14","Q9","Q10_1","Q10_2","Q10_3","Q10_4","Q10_5","Q10_6","Q10_7","Q10_8","Q11","Q12","Q13_1","Q13_2","Q13_3","Q13_4","Q13_5","Q14","Q15_1","Q15_2","Q15_3","Q15_4","Q16_1","Q16_2","Q16_3","Q16_4","Q16_5","Q16_6","Q17","Q18_1","Q18_2","Q18_3","Q18_4","Q18_5","Q18_6","Q18_7","Q18_8","Q18_9","Q18_10","Q19","Q20","Q21_1","Q21_2","Q21_3","Q22_1","Q22_2","Q22_3","Q23_1","Q23_2","Q23_3","Q23_4","Q23_5","Q24_1","Q24_2","Q24_3","Q24_4","Q24_5","Q24_6","Q25_1","Q25_2","Q25_3","Q25_4","Q25_5","Q25_6","Q25_7","Q26","Q27_1","Q27_2","Q27_3","Q27_4","Q28","Q29","Q30_1","Q31","Q32","Q33","Q34","Q35_1","Q35_2","Q35_3","Q35_4","Q35_5","Q35_6","Q35_7","Q35_8","Q35_9","Q35_10","Q35_11","Q35_12","Q36_1","Q36_2","Q36_3","Q36_4","Q36_5","Q36_6","Q36_7","Q36_8","Q36_9","Q36_10","Q36_11","Q37","Q38","Q39")
 
 
-admin <- c("Member.Age...as.of.date", "Member.Citizen", "Member.Sex", "Member.Ethnicity", "HH.Members.under.age.13", "Single.Parent.HH", "Total.Annual.Income")
+admin <- c("Member.Age...as.of.date", "MemberCitizen_17", "Member.Sex", "Member.Ethnicity", "HH.Members.under.age.13", "Single.Parent.HH", "Total.Annual.Income")
 
 ```
 ### Age.
@@ -498,22 +498,23 @@ Member.Citizen
 ```{r, echo=FALSE}
 
 temp <- data.frame(a = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), N=c(NA, NA, NA), PercentYes=c(NA, NA, NA))
-i <- "Member.Citizen"
+i <- "MemberCitizen_17"
 
-x <- paste0("mandatory$", i, "_17", sep="")
+x <- paste0("as.factor(mandatory$", i, "_17)", sep="")
 x <- eval(parse(text = x))
-temp$N[1] <- length(x[!is.na(x)])
-temp$PercentYes[1] <- 100*((summary(as.factor(x))[1] + summary(as.factor(x))[2])/(length(as.factor(x)[!is.na(as.factor(x))])))
+temp$N[1] <- length(x)
+temp$PercentYes[1] <- 100*(as.numeric(summary(as.factor(mandatory$MemberCitizen_17))[1]) + as.numeric(summary(as.factor(mandatory$MemberCitizen_17))[2]))/length((as.factor(mandatory$MemberCitizen_17)))
 
 x <- paste0("as.factor(restPH$", i, "_17)", sep="")
 x <- eval(parse(text = x))
-temp$N[2] <- length(x[!is.na(x)])
-temp$PercentYes[2] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
+temp$N[2] <- length(x)
+temp$PercentYes[2] <- 100*(as.numeric(summary(as.factor(restPH$MemberCitizen_17))[1]) + as.numeric(summary(as.factor(restPH$MemberCitizen_17))[2]))/length((as.factor(restPH$MemberCitizen_17)))
 
 x <- paste0("as.factor(voluntary$", i, "_17)", sep="")
 x <- eval(parse(text = x))
-temp$N[3] <- length(x[!is.na(x)])
-temp$PercentYes[3] <- 100*((summary(x)[1] + summary(x)[2])/(length(x[!is.na(x)])))
+temp$N[3] <- length(x)
+temp$PercentYes[3] <- 100*(as.numeric(summary(as.factor(voluntary$MemberCitizen_17))[1]) + as.numeric(summary(as.factor(voluntary$MemberCitizen_17))[2]))/length((as.factor(voluntary$MemberCitizen_17)))
+
 
 ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
   geom_text(aes(x=temp$a, y=(temp$PercentYes), label=paste(as.character(round(temp$PercentYes)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
@@ -527,35 +528,23 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 
 ```{r, echo=FALSE}
 
-all <- subset(all, F!="Voluntary BSH" & !is.na(Total.Annual.Income17))
-att_2017_N <- length(all$Total.Annual.Income17[all$F=="Mandatory BSH"])
-restPH_2017_N <- length(all$Total.Annual.Income17[all$F=="Non-BSH"])
-Attr17Median <- median(all$Total.Annual.Income17[all$F=="Mandatory BSH"])
-restPH17Median <- median(all$Total.Annual.Income17[all$F=="Non-BSH"])
-med <- data.frame(F=c("Mandatory BSH", "Non-BSH"), m=c(Attr17Median, restPH17Median))
-all$med17[all$F=="Mandatory BSH"] <- Attr17Median
-all$med17[all$F=="Non-BSH"] <- restPH17Median
-ggplot(all, aes(x = all$F, y = all$Total.Annual.Income17)) + 
-  geom_boxplot() +
-  xlab("2017") + ylab("Total annual income in 2017") +
-  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle(paste0("Comparison of Income as of 2017 \nfor \"out\" group (N=", att_2017_N, ") and the \"core\" (N=", restPH_2017_N, ")\n", sep = ""))
-
-all <- subset(all, F!="Mandatory BSH")
-att_2017_N <- length(all$TotalAnnualIncome_17[all$F=="Voluntary BSH"])
+#all <- subset(all, F!="Voluntary BSH" & !is.na(TotalAnnualIncome_17))
+mandatory_2017_N <- length(all$TotalAnnualIncome_17[all$F=="Mandatory BSH"])
 restPH_2017_N <- length(all$TotalAnnualIncome_17[all$F=="Non-BSH"])
-#all$TotalAnnualIncome_17 <- gsub(",", "", all$TotalAnnualIncome_17)
-#all$TotalAnnualIncome_17 <- as.numeric(all$TotalAnnualIncome_17)
-voluntary17Median <- median(all$TotalAnnualIncome_17[all$F=="Voluntary BSH"])
+voluntary_2017_N <- length(all$TotalAnnualIncome_17[all$F=="Voluntary BSH"])
+mandatory17Median <- median(all$TotalAnnualIncome_17[all$F=="Mandatory BSH"])
 restPH17Median <- median(all$TotalAnnualIncome_17[all$F=="Non-BSH"])
-all$med17[all$F=="Voluntary BSH"] <- voluntary17Median
-all$med17[all$F=="Non-BSH"] <- restPH17Median
-med <- data.frame(F=c("Voluntary BSH", "Non-BSH"), m=c(voluntary17Median, restPH17Median))
+voluntary17Median <- median(all$TotalAnnualIncome_17[all$F=="Voluntary BSH"])
+temp <- data.frame(F = c("Mandatory BSH", "Non-BSH", "Voluntary BSH"), 
+                  # N=c(mandatory_2017_N, restPH_2017_N, voluntary_2017_N), 
+                   m=c(mandatory17Median, restPH17Median, voluntary17Median))
+
 ggplot(all, aes(x = all$F, y = all$TotalAnnualIncome_17)) + 
   geom_boxplot() +
-  xlab("2017") + ylab("Total annual income in 2017") +
-  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle(paste0("Comparison of Income as of 2017 \nfor \"out\" group (N=", att_2017_N, ") and the \"core\" (N=", restPH_2017_N, ")\n", sep = ""))
+  xlab("") + ylab("Total annual income in 2017") +
+  geom_text(data = temp, aes(x=temp$F, y=temp$m, label=temp$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
+  ggtitle(paste0("Comparison of Income as of 2017", sep = ""))
+
   
 
 ```
