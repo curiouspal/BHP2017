@@ -9,13 +9,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, message = FALSE, echo=FALSE, message=FALSE}
-load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct23-2017.RData")
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Jan16-2018.RData")
 admin2017 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/admin2017.csv")
 admin2015 <- read.csv("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BoulderHousingPartnersData/Data/BHP-Admin_records/2015-additionalDataSurveyRespondents-revised2.csv", header=TRUE)
 #grep(" ", admin2015$T.code, value = TRUE)
+final <- subset(final, PH_or_S8=="PH")
 admin2015$T.code <- gsub(" ", "", admin2015$T.code, ignore.case = FALSE, perl = FALSE, useBytes = FALSE)
 admin2017$T.code <- gsub(" ", "", admin2017$Tenant, ignore.case = FALSE, perl = FALSE, useBytes = FALSE)
 #grep(" ", final$TCode, value = TRUE)
+admin2017$T.code[admin2017$T.code==""] <- NA
 
 names(final)[names(final)=="MemberCitizen_17"] <- "Member.Citizen_17"
 names(final)[names(final)=="Member.Citizen15"] <- "Member.Citizen_15"
@@ -23,7 +25,8 @@ final$Member.Citizen_15[is.na(final$Member.Citizen_15)] <- final$Member.Citizen_
 final$Member.Citizen_17[is.na(final$Member.Citizen_17)] <- final$Member.Citizen_15[is.na(final$Member.Citizen_17)]
 #summary(as.factor(final$From.y))
 #summary(as.factor(final$From.x))
-final <- subset(final, !is.na(From.y) | !is.na(From15))
+final <- subset(final, !is.na(final$From.y) | !is.na(final$From15) | !is.na(Bedrooms_14))
+final <- subset(final, !is.na(final$TCode))
 library("ggplot2")
 library("plyr")
 #library("dplyr")
@@ -42,13 +45,21 @@ Core group N:
 
 names(admin2015)[2] <- "TCode"
 #for(i in 3:length(names(admin2015))) names(admin2015)[i] <- paste0(names(admin2015)[i], "_15", sep="")
+final$FromAdmin_17[final$TCode %in% admin2017$Tenant[!is.na(admin2017$Tenant) & admin2017$Tenant!=""]] <- "admin2017"
 final$FromAdmin_15[final$TCode %in% levels(as.factor(admin2015$TCode))] <- "admin2015"
+final$FromAdmin_14[final$TCode %in% final$TCode[!is.na(final$Bedrooms_14)]] <- "admin2014"
+
 #final <- merge(final, admin2015, by = intersect(names(final), names(admin2015)), all = FALSE)
 
 #s2017 <- final$TCode[final$From.y=="phadmin2017" & !is.na(final$From.y)]
 #s2015 <- final$TCode[!is.na(final$FromAdmin_15)]
-s2017 <- levels(as.factor(admin2017$Tenant))
-s2015 <- levels(as.factor(admin2015$TCode))
+s2017 <- levels(as.factor(final$TCode[final$FromAdmin_17=="admin2017"]))
+s2015 <- levels(as.factor(final$TCode[final$FromAdmin_15=="admin2015"]))
+s2014 <- levels(as.factor(final$TCode[final$FromAdmin_14=="admin2014"]))
+
+setdiff(s2014, s2017)
+setdiff(s2017, s2014)
+intersect(s2017, s2014)
 
 rest1 <- intersect(s2017, s2015)
 #rest1

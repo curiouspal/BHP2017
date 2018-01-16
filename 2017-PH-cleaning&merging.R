@@ -606,7 +606,11 @@ temp[(as.character(temp$a)!=as.character(temp$b) & !is.na(temp$a) & !is.na(temp$
        (as.character(temp$a)!=as.character(temp$c) & !is.na(temp$a) & !is.na(temp$c)) |
        (as.character(temp$a)!=as.character(temp$d) & !is.na(temp$a) & !is.na(temp$d)) , ]
 
-#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Oct23-2017.RData")
+#Make sure all TCodes have a PH_or_S8 values.
+summary(final$PH_or_S8)
+final$PH_or_S8[final$TCode %in% phadmin2017$TCode] <- "PH"
+
+#save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Jan16-2018.RData")
 
 subset(temp, is.na(temp$d))
 
