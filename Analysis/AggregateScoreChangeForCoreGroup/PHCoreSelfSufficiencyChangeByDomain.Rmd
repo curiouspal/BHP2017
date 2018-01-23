@@ -1,0 +1,204 @@
+---
+title: "PH Core Self Sufficiency Domain Change"
+author: "Anirban Pal"
+date: "January 17, 2018"
+output: html_document
+---
+
+```{r, echo=FALSE}
+library("ggplot2")
+load("/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Jan16-2018.RData")
+final <- subset(final, PH_or_S8 == "PH")
+final <- subset(final, !is.na(final$From_17) & !is.na(final$Surveyed_15))
+```
+
+### Housing
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$housing_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_1_15[j]) & !is.na(final$Q36_1_15[j])) {
+    final$housing_selfAssess_change[j] <- as.integer(final$Q36_1_17[j]) - as.integer(final$Q36_1_15[j])
+  }
+}
+#summary(as.factor(final$housing_selfAssess_change))
+final$housing_selfAssess[final$housing_selfAssess_change<0] <- "Negative change in\nhousing self-assessment"
+final$housing_selfAssess[final$housing_selfAssess_change>0] <- "Positive change in\nhousing self-assessment"
+final$housing_selfAssess[final$housing_selfAssess_change==0] <- "No change in\nhousing self-assessment"
+final$housing_selfAssess <- as.factor(final$housing_selfAssess)
+ggplot(final, aes(housing_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in housing self assessment response\n(Core group N=79)\n")
+
+```
+
+### Employment
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$employment_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_2_15[j]) & !is.na(final$Q36_2_15[j])) {
+    final$employment_selfAssess_change[j] <- as.integer(final$Q36_2_17[j]) - as.integer(final$Q36_2_15[j])
+  }
+}
+#summary(as.factor(final$employment_selfAssess_change))
+final$employment_selfAssess[final$employment_selfAssess_change<0] <- "Negative change in\nemployment self-assessment"
+final$employment_selfAssess[final$employment_selfAssess_change>0] <- "Positive change in\nemployment self-assessment"
+final$employment_selfAssess[final$employment_selfAssess_change==0] <- "No change in\nemployment self-assessment"
+final$employment_selfAssess <- as.factor(final$employment_selfAssess)
+ggplot(final, aes(employment_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in employment self assessment response\n(Core group N=79)\n")
+
+```
+
+### Income
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+#final$Q36_3_17 <- factor(as.character(final$Q36_3_17), levels=levels(final$Q36_1_15), labels = levels(final$Q36_1_15)) 
+final$income_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_3_15[j]) & !is.na(final$Q36_3_15[j])) {
+    final$income_selfAssess_change[j] <- as.integer(final$Q36_3_17[j]) - as.integer(final$Q36_3_15[j])
+  }
+}
+#summary(as.factor(final$income_selfAssess_change))
+final$income_selfAssess[final$income_selfAssess_change<0] <- "Negative change in\nincome self-assessment"
+final$income_selfAssess[final$income_selfAssess_change>0] <- "Positive change in\nincome self-assessment"
+final$income_selfAssess[final$income_selfAssess_change==0] <- "No change in\nincome self-assessment"
+final$income_selfAssess <- as.factor(final$income_selfAssess)
+ggplot(final, aes(income_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in income self assessment response\n(Core group N=79)\n")
+
+```
+
+### Food
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$food_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_4_15[j]) & !is.na(final$Q36_4_15[j])) {
+    final$food_selfAssess_change[j] <- as.integer(final$Q36_4_17[j]) - as.integer(final$Q36_4_15[j])
+  }
+}
+#summary(as.factor(final$food_selfAssess_change))
+final$food_selfAssess[final$food_selfAssess_change<0] <- "Negative change in\nfood self-assessment"
+final$food_selfAssess[final$food_selfAssess_change>0] <- "Positive change in\nfood self-assessment"
+final$food_selfAssess[final$food_selfAssess_change==0] <- "No change in\nfood self-assessment"
+final$food_selfAssess <- as.factor(final$food_selfAssess)
+ggplot(final, aes(food_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in food self assessment response\n(Core group N=79)\n")
+
+```
+
+### Transportation
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$transportation_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_5_15[j]) & !is.na(final$Q36_5_15[j])) {
+    final$transportation_selfAssess_change[j] <- as.integer(final$Q36_5_17[j]) - as.integer(final$Q36_5_15[j])
+  }
+}
+#summary(as.factor(final$transportation_selfAssess_change))
+final$transportation_selfAssess[final$transportation_selfAssess_change<0] <- "Negative change in\ntransportation self-assessment"
+final$transportation_selfAssess[final$transportation_selfAssess_change>0] <- "Positive change in\ntransportation self-assessment"
+final$transportation_selfAssess[final$transportation_selfAssess_change==0] <- "No change in\ntransportation self-assessment"
+final$transportation_selfAssess <- as.factor(final$transportation_selfAssess)
+ggplot(final, aes(transportation_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in transportation self assessment response\n(Core group N=79)\n")
+
+```
+
+
+### Childcare
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$childcare_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_6_15[j]) & !is.na(final$Q36_6_15[j])) {
+    final$childcare_selfAssess_change[j] <- as.integer(final$Q36_6_17[j]) - as.integer(final$Q36_6_15[j])
+  }
+}
+#summary(as.factor(final$childcare_selfAssess_change))
+final$childcare_selfAssess[final$childcare_selfAssess_change<0] <- "Negative change in\nchildcare self-assessment"
+final$childcare_selfAssess[final$childcare_selfAssess_change>0] <- "Positive change in\nchildcare self-assessment"
+final$childcare_selfAssess[final$childcare_selfAssess_change==0] <- "No change in\nchildcare self-assessment"
+final$childcare_selfAssess <- as.factor(final$childcare_selfAssess)
+ggplot(final, aes(childcare_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in childcare self assessment response\n(Core group N=79)\n")
+
+```
+
+### Support networks
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$supportNetwork_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_7_15[j]) & !is.na(final$Q36_7_15[j])) {
+    final$supportNetwork_selfAssess_change[j] <- as.integer(final$Q36_7_17[j]) - as.integer(final$Q36_7_15[j])
+  }
+}
+#summary(as.factor(final$supportNetwork_selfAssess_change))
+final$supportNetwork_selfAssess[final$supportNetwork_selfAssess_change<0] <- "Negative change in\nsupportNetwork self-assessment"
+final$supportNetwork_selfAssess[final$supportNetwork_selfAssess_change>0] <- "Positive change in\nsupportNetwork self-assessment"
+final$supportNetwork_selfAssess[final$supportNetwork_selfAssess_change==0] <- "No change in\nsupportNetwork self-assessment"
+final$supportNetwork_selfAssess <- as.factor(final$supportNetwork_selfAssess)
+ggplot(final, aes(supportNetwork_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in supportNetwork self assessment response\n(Core group N=79)\n")
+
+```
+
+### Legal
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$legal_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_8_15[j]) & !is.na(final$Q36_8_15[j])) {
+    final$legal_selfAssess_change[j] <- as.integer(final$Q36_8_17[j]) - as.integer(final$Q36_8_15[j])
+  }
+}
+#summary(as.factor(final$legal_selfAssess_change))
+final$legal_selfAssess[final$legal_selfAssess_change<0] <- "Negative change in\nlegal self-assessment"
+final$legal_selfAssess[final$legal_selfAssess_change>0] <- "Positive change in\nlegal self-assessment"
+final$legal_selfAssess[final$legal_selfAssess_change==0] <- "No change in\nlegal self-assessment"
+final$legal_selfAssess <- as.factor(final$legal_selfAssess)
+ggplot(final, aes(legal_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in legal self assessment response\n(Core group N=79)\n")
+
+```
+
+### Health
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$health_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_9_15[j]) & !is.na(final$Q36_9_15[j])) {
+    final$health_selfAssess_change[j] <- as.integer(final$Q36_9_17[j]) - as.integer(final$Q36_9_15[j])
+  }
+}
+#summary(as.factor(final$health_selfAssess_change))
+final$health_selfAssess[final$health_selfAssess_change<0] <- "Negative change in\nhealth self-assessment"
+final$health_selfAssess[final$health_selfAssess_change>0] <- "Positive change in\nhealth self-assessment"
+final$health_selfAssess[final$health_selfAssess_change==0] <- "No change in\nhealth self-assessment"
+final$health_selfAssess <- as.factor(final$health_selfAssess)
+ggplot(final, aes(health_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in health self assessment response\n(Core group N=79)\n")
+
+```
+
+### Education
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$education_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_10_15[j]) & !is.na(final$Q36_10_15[j])) {
+    final$education_selfAssess_change[j] <- as.integer(final$Q36_10_17[j]) - as.integer(final$Q36_10_15[j])
+  }
+}
+#summary(as.factor(final$education_selfAssess_change))
+final$education_selfAssess[final$education_selfAssess_change<0] <- "Negative change in\neducation self-assessment"
+final$education_selfAssess[final$education_selfAssess_change>0] <- "Positive change in\neducation self-assessment"
+final$education_selfAssess[final$education_selfAssess_change==0] <- "No change in\neducation self-assessment"
+final$education_selfAssess <- as.factor(final$education_selfAssess)
+ggplot(final, aes(education_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in education self assessment response\n(Core group N=79)\n")
+
+```
+
+### Immigration
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+final$immigration_selfAssess_change <- NA
+for(j in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_11_15[j]) & !is.na(final$Q36_11_15[j])) {
+    final$immigration_selfAssess_change[j] <- as.integer(final$Q36_11_17[j]) - as.integer(final$Q36_11_15[j])
+  }
+}
+#summary(as.factor(final$immigration_selfAssess_change))
+final$immigration_selfAssess[final$immigration_selfAssess_change<0] <- "Negative change in\nimmigration self-assessment"
+final$immigration_selfAssess[final$immigration_selfAssess_change>0] <- "Positive change in\nimmigration self-assessment"
+final$immigration_selfAssess[final$immigration_selfAssess_change==0] <- "No change in\nimmigration self-assessment"
+final$immigration_selfAssess <- as.factor(final$immigration_selfAssess)
+ggplot(final, aes(immigration_selfAssess)) + geom_bar(fill="cadetblue") + coord_flip() + geom_text(stat='count',aes(label=..count..), hjust=-0.25) + ggtitle("Change in immigration self assessment response\n(Core group N=79)\n")
+
+```
+
+

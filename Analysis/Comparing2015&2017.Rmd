@@ -61,7 +61,13 @@ Number of PH households who participated in all three rounds of the survey:
 ```{r, echo=FALSE}
 
 length(intersect(intersect(ph2015, ph2017), ph2014))
-
+temp <- subset(final, final$TCode %in% intersect(intersect(ph2015, ph2017), ph2014))
+median(temp$Total.Annual.Income14)
+median(temp$Total.Annual.Income15)
+median(temp$TotalAnnualIncome_17)
+ggplot(temp, aes(x=temp$PH_or_S8, y=temp$Total.Annual.Income14)) + geom_boxplot()
+ggplot(temp, aes(x=temp$PH_or_S8, y=temp$Total.Annual.Income15)) + geom_boxplot()
+ggplot(temp, aes(x=temp$PH_or_S8, y=temp$TotalAnnualIncome_17)) + geom_boxplot()
 
 ```
 

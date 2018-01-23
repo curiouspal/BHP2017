@@ -1,6 +1,6 @@
 ---
 title: "Comparison between Out-movers, New-comers and the Core group"
-date: October 27, 2017
+date: January 16, 2018
 output: word_document
 ---
 
@@ -57,9 +57,12 @@ s2017 <- levels(as.factor(final$TCode[final$FromAdmin_17=="admin2017"]))
 s2015 <- levels(as.factor(final$TCode[final$FromAdmin_15=="admin2015"]))
 s2014 <- levels(as.factor(final$TCode[final$FromAdmin_14=="admin2014"]))
 
-setdiff(s2014, s2017)
-setdiff(s2017, s2014)
-intersect(s2017, s2014)
+#final$From_15[final$TCode %in% s2015]
+#summary(as.factor(final$Surveyed_14[final$TCode %in% s2014]))
+
+#setdiff(s2014, s2015)
+#setdiff(s2017, s2015)
+#intersect(s2017, s2014)
 
 rest1 <- intersect(s2017, s2015)
 #rest1
@@ -126,7 +129,7 @@ ggplot(all1, aes(x = all1$F, y = all1$Member.Age...as.of.date15)) +
   geom_boxplot() +
   xlab("2015") + ylab("Member Age in 2015") +
   geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
-  ggtitle("Comparison of Age as of 2015 \nfor \"out\" group (N=29) and the rest (N=88)\n")
+  ggtitle("Comparison of Age as of 2015 \nfor \"out\" group (N=27) and the rest (N=88)\n")
 all1 <- subset(all, F!="Out")
 New17Median <- median(all1$'MemberAge-asofdate_17'[all1$F=="New"], na.rm = TRUE)
 Rest17Median <- median(all1$'MemberAge-asofdate_17'[all1$F=="Core"], na.rm = TRUE)
@@ -687,6 +690,89 @@ ggplot(all1, aes(x = all1$F, y = all1$TotalAnnualIncome_17)) +
 
 ```
 
+### Tenant Rent
+
+```{r, echo=FALSE}
+
+all1 <- subset(all, F!="New" & !is.na(Total.Annual.Income15))
+att_2015_N <- length(all1$Tenant.Rent15[all1$F=="Out"])
+rest_2015_N <- length(all1$Tenant.Rent15[all1$F=="Core"])
+Attr15Median <- median(all1$Tenant.Rent15[all1$F=="Out"])
+Rest15Median <- median(all1$Tenant.Rent15[all1$F=="Core"])
+med <- data.frame(F=c("Out", "Core"), m=c(Attr15Median, Rest15Median))
+all1$med15[all1$F=="Out"] <- Attr15Median
+all1$med15[all1$F=="Core"] <- Rest15Median
+ggplot(all1, aes(x = all1$F, y = all1$Tenant.Rent15)) + 
+  geom_boxplot() +
+  xlab("2015") + ylab("Rent in 2015") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
+  ggtitle(paste0("Comparison of Rent as of 2015 \nfor \"out\" group (N=", att_2015_N, ") and the \"core\" (N=", rest_2015_N, ")\n", sep = ""))
+
+all1 <- subset(all, F!="Out")
+att_2017_N <- length(all1$TenantRent_17[all1$F=="New"])
+rest_2017_N <- length(all1$TenantRent_17[all1$F=="Core"])
+#all1$TenantRent_17 <- gsub(",", "", all1$TenantRent_17)
+#all1$TenantRent_17 <- as.numeric(all1$TenantRent_17)
+New17Median <- median(all1$TenantRent_17[all1$F=="New"])
+Rest17Median <- median(all1$TenantRent_17[all1$F=="Core"])
+all1$med17[all1$F=="New"] <- New17Median
+all1$med17[all1$F=="Core"] <- Rest17Median
+med <- data.frame(F=c("New", "Core"), m=c(New17Median, Rest17Median))
+ggplot(all1, aes(x = all1$F, y = all1$TenantRent_17)) + 
+  geom_boxplot() +
+  xlab("2017") + ylab("Rent in 2017") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
+  ggtitle(paste0("Comparison of Rent as of 2017 \nfor \"out\" group (N=", att_2017_N, ") and the \"core\" (N=", rest_2017_N, ")\n", sep = ""))
+  
+
+```
+
+### Number of Children
+
+```{r, echo=FALSE}
+
+all1 <- subset(all, F!="New" & !is.na(Total.Annual.Income15))
+att_2015_N <- length(all1$HH.Members.under.age.1315[all1$F=="Out"])
+rest_2015_N <- length(all1$HH.Members.under.age.1315[all1$F=="Core"])
+Attr15Median <- median(all1$HH.Members.under.age.1315[all1$F=="Out"])
+Rest15Median <- median(all1$HH.Members.under.age.1315[all1$F=="Core"])
+Attr15Mean <- mean(as.integer(as.character(all1$HH.Members.under.age.1315))[all1$F=="Out"], na.rm = TRUE)
+Rest15Mean <- mean(as.integer(as.character(all1$HH.Members.under.age.1315))[all1$F=="Core"], na.rm = TRUE)
+med <- data.frame(F=c("Out", "Core"), m=c(Attr15Median, Rest15Median))
+all1$med15[all1$F=="Out"] <- Attr15Median
+all1$med15[all1$F=="Core"] <- Rest15Median
+ggplot(all1, aes(x = all1$F, y = all1$HH.Members.under.age.1315)) + 
+  geom_boxplot() +
+  xlab("2015") + ylab("No. of Children under 13 in 2015") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
+  ggtitle(paste0("Comparison of Number of Children as of 2015 \nfor \"out\" group (N=", att_2015_N, ") and the \"core\" (N=", rest_2015_N, ")\n", sep = ""))
+
+all1 <- subset(all, F!="Out")
+att_2017_N <- length(all1$HHMembersunderage13_17[all1$F=="New"])
+rest_2017_N <- length(all1$HHMembersunderage13_17[all1$F=="Core"])
+#all1$HHMembersunderage13_17 <- gsub(",", "", all1$HHMembersunderage13_17)
+#all1$HHMembersunderage13_17 <- as.numeric(all1$HHMembersunderage13_17)
+New17Median <- median(all1$HHMembersunderage13_17[all1$F=="New"])
+Rest17Median <- median(all1$HHMembersunderage13_17[all1$F=="Core"])
+New17Mean <- mean(as.integer(as.character(all1$HHMembersunderage13_17))[all1$F=="New"], na.rm = TRUE)
+Rest17Mean <- mean(as.integer(as.character(all1$HHMembersunderage13_17))[all1$F=="Core"], na.rm = TRUE)
+all1$med17[all1$F=="New"] <- New17Median
+all1$med17[all1$F=="Core"] <- Rest17Median
+med <- data.frame(F=c("New", "Core"), m=c(New17Median, Rest17Median))
+ggplot(all1, aes(x = all1$F, y = all1$HHMembersunderage13_17)) + 
+  geom_boxplot() +
+  xlab("2017") + ylab("No. of Children under 13 in 2017") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") +
+  ggtitle(paste0("Comparison of Number of Children as of 2017 \nfor \"out\" group (N=", att_2017_N, ") and the \"core\" (N=", rest_2017_N, ")\n", sep = ""))
+  
+print(c("Out-Movers 2015 average number of children", round(Attr15Mean, 1))) 
+print(c("Core group 2015 average number of children", round(Rest15Mean, 1))) 
+print(c("New group 2017 average number of children", round(New17Mean, 1))) 
+print(c("Core group 2017 average number of children", round(Rest17Mean, 1)))
+```
+
+
+
 
 Q9: Income ran out last three months?
 ```{r, echo=FALSE}
@@ -734,3 +820,157 @@ ggplot(temp, aes(x=temp$a, y=(temp$PercentYes))) + geom_bar(stat="identity", fil
 #summary(temp$diff)
 
 ```
+
+
+## ADMINISTRATIVE DATA
+```{r, echo=FALSE}
+levCitizen <- c("EC", "EN", "IN")
+labCitizen <- c("Eligible Citizen", "Eligible Non-Citizen", "Ineligible Non-Citizen")
+
+final$Member.Citizen14 <- factor(final$Member.Citizen14, levels=levCitizen, labels = labCitizen)
+final$Member.Citizen_15 <- factor(final$Member.Citizen_15, levels=levCitizen, labels = labCitizen)
+
+final$Member.Ethnicity14 <- as.factor(final$Member.Ethnicity14)
+final$Member.Ethnicity15 <- as.factor(final$Member.Ethnicity15)
+
+final$Member.Ethnicity14 <- factor(final$Member.Ethnicity14, levels = c(1, 2), labels=c("Hispanic/Latino", "Non-Hispanic/Latino"))
+final$Member.Ethnicity15 <- factor(final$Member.Ethnicity15, levels = c(1, 2), labels=c("Hispanic/Latino", "Non-Hispanic/Latino"))
+
+final$Bedrooms14 <- as.factor(final$Bedrooms14)
+final$Bedrooms15 <- as.factor(final$Bedrooms15)
+
+final$Family.Members14 <- as.factor(final$Family.Members14)
+final$Family.Members15 <- as.factor(final$Family.Members15)
+
+final$Eligible.Members14 <- as.factor(final$Eligible.Members14)
+final$Eligible.Members15 <- as.factor(final$Eligible.Members15)
+
+final$Dependants14 <- as.factor(final$Dependants14)
+final$Dependants15 <- as.factor(final$Dependants15)
+
+final$HH.Members.under.age.1314 <- as.factor(final$HH.Members.under.age.1314)
+final$HH.Members.under.age.1315 <- as.factor(final$HH.Members.under.age.1315)
+
+final$Student.Houshold.Members14 <- as.factor(final$Student.Houshold.Members14)
+
+
+final$Non.Students.Ages.18.14 <- as.factor(final$Non.Students.Ages.18.14)
+
+
+final$Bedrooms14 <- as.factor(final$Bedrooms14)
+final$Bedrooms15 <- as.factor(final$Bedrooms15)
+
+#summary(final$Status14)
+#summary(final$Household.Member14)
+#summary(final$Member.Age...as.of.date14)
+#summary(final$Total.Annual.Income14)
+#summary(final$Member.Citizen14)
+#summary(final$Member.Sex14)
+#summary(final$Tenant.Rent14)
+#summary(final$Member.Ethnicity14)
+#summary(final$Bedrooms14)
+#summary(final$Family.Members14)
+#summary(final$Eligible.Members14)
+#summary(final$Dependants14)
+#summary(final$HH.Members.under.age.1314)
+#summary(final$Student.Houshold.Members14)
+#summary(final$Non.Students.Ages.18.14)
+#summary(final$Single.Parent.HH14)
+
+
+#summary(final$Status15)
+#summary(final$Household.Member15)
+#summary(final$Member.Age...as.of.date15)
+#summary(final$Total.Annual.Income15)
+#summary(final$Member.Citizen15)
+#summary(final$Member.Sex15)
+#summary(final$Tenant.Rent15)
+#summary(final$Member.Ethnicity15)
+#summary(final$Bedrooms15)
+#summary(final$Family.Members15)
+#summary(final$Eligible.Members15)
+#summary(final$Dependants15)
+#summary(final$HH.Members.under.age.1315)
+#summary(final$Student.Houshold.Members15)
+#summary(final$Non.Students.Ages.18.15)
+#summary(final$Single.Parent.HH15)
+```
+
+
+```{r, echo=FALSE}
+#table(final$Status14, final$Status15)
+```
+
+Changes in Administrative data between 2014, 2015 and 2017.
+```{r, message = FALSE, echo=FALSE, fig.height=10, fig.width=9}
+x <- c("% Ineligible Non-Citizens",
+       "% Female",
+       "% Hispanic/Latino",
+       "% living in 3 or more bedrooms",
+       "% w/4 or more family members",
+       "% w/2 or more dependents",
+       "% w/1 or more HH members < 13yrs",
+       "% Single parent household")
+
+
+y_2014 <- c(median(final$Member.Age...as.of.date14, na.rm = TRUE), 
+            median(final$Total.Annual.Income14, na.rm = TRUE),
+            median(final$Tenant.Rent14, na.rm = TRUE))
+
+pct_Yes_2014 <- c(100*length(final$Member.Citizen14[final$Member.Citizen14=="Ineligible Non-Citizen"& !is.na(final$Member.Citizen14)])/length(final$Member.Citizen14[!is.na(final$Member.Citizen14)]),
+                  100*length(final$Member.Sex14[final$Member.Sex14=="F" & !is.na(final$Member.Sex14)] )/length(final$Member.Sex14[!is.na(final$Member.Sex14)]),
+                  100*length(final$Member.Ethnicity14[final$Member.Ethnicity14=="Hispanic/Latino" & !is.na(final$Member.Ethnicity14)])/length(final$Member.Ethnicity14[!is.na(final$Member.Ethnicity14)]),
+                  100*length(final$Bedrooms14[as.integer(as.character(final$Bedrooms14))>=3 & !is.na(final$Bedrooms14)])/length(final$Bedrooms14[!is.na(final$Bedrooms14)]),
+                  100*length(final$Family.Members14[as.integer(as.character(final$Family.Members14))>=4 & !is.na(final$Family.Members14)])/length(final$Family.Members14[!is.na(final$Family.Members14)]),
+                  100*length(final$Dependants14[as.integer(as.character(final$Dependants14))>=2 & !is.na(final$Dependants14)])/length(final$Dependants14[!is.na(final$Dependants14)]),
+                  100*length(final$HH.Members.under.age.1314[as.integer(as.character(final$HH.Members.under.age.1314))>=1 & !is.na(final$HH.Members.under.age.1314)])/length(final$HH.Members.under.age.1314[!is.na(final$HH.Members.under.age.1314)]),
+                  100*length(final$Single.Parent.HH14[final$Single.Parent.HH14=="Yes" & !is.na(final$Single.Parent.HH14)])/length(final$Single.Parent.HH14[!is.na(final$Single.Parent.HH14)])
+                  )
+
+pct_Yes_2015 <- c(100*length(final$Member.Citizen_15[final$Member.Citizen_15=="Ineligible Non-Citizen"& !is.na(final$Member.Citizen_15)])/length(final$Member.Citizen_15[!is.na(final$Member.Citizen_15)]),
+                  100*length(final$Member.Sex15[final$Member.Sex15=="F" & !is.na(final$Member.Sex15)] )/length(final$Member.Sex15[!is.na(final$Member.Sex15)]),
+                  100*length(final$Member.Ethnicity15[final$Member.Ethnicity15=="Hispanic/Latino" & !is.na(final$Member.Ethnicity15)])/length(final$Member.Ethnicity15[!is.na(final$Member.Ethnicity15)]),
+                  100*length(final$Bedrooms15[as.integer(as.character(final$Bedrooms15))>=3 & !is.na(final$Bedrooms15)])/length(final$Bedrooms15[!is.na(final$Bedrooms15)]),
+                  100*length(final$Family.Members15[as.integer(as.character(final$Family.Members15))>=4 & !is.na(final$Family.Members15)])/length(final$Family.Members15[!is.na(final$Family.Members15)]),
+                  100*length(final$Dependants15[as.integer(as.character(final$Dependants15))>=2 & !is.na(final$Dependants15)])/length(final$Dependants15[!is.na(final$Dependants15)]),
+                  100*length(final$HH.Members.under.age.1315[as.integer(as.character(final$HH.Members.under.age.1315))>=1 & !is.na(final$HH.Members.under.age.1315)])/length(final$HH.Members.under.age.1315[!is.na(final$HH.Members.under.age.1315)]),
+                  100*length(final$Single.Parent.HH15[final$Single.Parent.HH15=="Yes" & !is.na(final$Single.Parent.HH15)])/length(final$Single.Parent.HH15[!is.na(final$Single.Parent.HH15)])
+                  )
+
+final$Member.Citizen_17 <- NA
+for(i in 1:length(final$TCode)) {
+  if(final$TCode[i] %in% admin2017$Tenant) final$Member.Citizen_17[i] <- as.character(admin2017$Member.Citizen[as.character(admin2017$Tenant)==as.character(final$TCode[i])])
+}
+
+final$Member.Citizen_17 <-as.factor(final$Member.Citizen_17) 
+
+pct_Yes_2017 <- c(100*length(final$Member.Citizen_17[final$Member.Citizen_17=="IN" & !is.na(final$Member.Citizen_17)])/length(final$Member.Citizen_17[!is.na(final$Member.Citizen_17)]),
+                  100*length(final$MemberSex_17[final$MemberSex_17=="F" & !is.na(final$MemberSex_17)] )/length(final$MemberSex_17[!is.na(final$MemberSex_17)]),
+                  100*length(final$MemberEthnicity_17[final$MemberEthnicity_17==1 & !is.na(final$MemberEthnicity_17)])/length(final$MemberEthnicity_17[!is.na(final$MemberEthnicity_17)]),
+                  100*length(final$Bedrooms_17[as.integer(as.character(final$Bedrooms_17))>=3 & !is.na(final$Bedrooms_17)])/length(final$Bedrooms_17[!is.na(final$Bedrooms_17) & as.integer(as.character(final$Bedrooms_17))!=0]),
+                  100*length(final$NumberofFamilyMembers_17[as.integer(as.character(final$NumberofFamilyMembers_17))>=4 & !is.na(final$NumberofFamilyMembers_17)])/length(final$NumberofFamilyMembers_17[!is.na(final$NumberofFamilyMembers_17)]),
+                  100*length(final$NumberofDependents_17[as.integer(as.character(final$NumberofDependents_17))>=2 & !is.na(final$NumberofDependents_17)])/length(final$NumberofDependents_17[!is.na(final$NumberofDependents_17)]),
+                  100*length(final$HHMembersunderage13_17[as.integer(as.character(final$HHMembersunderage13_17))>=1 & !is.na(final$HHMembersunderage13_17)])/length(final$HHMembersunderage13_17[!is.na(final$HHMembersunderage13_17)]),
+                  100*length(final$SingleParentHousehold_17[final$SingleParentHousehold_17=="Yes" & !is.na(final$SingleParentHousehold_17)])/length(final$SingleParentHousehold_17[!is.na(final$SingleParentHousehold_17)])
+                  )
+
+d <- data.frame(Question = x, pct_Yes_2014, pct_Yes_2015, pct_Yes_2017)
+d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes")
+
+ggplot(d, aes((Question), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
+  theme(
+    plot.title = element_text(size=16, face="bold", vjust=3), 
+    axis.text.x = element_text(size=12, angle = 0, hjust = 1), 
+    axis.text.y = element_text(size=12), 
+    axis.title.x = element_text(size=12), 
+    axis.title.y = element_text(size=12, vjust=2),
+    legend.title=element_blank(),
+    legend.text = element_text(size = 12)) +
+  coord_flip() +
+  ylab("\nPercentage ") +
+  xlab(" ") +
+  ggtitle("Socioeconomic and household characteristics\n") +
+  geom_text(aes(y = Percent_Yes, label=round(Percent_Yes, 0)), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust="inward", size=5, alpha=0.8) +
+  scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="", labels = c("2014", "2015", "2017"))
+```
+

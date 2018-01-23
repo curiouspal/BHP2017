@@ -610,6 +610,10 @@ temp[(as.character(temp$a)!=as.character(temp$b) & !is.na(temp$a) & !is.na(temp$
 summary(final$PH_or_S8)
 final$PH_or_S8[final$TCode %in% phadmin2017$TCode] <- "PH"
 
+summary(final$Q36_3_17)
+
+final$Q36_3_17 <- factor(as.character(final$Q36_3_17), levels=levels(final$Q36_1_15), labels = levels(final$Q36_1_15)) 
+
 #save(final, file="/media/anirban/a84ef5e0-59cf-454d-aeae-e112c9915900/home/anirban/Documents/BHP-New/BHP-2017-roundData/combined-Jan16-2018.RData")
 
 subset(temp, is.na(temp$d))

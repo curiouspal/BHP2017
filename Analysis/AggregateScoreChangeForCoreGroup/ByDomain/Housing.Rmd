@@ -1,0 +1,134 @@
+---
+title: "Change in Housing Barriers among PH Households"
+author: "Anirban Pal"
+date: "January 17, 2018"
+output: html_document
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+load("combined-New-October13-2016.RData")
+final <- subset(final, PH_or_S8 == "PH")
+library("ggplot2")
+#library("dplyr")
+#library("pander")
+library("reshape2")
+library("scales")
+#library("Hmisc")
+#panderOptions("table.split.table", Inf)
+#y <- select(final, contains("Q"))
+```
+
+
+### **Housing Barriers**
+I added up all the negative (meaning condition worsened in 2017 when compared to 2015) change in responses (numerical change, unweighted) for each housing barrier sub-question for a given TCode and call it housing_negScore. Below is the distribution of housing_negScore.
+
+```{r, echo=FALSE}
+Q1 <- c("Q1","Q2","Q3_1","Q3_2","Q3_3","Q3_4","Q3_5","Q3_6","Q3_7","Q3_8","Q3_9","Q4","Q5","Q6","Q7","Q8_1_1","Q8_1_2","Q8_1_3","Q8_1_4","Q8_1_5","Q8_1_6","Q8_1_7","Q8_1_8","Q8_1_9","Q8_1_10","Q8_1_11","Q8_1_12","Q8_1_13","Q8_1_14","Q9","Q10_1","Q10_2","Q10_3","Q10_4","Q10_5","Q10_6","Q10_7","Q10_8","Q11","Q12","Q13_1","Q13_2","Q13_3","Q13_4","Q13_5","Q14","Q15_1","Q15_2","Q15_3","Q15_4","Q16_1","Q16_2","Q16_3","Q16_4","Q16_5","Q16_6","Q17","Q18_1","Q18_2","Q18_3","Q18_4","Q18_5","Q18_6","Q18_7","Q18_8","Q18_9","Q18_10","Q19","Q20","Q21_1","Q21_2","Q21_3","Q22_1","Q22_2","Q22_3","Q23_1","Q23_2","Q23_3","Q23_4","Q23_5","Q24_1","Q24_2","Q24_3","Q24_4","Q24_5","Q24_6","Q25_1","Q25_2","Q25_3","Q25_4","Q25_5","Q25_6","Q25_7","Q26","Q27_1","Q27_2","Q27_3","Q27_4","Q28","Q29","Q31","Q32","Q33","Q34","Q35_1","Q35_2","Q35_3","Q35_4","Q35_5","Q35_6","Q35_7","Q35_8","Q35_9","Q35_10","Q35_11","Q35_12","Q36_1","Q36_2","Q36_3","Q36_4","Q36_5","Q36_6","Q36_7","Q36_8","Q36_9","Q36_10","Q36_11","Q37")
+
+D1 <- c("Q1:0","Q2:0","Q3_1:-1","Q3_2:-1","Q3_3:-1","Q3_4:-1","Q3_5:-1","Q3_6:-1","Q3_7:-1","Q3_8:-1","Q3_9:-1","Q4:0","Q5:0","Q60","Q7:0","Q8_1_1:0","Q8_1_2:0","Q8_1_3:0","Q8_1_4:0","Q8_1_5:0","Q8_1_6:0","Q8_1_7:0","Q8_1_8:0","Q8_1_9:0","Q8_1_10:0","Q8_1_11:0","Q8_1_12:0","Q8_1_13:0","Q8_1_14:0","Q9:0","Q10_1:0","Q10_2:0","Q10_3:0","Q10_4:0","Q10_5:0","Q10_6:0","Q10_7:0","Q10_8:0","Q11:0","Q12:0","Q13_1:0","Q13_2:0","Q13_3:0","Q13_4:0","Q13_5:0","Q14:0","Q15_1:0","Q15_2:0","Q15_3:0","Q15_4:0","Q16_10","Q16_20","Q16_30","Q16_40","Q16_50","Q16_60","Q17:0","Q18_1:0","Q18_2:0","Q18_3:0","Q18_4:0","Q18_5:0","Q18_6:0","Q18_7:0","Q18_8:0","Q18_9:0","Q18_10:0","Q19:0","Q20:0","Q21_1:0","Q21_2:0","Q21_3:0","Q22_1:0","Q22_2:0","Q22_3:0","Q23_1:0","Q23_2:0","Q23_3:0","Q23_4:0","Q23_5:0","Q24_1:0","Q24_2:0","Q24_3:0","Q24_4:0","Q24_5:0","Q24_6:0","Q25_1:0","Q25_2:0","Q25_3:0","Q25_4:0","Q25_5:0","Q25_6:0","Q25_7:0","Q26:0","Q27_1:0","Q27_2:0","Q27_3:0","Q27_4:0","Q28:0","Q290","Q31:0","Q32:0","Q33:0","Q34:0","Q35_1:0","Q35_2:0","Q35_3:0","Q35_4:0","Q35_5:0","Q35_6:0","Q35_7:0","Q35_8:0","Q35_9:0","Q35_10:0","Q35_11:0","Q35_12:0","Q36_10","Q36_20","Q36_30","Q36_40","Q36_50","Q36_60","Q36_70","Q36_80","Q36_90","Q36_100","Q36_110","Q37:0")
+
+
+D11<-NA
+for(i in 1:length(D1)) D11[i] <- strsplit(D1, ":", fixed=TRUE)[[i]][2]
+
+D12 <- as.integer(D11)
+
+direction <- data.frame(Q1, dir1=D12)
+
+
+
+
+################################################################################################################
+##### THIS CODE CREATES A NEW COLUMN IN THE "FINAL" DATA FRAME WITH A SCORE FOR SUM OF NEGATIVE CHANGE  #######
+################################################################################################################
+negativeScore <- function(t) {
+  temp1 <- data.frame(ques=Q1, d=D12)
+  for(i in 1:length(temp1$ques)) {
+    temp1$response_14[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_14", sep="")))[final$TCode==t])
+    temp1$response_14[i] <- ordered(temp1$response_14[i], 
+                                    levels=levels(eval(parse(text = paste0("final$", temp1$ques[i], "_14", sep=""))))
+                                    )
+  }
+  for(i in 1:length(temp1$ques)) {
+    temp1$response_16[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_16", sep="")))[final$TCode==t])
+    temp1$response_16[i] <- ordered(temp1$response_16[i], 
+                                    levels=levels(eval(parse(text = paste0("final$", temp1$ques[i], "_16", sep=""))))
+                                    )
+  }
+  for(i in 1:length(temp1$ques)) temp1$res_16[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_16", sep="")))[final$TCode==t])
+  for(i in 1:length(temp1$ques)) temp1$res_14[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_14", sep="")))[final$TCode==t])
+  temp1$diff <- as.integer(temp1$response_16) - as.integer(temp1$response_14)
+  temp1$diff <- temp1$diff*temp1$d
+
+  return(sum(temp1$diff[temp1$diff <= 0], na.rm = TRUE))
+}
+
+for(t in 1:length(final$TCode)) final$housing_negScore[t] <- negativeScore(final$TCode[t])  
+
+summary(final$housing_negScore)
+ggplot(final, aes(housing_negScore)) + geom_bar()
+################################################################################################################
+```
+
+
+Just to compare the TCodes that saw the most worsening of their living conditions, I also do the same for those with positive changes.
+
+I added up all the positive (meaning condition improved in 2016 when compared to 2014) change in responses (numerical change, unweighted) for each question for a given TCode and call it housing_posScore. Below is the distribution of housing_posScore.
+
+```{r, echo=FALSE}
+################################################################################################################
+##### THIS CODE CREATES A NEW COLUMN IN THE "FINAL" DATA FRAME WITH A SCORE FOR SUM OF POSITIVE CHANGE  #######
+################################################################################################################
+positiveScore <- function(t) {
+  temp1 <- data.frame(ques=Q1, d=D12)
+  for(i in 1:length(temp1$ques)) {
+    temp1$response_14[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_14", sep="")))[final$TCode==t])
+    temp1$response_14[i] <- ordered(temp1$response_14[i], 
+                                    levels=levels(eval(parse(text = paste0("final$", temp1$ques[i], "_14", sep=""))))
+                                    )
+  }
+  for(i in 1:length(temp1$ques)) {
+    temp1$response_16[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_16", sep="")))[final$TCode==t])
+    temp1$response_16[i] <- ordered(temp1$response_16[i], 
+                                    levels=levels(eval(parse(text = paste0("final$", temp1$ques[i], "_16", sep=""))))
+                                    )
+  }
+  for(i in 1:length(temp1$ques)) temp1$res_16[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_16", sep="")))[final$TCode==t])
+  for(i in 1:length(temp1$ques)) temp1$res_14[i] <- as.character(eval(parse(text = paste0("final$", temp1$ques[i], "_14", sep="")))[final$TCode==t])
+  temp1$diff <- as.integer(temp1$response_16) - as.integer(temp1$response_14)
+  temp1$diff <- temp1$diff*temp1$d
+
+  return(sum(temp1$diff[temp1$diff > 0], na.rm = TRUE))
+}
+
+for(t in 1:length(final$TCode)) final$housing_posScore[t] <- positiveScore(final$TCode[t])  
+
+summary(final$housing_posScore)
+ggplot(final, aes(housing_posScore)) + geom_bar()
+################################################################################################################
+
+```
+
+
+What is the correlation between housing_negScore and housing_posScore?
+The graph is as we would expect: when housing_negScore goes up (-ve sign), the housing_posScore also goes .
+```{r, echo=FALSE, fig.width=10}
+final$housing_ss_diff <- (as.integer(final$Q36_1_16) - as.integer(final$Q36_1_14))
+final$housing_ss_diff1 <- NA
+final$housing_ss_diff1[final$housing_ss_diff<0] <- "Negative change in housing self assessment"
+final$housing_ss_diff1[final$housing_ss_diff>0] <- "Positive change in housing self assessment"
+final$housing_ss_diff1[final$housing_ss_diff==0] <- "No change in housing self assessment"
+final$housing_ss_diff1 <- as.factor(final$housing_ss_diff1)
+ggplot(final, aes(housing_negScore, housing_posScore)) + geom_point(alpha=0.3, color="red", size=4) 
+ggplot(final, aes(housing_negScore, housing_posScore)) + geom_text(aes(label = TCode, color=housing_ss_diff1), size = 4)
+
+```
+
+The following TCodes had the highest housing_negScore:
+```{r, echo=FALSE, fig.width=10}
+
+temp <- data.frame(TCode=final$TCode, housing_negScore=final$housing_negScore)
+temp <- temp[order(temp$housing_negScore),][c(1,2),]
+pander(temp)
+
+```
