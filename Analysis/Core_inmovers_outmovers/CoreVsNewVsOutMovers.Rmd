@@ -902,7 +902,7 @@ final$Bedrooms15 <- as.factor(final$Bedrooms15)
 ```
 
 Changes in Administrative data between 2014, 2015 and 2017.
-```{r, message = FALSE, echo=FALSE, fig.height=10, fig.width=9}
+```{r, message = FALSE, echo=FALSE, fig.height=7, fig.width=9}
 x <- c("% Ineligible Non-Citizens",
        "% Female",
        "% Hispanic/Latino",
@@ -917,9 +917,9 @@ y_2014 <- c(median(final$Member.Age...as.of.date14, na.rm = TRUE),
             median(final$Total.Annual.Income14, na.rm = TRUE),
             median(final$Tenant.Rent14, na.rm = TRUE))
 
-pct_Yes_2014 <- c(100*length(final$Member.Citizen14[final$Member.Citizen14=="Ineligible Non-Citizen"& !is.na(final$Member.Citizen14)])/length(final$Member.Citizen14[!is.na(final$Member.Citizen14)]),
+pct_Yes_2014 <- c(100*length(final$Member.Citizen14[final$Member.Citizen14=="IN"& !is.na(final$Member.Citizen14)])/length(final$Member.Citizen14[!is.na(final$Member.Citizen14)]),
                   100*length(final$Member.Sex14[final$Member.Sex14=="F" & !is.na(final$Member.Sex14)] )/length(final$Member.Sex14[!is.na(final$Member.Sex14)]),
-                  100*length(final$Member.Ethnicity14[final$Member.Ethnicity14=="Hispanic/Latino" & !is.na(final$Member.Ethnicity14)])/length(final$Member.Ethnicity14[!is.na(final$Member.Ethnicity14)]),
+                  100*length(final$Member.Ethnicity14[final$Member.Ethnicity14==1 & !is.na(final$Member.Ethnicity14)])/length(final$Member.Ethnicity14[!is.na(final$Member.Ethnicity14)]),
                   100*length(final$Bedrooms14[as.integer(as.character(final$Bedrooms14))>=3 & !is.na(final$Bedrooms14)])/length(final$Bedrooms14[!is.na(final$Bedrooms14)]),
                   100*length(final$Family.Members14[as.integer(as.character(final$Family.Members14))>=4 & !is.na(final$Family.Members14)])/length(final$Family.Members14[!is.na(final$Family.Members14)]),
                   100*length(final$Dependants14[as.integer(as.character(final$Dependants14))>=2 & !is.na(final$Dependants14)])/length(final$Dependants14[!is.na(final$Dependants14)]),
@@ -927,9 +927,9 @@ pct_Yes_2014 <- c(100*length(final$Member.Citizen14[final$Member.Citizen14=="Ine
                   100*length(final$Single.Parent.HH14[final$Single.Parent.HH14=="Yes" & !is.na(final$Single.Parent.HH14)])/length(final$Single.Parent.HH14[!is.na(final$Single.Parent.HH14)])
                   )
 
-pct_Yes_2015 <- c(100*length(final$Member.Citizen_15[final$Member.Citizen_15=="Ineligible Non-Citizen"& !is.na(final$Member.Citizen_15)])/length(final$Member.Citizen_15[!is.na(final$Member.Citizen_15)]),
+pct_Yes_2015 <- c(100*length(final$Member.Citizen_15[final$Member.Citizen_15=="IN"& !is.na(final$Member.Citizen_15)])/length(final$Member.Citizen_15[!is.na(final$Member.Citizen_15)]),
                   100*length(final$Member.Sex15[final$Member.Sex15=="F" & !is.na(final$Member.Sex15)] )/length(final$Member.Sex15[!is.na(final$Member.Sex15)]),
-                  100*length(final$Member.Ethnicity15[final$Member.Ethnicity15=="Hispanic/Latino" & !is.na(final$Member.Ethnicity15)])/length(final$Member.Ethnicity15[!is.na(final$Member.Ethnicity15)]),
+                  100*length(final$Member.Ethnicity15[final$Member.Ethnicity15==1 & !is.na(final$Member.Ethnicity15)])/length(final$Member.Ethnicity15[!is.na(final$Member.Ethnicity15)]),
                   100*length(final$Bedrooms15[as.integer(as.character(final$Bedrooms15))>=3 & !is.na(final$Bedrooms15)])/length(final$Bedrooms15[!is.na(final$Bedrooms15)]),
                   100*length(final$Family.Members15[as.integer(as.character(final$Family.Members15))>=4 & !is.na(final$Family.Members15)])/length(final$Family.Members15[!is.na(final$Family.Members15)]),
                   100*length(final$Dependants15[as.integer(as.character(final$Dependants15))>=2 & !is.na(final$Dependants15)])/length(final$Dependants15[!is.na(final$Dependants15)]),
@@ -960,8 +960,8 @@ d <- melt(d, id.vars = "Question", variable.name="Year", value.name="Percent_Yes
 ggplot(d, aes((Question), Percent_Yes, group=Year)) + geom_bar(stat = "identity", width = 0.7, position="dodge", aes(fill=Year), alpha=0.7) +
   theme(
     plot.title = element_text(size=16, face="bold", vjust=3), 
-    axis.text.x = element_text(size=12, angle = 0, hjust = 1), 
-    axis.text.y = element_text(size=12), 
+    axis.text.x = element_text(size=14, angle = 0, hjust = 1, color = "black"), 
+    axis.text.y = element_text(size=12, color = "black"), 
     axis.title.x = element_text(size=12), 
     axis.title.y = element_text(size=12, vjust=2),
     legend.title=element_blank(),
@@ -970,7 +970,7 @@ ggplot(d, aes((Question), Percent_Yes, group=Year)) + geom_bar(stat = "identity"
   ylab("\nPercentage ") +
   xlab(" ") +
   ggtitle("Socioeconomic and household characteristics\n") +
-  geom_text(aes(y = Percent_Yes, label=round(Percent_Yes, 0)), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust="inward", size=5, alpha=0.8) +
+  geom_text(aes(y = Percent_Yes, label=round(Percent_Yes, 0)), stat="identity", position=position_dodge(width = 0.7), hjust="inward", vjust="inward",  alpha=0.8) +
   scale_fill_manual(values = c("darkgreen", "cadetblue", "lightblue"), name="", labels = c("2014", "2015", "2017"))
 ```
 
