@@ -30,7 +30,7 @@ createTableImproved <- function(j, ques, number_of_subques) {
   return(temp)
 }
 
-temp1 <- createTable(7, "10", 8)
+temp1 <- createTableImproved(7, "10", 8)
 
 method1improved <- function(j, ques, number_of_subques) {
   counted <- 0 
@@ -62,7 +62,7 @@ createTableWorsened <- function(j, ques, number_of_subques) {
   return(temp)
 }
 
-temp1 <- createTable(7, "10", 8)
+temp1 <- createTableWorsened(7, "10", 8)
 
 method1worsened <- function(j, ques, number_of_subques) {
   counted <- 0 
@@ -94,7 +94,7 @@ length(setdiff(regressed, progressed))
 
 method2income <- function(j, ques, number_of_subques) {
   include <- 1 
-  x <- createTable(j, ques, number_of_subques)
+  x <- createTableImproved(j, ques, number_of_subques)
   count <- 0
   for(i in 1:length(x$y15)) if(x$y15[i] %in% c(1,2)) count <- 1 
   out15 <- sum(x$y15, na.rm = TRUE)

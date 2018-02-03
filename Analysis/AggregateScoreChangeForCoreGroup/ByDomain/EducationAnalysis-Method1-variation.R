@@ -62,7 +62,7 @@ createTableWorsened <- function(j, ques, number_of_subques) {
   return(temp)
 }
 
-temp1 <- createTable(7, "35", 12)
+temp1 <- createTableWorsened(7, "35", 12)
 
 method1worsened <- function(j, ques, number_of_subques) {
   counted <- 0 
@@ -94,9 +94,9 @@ length(setdiff(regressed, progressed))
 
 method2education <- function(j, ques, number_of_subques) {
   include <- 1 
-  x <- createTable(j, ques, number_of_subques)
+  x <- createTableImproved(j, ques, number_of_subques)
   count <- 0
-  for(i in 1:length(x$y15)) if(x$y15[i] %in% c(1,2)) count <- 1 
+  for(i in 1:length(x$y15)) if(x$y15[i] %in% c(2)) count <- 1 
   out15 <- sum(x$y15, na.rm = TRUE)
   out17 <- sum(x$y17, na.rm = TRUE)
   
@@ -124,17 +124,17 @@ summary(as.factor(final$temp))
 ## “vulnerable” in 2015, chose something better in 2017 (those will be positive changes).  Negative changes will be when a family chose
 ## something better than “vulnerable” in 2015, and regressed to either “vulnerable” or “urgent” in 2017, or regressed from “vulnerable” to “urgent.”
 
-summary(final$Q36_3_15)
-summary(final$Q36_3_17)
+summary(final$Q36_10_15)
+summary(final$Q36_10_17)
 final$temp <- NA
 for(i in 1:length(final$TCode)) {
-  if(!is.na(final$Q36_3_15[i]) & final$Q36_3_15[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
-    if(!is.na(final$Q36_3_15[i]) & !is.na(final$Q36_3_17[i]) & as.integer(final$Q36_3_17[i]) > as.integer(final$Q36_3_15[i])) final$temp[i] <- "Positive" 
+  if(!is.na(final$Q36_10_15[i]) & final$Q36_10_15[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_10_15[i]) & !is.na(final$Q36_10_17[i]) & as.integer(final$Q36_10_17[i]) > as.integer(final$Q36_10_15[i])) final$temp[i] <- "Positive" 
   }
 }
 for(i in 1:length(final$TCode)) {
-  if(!is.na(final$Q36_3_17[i]) & final$Q36_3_17[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
-    if(!is.na(final$Q36_3_15[i]) & !is.na(final$Q36_3_17[i]) & as.integer(final$Q36_3_17[i]) < as.integer(final$Q36_3_15[i])) final$temp[i] <- "Negative" 
+  if(!is.na(final$Q36_10_17[i]) & final$Q36_10_17[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_10_15[i]) & !is.na(final$Q36_10_17[i]) & as.integer(final$Q36_10_17[i]) < as.integer(final$Q36_10_15[i])) final$temp[i] <- "Negative" 
   }
 }
 

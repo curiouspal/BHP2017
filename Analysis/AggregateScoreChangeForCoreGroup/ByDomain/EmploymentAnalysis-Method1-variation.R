@@ -92,11 +92,24 @@ length(setdiff(regressed, progressed))
 ##### METHOD 2: Count of barriers in 2015 minus count of barriers in 2017 for each TCode.
 ################################################################################
 
+createTableImproved <- function(j, ques, number_of_subques) {
+  temp <- data.frame(Q = c(1:number_of_subques), y15=NA, y17=NA, diff=NA)
+  for(i in 1:number_of_subques) {
+    temp$y15[i] <- (eval(parse(text = paste0("final$Q", ques, "_", as.character(i), "_15", sep="")))[j])
+    temp$y17[i] <- (eval(parse(text = paste0("final$Q", ques, "_", as.character(i), "_17", sep="")))[j])
+    print(c(temp$y15[i], temp$y17[i]))
+  }
+  temp$diff <- 0
+  temp$diff[as.integer(temp$y15) %in% c(2) & (temp$y15) > (temp$y17)] <- 1
+  print(temp)
+  return(temp)
+}
+
 method2employment <- function(j, ques, number_of_subques) {
   include <- 1 
-  x <- createTable(j, ques, number_of_subques)
+  x <- createTableImproved(j, ques, number_of_subques)
   count <- 0
-  for(i in 1:length(x$y15)) if(x$y15[i] %in% c(1,2)) count <- 1 
+  for(i in 1:length(x$y15)) if(x$y15[i] %in% c(2)) count <- 1 
   out15 <- sum(x$y15, na.rm = TRUE)
   out17 <- sum(x$y17, na.rm = TRUE)
   
@@ -124,17 +137,54 @@ summary(as.factor(final$temp))
 ## “vulnerable” in 2015, chose something better in 2017 (those will be positive changes).  Negative changes will be when a family chose
 ## something better than “vulnerable” in 2015, and regressed to either “vulnerable” or “urgent” in 2017, or regressed from “vulnerable” to “urgent.”
 
-summary(final$Q36_3_15)
-summary(final$Q36_3_17)
+summary(final$Q36_2_15)
+summary(final$Q36_2_17)
 final$temp <- NA
 for(i in 1:length(final$TCode)) {
-  if(!is.na(final$Q36_3_15[i]) & final$Q36_3_15[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
-    if(!is.na(final$Q36_3_15[i]) & !is.na(final$Q36_3_17[i]) & as.integer(final$Q36_3_17[i]) > as.integer(final$Q36_3_15[i])) final$temp[i] <- "Positive" 
+  if(!is.na(final$Q36_2_15[i]) & final$Q36_2_15[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_2_15[i]) & !is.na(final$Q36_2_17[i]) & as.integer(final$Q36_2_17[i]) > as.integer(final$Q36_2_15[i])) final$temp[i] <- "Positive" 
   }
 }
 for(i in 1:length(final$TCode)) {
-  if(!is.na(final$Q36_3_17[i]) & final$Q36_3_17[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
-    if(!is.na(final$Q36_3_15[i]) & !is.na(final$Q36_3_17[i]) & as.integer(final$Q36_3_17[i]) < as.integer(final$Q36_3_15[i])) final$temp[i] <- "Negative" 
+  if(!is.na(final$Q36_2_17[i]) & final$Q36_2_17[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_2_15[i]) & !is.na(final$Q36_2_17[i]) & as.integer(final$Q36_2_17[i]) < as.integer(final$Q36_2_15[i])) final$temp[i] <- "Negative" 
+  }
+}
+
+summary(as.factor(final$temp))
+
+
+################# Immigration 
+
+summary(final$Q36_11_15)
+summary(final$Q36_11_17)
+final$temp <- NA
+for(i in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_11_15[i]) & final$Q36_11_15[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_11_15[i]) & !is.na(final$Q36_11_17[i]) & as.integer(final$Q36_11_17[i]) > as.integer(final$Q36_11_15[i])) final$temp[i] <- "Positive" 
+  }
+}
+for(i in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_11_17[i]) & final$Q36_11_17[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_11_15[i]) & !is.na(final$Q36_11_17[i]) & as.integer(final$Q36_11_17[i]) < as.integer(final$Q36_11_15[i])) final$temp[i] <- "Negative" 
+  }
+}
+
+summary(as.factor(final$temp))
+
+################# Health 
+
+summary(final$Q36_9_15)
+summary(final$Q36_9_17)
+final$temp <- NA
+for(i in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_9_15[i]) & final$Q36_9_15[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_9_15[i]) & !is.na(final$Q36_9_17[i]) & as.integer(final$Q36_9_17[i]) > as.integer(final$Q36_9_15[i])) final$temp[i] <- "Positive" 
+  }
+}
+for(i in 1:length(final$TCode)) {
+  if(!is.na(final$Q36_9_17[i]) & final$Q36_9_17[i] %in% c("1. Urgent situation, currently in crisis", "2. Vulnerable, need support to move forward")) {
+    if(!is.na(final$Q36_9_15[i]) & !is.na(final$Q36_9_17[i]) & as.integer(final$Q36_9_17[i]) < as.integer(final$Q36_9_15[i])) final$temp[i] <- "Negative" 
   }
 }
 
