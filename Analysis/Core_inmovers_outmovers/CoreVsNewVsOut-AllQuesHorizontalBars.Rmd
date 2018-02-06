@@ -51,6 +51,8 @@ names(admin2015)[2] <- "TCode"
 final$FromAdmin_17[final$TCode %in% admin2017$Tenant[!is.na(admin2017$Tenant) & admin2017$Tenant!=""]] <- "admin2017"
 final$FromAdmin_15[final$TCode %in% levels(as.factor(admin2015$TCode))] <- "admin2015"
 final$FromAdmin_14[final$TCode %in% final$TCode[!is.na(final$Bedrooms_14)]] <- "admin2014"
+names(final) <- gsub("Bedrooms15", "Bedrooms_15", names(final))
+names(final) <- gsub("Family.Members15", "NumberofFamilyMembers_15", names(final))
 
 #final <- merge(final, admin2015, by = intersect(names(final), names(admin2015)), all = FALSE)
 
@@ -2681,4 +2683,252 @@ ggplot(d, aes(reorder(Question, Percent_Yes), Percent_Yes, group=Year)) + geom_b
 
 ```
 
+### Number of Bedrooms based on BHP administrative data
+```{r, message = FALSE, echo=FALSE, fig.height=2.5, fig.width=9}
+#Variables in 2017 (final$Bedrooms_17, final$NumberofFamilyMembers_17, final$NumberofDependents_17, final$EligibleFamilyMembers_17, final$HHMembersunderage13_17, final$Spouse_17, final$'OneAdult,OneDependent_17')
+#Variables in 2015 (final$Bedrooms15, final$Family.Members15, final$Household.Member15, final$Eligible.Members15, final$Dependants15, final$HH.Members.under.age.1315, final$Spouse15)
 
+
+
+temp <- data.frame(a = c("Core_15", "Core_17", "Out_15", "In_17"), N=c(NA, NA, NA, NA), Percent2BorLess=c(NA, NA, NA, NA))
+i <- "Bedrooms"
+
+x <- paste0("rest$", i, "_15", sep="")
+x <- eval(parse(text = x))
+temp$N[1] <- length(x[!is.na(x)])
+temp$Percent2BorLess[1] <- 100*(summary(as.factor(x))[1]/(length(x[!is.na(x)])))
+
+x <- paste0("as.factor(rest$", i, "_17)", sep="")
+x <- eval(parse(text = x))
+temp$N[2] <- length(x[!is.na(x)])
+temp$Percent2BorLess[2] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2])/(length(x[!is.na(x)])))
+
+x <- paste0("attrition$", i, "_15", sep="")
+x <- eval(parse(text = x))
+temp$N[3] <- length(x[!is.na(x)])
+temp$Percent2BorLess[3] <- 100*(summary(as.factor(x))[1]/(length(x[!is.na(x)])))
+
+x <- paste0("as.factor(new$", i, "_17)", sep="")
+x <- eval(parse(text = x))
+temp$N[4] <- length(x[!is.na(x)])
+temp$Percent2BorLess[4] <- 100*(summary(as.factor(x))[1]/(length(x[!is.na(x)])))
+
+ggplot(temp, aes(x=temp$a, y=(temp$Percent2BorLess))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
+  geom_text(aes(x=temp$a, y=(temp$Percent2BorLess), label=paste(as.character(round(temp$Percent2BorLess)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
+  xlab("") + ylab("Percent who live in 2 or less bedroom units") +
+  ggtitle("Number of Bedrooms based on BHP administrative data\n")
+
+
+####################################################################################################################################
+temp1 <- as.data.frame(xtabs(formula = ~ as.factor(final$Bedrooms_15) + final$F))
+temp1 <- temp1[-c(4:6),]
+names(temp1) <- c("Bedrooms", "From", "Freq")
+levels(temp1$From) <- c("Core_15", "New", "Out_15")
+
+
+
+temp2 <- as.data.frame(xtabs(formula = ~ as.factor(final$Bedrooms_17) + final$F))
+temp2 <- temp2[-c(9:12),]
+names(temp2) <- c("Bedrooms", "From", "Freq")
+levels(temp2$From) <- c("Core_17", "New_17", "Out_17")
+
+temp <- rbind(temp1, temp2)
+
+ggplot(temp, aes(From, Freq)) + geom_bar(aes(fill=Bedrooms), stat="identity", position = "fill") + coord_flip() + ggtitle("Distribution of number of bedrooms")
+
+ggplot(temp, aes(From, Freq)) + geom_bar(aes(fill=Bedrooms), stat="identity", position = "stack") + coord_flip() + ggtitle("Distribution of number of bedrooms")
+####################################################################################################################################
+```
+
+### Number of family members based on BHP administrative data
+```{r, message = FALSE, echo=FALSE, fig.height=2.5, fig.width=9}
+#Variables in 2017 (final$Bedrooms_17, final$NumberofFamilyMembers_17, final$NumberofDependents_17, final$EligibleFamilyMembers_17, final$HHMembersunderage13_17, final$Spouse_17, final$'OneAdult,OneDependent_17')
+#Variables in 2015 (final$Bedrooms15, final$Family.Members15, final$Household.Member15, final$Eligible.Members15, final$Dependants15, final$HH.Members.under.age.1315, final$Spouse15)
+
+
+
+temp <- data.frame(a = c("Out_15", "Core_15", "Core_17", "In_17"), N=c(NA, NA, NA, NA), Percent2orLess=c(NA, NA, NA, NA))
+i <- "NumberofFamilyMembers"
+
+x <- paste0("rest$", i, "_15", sep="")
+x <- eval(parse(text = x))
+temp$N[2] <- length(x[!is.na(x)])
+temp$Percent2orLess[2] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+x <- paste0("as.factor(rest$", i, "_17)", sep="")
+x <- eval(parse(text = x))
+temp$N[3] <- length(x[!is.na(x)])
+temp$Percent2orLess[3] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+x <- paste0("attrition$", i, "_15", sep="")
+x <- eval(parse(text = x))
+temp$N[1] <- length(x[!is.na(x)])
+temp$Percent2orLess[1] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+x <- paste0("as.factor(new$", i, "_17)", sep="")
+x <- eval(parse(text = x))
+temp$N[4] <- length(x[!is.na(x)])
+temp$Percent2orLess[4] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+ggplot(temp, aes(x=temp$a, y=(temp$Percent2orLess))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
+  geom_text(aes(x=temp$a, y=(temp$Percent2orLess), label=paste(as.character(round(temp$Percent2orLess)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
+  xlab("") + ylab("Percent with family size of 4 or less") +
+  ggtitle("Number of family members based on BHP administrative data\n")
+
+####################################################################################################################################
+temp1 <- as.data.frame(xtabs(formula = ~ as.factor(final$NumberofFamilyMembers_15) + final$F))
+temp1 <- temp1[-c(7:12),]
+names(temp1) <- c("FamSize", "From", "Freq")
+levels(temp1$From) <- c("Core_15", "New", "Out_15")
+
+
+
+temp2 <- as.data.frame(xtabs(formula = ~ as.factor(final$NumberofFamilyMembers_17) + final$F))
+temp2 <- temp2[-c(13:18),]
+names(temp2) <- c("FamSize", "From", "Freq")
+levels(temp2$From) <- c("Core_17", "New_17", "Out_17")
+
+temp <- rbind(temp1, temp2)
+
+ggplot(temp, aes(From, Freq)) + geom_bar(aes(fill=FamSize), stat="identity", position = "fill") + coord_flip() + ggtitle("Distribution of Family Size")
+
+ggplot(temp, aes(From, Freq)) + geom_bar(aes(fill=FamSize), stat="identity", position = "stack") + coord_flip() + ggtitle("Distribution of Family Size")
+
+
+
+
+
+temp <- data.frame(a = c("Out_15", "Core_15", "Core_17", "In_17"), N=c(NA, NA, NA, NA), Percent2orLess=c(NA, NA, NA, NA))
+i <- "NumberofFamilyMembers"
+
+x <- paste0("rest$", i, "_15", sep="")
+x <- eval(parse(text = x))
+temp$N[2] <- length(x[!is.na(x)])
+temp$Percent2orLess[2] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+x <- paste0("as.factor(rest$", i, "_17)", sep="")
+x <- eval(parse(text = x))
+temp$N[3] <- length(x[!is.na(x)])
+temp$Percent2orLess[3] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+x <- paste0("attrition$", i, "_15", sep="")
+x <- eval(parse(text = x))
+temp$N[1] <- length(x[!is.na(x)])
+temp$Percent2orLess[1] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+x <- paste0("as.factor(new$", i, "_17)", sep="")
+x <- eval(parse(text = x))
+temp$N[4] <- length(x[!is.na(x)])
+temp$Percent2orLess[4] <- 100*((summary(as.factor(x))[1]+summary(as.factor(x))[2]+summary(as.factor(x))[3])/(length(x[!is.na(x)])))
+
+ggplot(temp, aes(x=temp$a, y=(temp$Percent2orLess))) + geom_bar(stat="identity", fill="red", alpha=0.25) + 
+  geom_text(aes(x=temp$a, y=(temp$Percent2orLess), label=paste(as.character(round(temp$Percent2orLess)), " (N = ", as.character(temp$N), ")", sep="")), vjust = "inward") + 
+  xlab("") + ylab("Percent with family size of 4 or less") +
+  ggtitle("Number of family members based on BHP administrative data\n")
+```
+### Bedrooms.
+```{r, echo=FALSE}
+
+
+
+
+all1 <- subset(all, F!="New") 
+all1$Bedrooms_15[is.na(all1$Bedrooms_15)] <- all1$Bedrooms_15[is.na(all1$Bedrooms_15)]
+Attr_15Median <- median(all1$Bedrooms_15[all1$F=="Out"], na.rm = TRUE)
+Rest_15Median <- median(all1$Bedrooms_15[all1$F=="Core"], na.rm = TRUE)
+med <- data.frame(F=c("Out", "Core"), m=c(Attr_15Median, Rest_15Median))
+all1$med_15[all1$F=="Out"] <- Attr_15Median
+all1$med_15[all1$F=="Core"] <- Rest_15Median
+ggplot(all1, aes(x = all1$F, y = all1$Bedrooms_15)) + 
+  geom_boxplot() +
+  xlab("2015") + ylab("Bedrooms in 2015") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") + coord_flip() +
+  ggtitle("Comparison of Number of Bedrooms as of 2015 \nfor \"out\" group (N=27) and the rest (N=88)\n")
+all1 <- subset(all, F!="Out")
+New17Median <- median(all1$Bedrooms_17[all1$F=="New"], na.rm = TRUE)
+Rest17Median <- median(all1$Bedrooms_17[all1$F=="Core"], na.rm = TRUE)
+all1$med17[all1$F=="New"] <- New17Median
+all1$med17[all1$F=="Core"] <- Rest17Median
+med <- data.frame(F=c("New", "Core"), m=c(New17Median, Rest17Median))
+ggplot(all1, aes(x = all1$F, y = all1$Bedrooms_17)) + 
+  geom_boxplot() +
+  xlab("2017") + ylab("# of Bedrooms in 2017") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") + coord_flip() +
+  ggtitle("Comparison of Number of Bedrooms as of 2017 \nfor \"new\" group (N=27) and the \"core\" (N=88)\n")
+  
+#all1$Bedrooms_17[all1$F=="Core"]
+#all1$Bedrooms_17[all1$F=="New"]
+```
+
+
+
+### Number of family members.
+```{r, echo=FALSE}
+
+
+
+
+all1 <- subset(all, F!="New") 
+all1$NumberofFamilyMembers_15[is.na(all1$NumberofFamilyMembers_15)] <- all1$NumberofFamilyMembers_15[is.na(all1$NumberofFamilyMembers_15)]
+Attr_15Median <- median(all1$NumberofFamilyMembers_15[all1$F=="Out"], na.rm = TRUE)
+Rest_15Median <- median(all1$NumberofFamilyMembers_15[all1$F=="Core"], na.rm = TRUE)
+med <- data.frame(F=c("Out", "Core"), m=c(Attr_15Median, Rest_15Median))
+all1$med_15[all1$F=="Out"] <- Attr_15Median
+all1$med_15[all1$F=="Core"] <- Rest_15Median
+ggplot(all1, aes(x = all1$F, y = all1$NumberofFamilyMembers_15)) + 
+  geom_boxplot() +
+  xlab("2015") + ylab("Number of Family Members in 2015") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") + coord_flip() +
+  ggtitle("Comparison of Number of Family Members as of 2015 \nfor \"out\" group (N=27) and the rest (N=88)\n")
+all1 <- subset(all, F!="Out")
+New17Median <- median(all1$NumberofFamilyMembers_17[all1$F=="New"], na.rm = TRUE)
+Rest17Median <- median(all1$NumberofFamilyMembers_17[all1$F=="Core"], na.rm = TRUE)
+all1$med17[all1$F=="New"] <- New17Median
+all1$med17[all1$F=="Core"] <- Rest17Median
+med <- data.frame(F=c("New", "Core"), m=c(New17Median, Rest17Median))
+ggplot(all1, aes(x = all1$F, y = all1$NumberofFamilyMembers_17)) + 
+  geom_boxplot() +
+  xlab("2017") + ylab("# of Family members in 2017") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") + coord_flip() +
+  ggtitle("Comparison of Number of Family Members as of 2017 \nfor \"new\" group (N=27) and the \"core\" (N=88)\n")
+  
+#all1$Bedrooms_17[all1$F=="Core"]
+#all1$Bedrooms_17[all1$F=="New"]
+```
+
+
+### Number of rooms per family member
+```{r, echo=FALSE}
+
+
+all$BRperMember_15 <- as.numeric(all$Bedrooms_15)/as.numeric(all$NumberofFamilyMembers_15)
+all$BRperMember_17 <- as.numeric(all$Bedrooms_17)/as.numeric(all$NumberofFamilyMembers_17)
+
+
+all1 <- subset(all, F!="New") 
+all1$BRperMember_15[is.na(all1$BRperMember_15)] <- all1$BRperMember_15[is.na(all1$BRperMember_15)]
+Attr_15Median <- median(all1$BRperMember_15[all1$F=="Out"], na.rm = TRUE)
+Rest_15Median <- median(all1$BRperMember_15[all1$F=="Core"], na.rm = TRUE)
+med <- data.frame(F=c("Out", "Core"), m=c(Attr_15Median, Rest_15Median))
+all1$med_15[all1$F=="Out"] <- Attr_15Median
+all1$med_15[all1$F=="Core"] <- Rest_15Median
+ggplot(all1, aes(x = all1$F, y = all1$BRperMember_15)) + 
+  geom_boxplot() +
+  xlab("2015") + ylab("Number of Bedrooms per Family Member in 2015") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") + coord_flip() +
+  ggtitle("Comparison of Number of Bedrooms per Family Member as of 2015 \nfor \"out\" group (N=27) and the rest (N=88)\n")
+all1 <- subset(all, F!="Out")
+New17Median <- median(all1$BRperMember_17[all1$F=="New"], na.rm = TRUE)
+Rest17Median <- median(all1$BRperMember_17[all1$F=="Core"], na.rm = TRUE)
+all1$med17[all1$F=="New"] <- New17Median
+all1$med17[all1$F=="Core"] <- Rest17Median
+med <- data.frame(F=c("New", "Core"), m=c(round(New17Median, digits=2), round(Rest17Median, digits=2)))
+ggplot(all1, aes(x = all1$F, y = all1$BRperMember_17)) + 
+  geom_boxplot() +
+  xlab("2017") + ylab("Bedrooms per Family Member in 2017") +
+  geom_text(data = med, aes(x=med$F, y=med$m, label=med$m, vjust = -0.5, hjust=0.5, color = "red")) + theme(legend.position="none") + coord_flip() +
+  ggtitle("Number of Bedrooms per Family Member as of 2017 \nfor \"new\" group (N=27) and the \"core\" (N=88)\n")
+  
+#all1$Bedrooms_17[all1$F=="Core"]
+#all1$Bedrooms_17[all1$F=="New"]
+```
